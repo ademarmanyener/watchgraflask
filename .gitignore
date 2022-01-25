@@ -7,3 +7,4 @@ db/
 .*.swp
 .DS_Store
 TODO.txt
+settings.py
