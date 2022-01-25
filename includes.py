@@ -37,22 +37,25 @@ from babel.dates import format_date, format_datetime, format_time
 # slugify
 from slugify import slugify
 
-PY_TIMEZONE = 'Europe/Istanbul'
+from settings import SETTINGS # CONFIG FILE
 
-tmdb.API_KEY = '{ TMDB API HERE }'
-TMDB_LANGUAGE = 'tr'
+#PY_TIMEZONE = 'Europe/Istanbul'
+PY_TIMEZONE = SETTINGS['timezone']
+
+tmdb.API_KEY = SETTINGS['tmdb']['api_key']
+TMDB_LANGUAGE = SETTINGS['tmdb']['language']
 
 app = Flask(__name__)
 #app.url_map.strict_slashes = False # NOT RECOMMENDED
 app.config['SECRET_KEY'] = os.urandom(32)
 app.config['RECAPTCHA_USE_SSL'] = False
-app.config['RECAPTCHA_PUBLIC_KEY'] = "{ RECAPTCHA PUBLIC KEY HERE }"
-app.config['RECAPTCHA_PRIVATE_KEY'] = "{ RECAPTCHA PRIVATE KEY HERE }"
+app.config['RECAPTCHA_PUBLIC_KEY'] = SETTINGS['recaptcha']['public_key']
+app.config['RECAPTCHA_PRIVATE_KEY'] = SETTINGS['recaptcha']['private_key']
 
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = '{ E-MAIL ADDRESS HERE }'
-app.config['MAIL_PASSWORD'] = '{ E-MAIL PASSWORD HERE }'
+app.config['MAIL_USERNAME'] = SETTINGS['email']['username']
+app.config['MAIL_PASSWORD'] = SETTINGS['email']['password']
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 
@@ -100,7 +103,7 @@ from database_modules.content import *
 from database_modules.account import *
 from database_modules.report import *
 
-#from functions.generator import * # IT'S DEPRECATED
+#from functions.generator import * # IT'S NOT USED. SO IT'S DEPRECATED
 from functions.check import *
 from functions.authentication import *
 from functions.tmdbsimpleasy import *
