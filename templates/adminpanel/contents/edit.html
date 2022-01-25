@@ -1,0 +1,262 @@
+﻿{%extends 'layouts/adminpanel/default.html'%}
+{%block container%}
+
+<style>
+  .form__input, .form__textarea {
+    /*background-color: #646464;*/
+  }
+  .select2-container--default .select2-selection--single {
+    background-color: unset;
+  }
+  .select2-dropdown {
+    background-color: #030303;
+  }
+  .form__textarea {
+    height: 287px;
+  }
+  .form__img, .form__img label {
+    background-color: unset;
+  }
+  .form__img {
+    background-position: center;
+    background-size: cover;
+    background-image: url('{{content_info.imagePoster}}');
+  }
+	.form__btn { display: inline-flex; margin-right: 25px; }
+	input[type=checkbox], input[type=radio] {
+		transition: border 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+	}
+	input[type=checkbox], input[type=radio]:checked {
+		border: 2px solid white;
+	}
+</style>
+
+{%include 'adminpanel/contents/includes/sidebar.html'%}
+
+<!-- main content -->
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- main title -->
+      <div class="col-12">
+        <div class="main__title">
+          <h2>{{content_info.title}} <span style="font-size: 16px;">({{content_info.titleUrl}} - {{content_info.titleOriginal}})</span></h2>
+        </div>
+      </div>
+      <!-- end main title -->
+
+      <!-- form -->
+      <div class="col-12">
+        <form action="{{url_for('adminpanel_content_edit', title_url=content_info.titleUrl)}}" method="POST" class="form" enctype="multipart/form-data">
+          <div class="row">
+            <div class="col-12 col-md-5 form__cover">
+              <!-- IMAGE UPLOAD BEGIN -->
+              <div class="row">
+                <div class="col-12 col-sm-6 col-md-12">
+                  <div class="form__img">
+                    <label for="form__img-upload">Poster Yükle (270 x 400)</label>
+                    <input id="form__img-upload" name="form__img-upload" type="file" accept=".png, .jpg, .jpeg">
+                    <img id="form__img" src="#" alt=" ">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <div class="form__gallery">
+                    <label for="form__imgBg-upload">Arkaplan Yükle</label>
+                    <input class="form__video-upload" id="form__imgBg-upload" name="form__imgBg-upload"  type="file" accept=".png, .jpg, .jpeg">
+                  </div>
+                </div>
+              </div>
+              <!-- IMAGE UPLOAD END -->
+            </div>
+
+            <div class="col-12 col-md-7 form__content">
+              <div class="row">
+                <div class="col-4">
+                  <label class="profile__label" for="input___title">Başlık</label>
+                  <input id="input___title" name="input___title" type="text" class="form__input" placeholder="Başlık">
+                </div>
+
+                <div class="col-4">
+                  <label class="profile__label" for="input___titleOriginal">Orjinal Başlık</label>
+                  <input id="input___titleOriginal" name="input___titleOriginal" type="text" class="form__input" placeholder="Orjinal Başlık">
+                </div>
+
+                <div class="col-4">
+                  <label class="profile__label" for="input___titleUrl">URL Başlığı</label>
+                  <input id="input___titleUrl" name="input___titleUrl" type="text" class="form__input" placeholder="URL Başlığı">
+                </div>
+
+                <div class="col-10">
+                  <label class="profile__label" for="input___overview">Açıklama</label>
+                  <textarea id="input___overview" name="input___overview" class="form__textarea" placeholder="Açıklama"></textarea>
+                </div>
+
+                <div class="col-2">
+                  <label class="profile__label" for="input___voteAverage">Ortalama Oy</label>
+                  <input id="input___voteAverage" name="input___voteAverage" type="text" class="form__input" placeholder="Ortalama Oy">
+                </div>
+
+                <div class="col-6">
+                  <label class="profile__label" for="input___idTmdb">TMDB ID</label>
+                  <input id="input___idTmdb" name="input___idTmdb" type="text" class="form__input" placeholder="TMDB ID">
+                </div>
+
+                <div class="col-6">
+                  <label class="profile__label" for="input___idImdb">IMDB ID</label>
+                  <input id="input___idImdb" name="input___idImdb" type="text" class="form__input" placeholder="IMDB ID">
+                </div>
+
+                <div class="col-9">
+                  <label class="profile__label" for="input___imagePoster">Poster Resmi</label>
+                  <input id="input___imagePoster" name="input___imagePoster" type="text" class="form__input" placeholder="Poster Resmi">
+                </div>
+
+                <div class="col-3">
+                  <a href="#modal-listPosters" id="button___listPosters" class="form__btn open-modal" style="border: 0px; cursor: pointer; float: left; width: 100%; margin-top: 30px;">Yüklenenlerden Seç</a>
+                </div>
+
+                <div class="col-9">
+                  <label class="profile__label" for="input___imageBackground">Arkaplan Resmi</label>
+                  <input id="input___imageBackground" name="input___imageBackground" type="text" class="form__input" placeholder="Arkaplan Resmi">
+                </div>
+
+                <div class="col-3">
+                  <a href="#modal-listBackgrounds" id="button___listBackgrounds" class="form__btn open-modal" style="border: 0px; cursor: pointer; float: left; width: 100%; margin-top: 30px;">Yüklenenlerden Seç</a>
+                </div>
+
+                <div class="col-12 col-sm-6 col-lg-6">
+                  <label class="profile__label" for="input___releaseDate">Yayın Tarihi</label>
+                  <input id="input___releaseDate" name="input___releaseDate" type="text" class="form__input" placeholder="Yayın Tarihi">
+                </div>
+
+                <div class="col-2">
+                  <div class="profile__group">
+                    <label class="profile__label" for="select2___adult">Yetişkin İçerik</label>
+                    <select class="js-example-basic-single" id="select2___adult" name="select2___adult">
+                      <option value="0">Herkese Uygun</option>
+                      <option value="1">Yetişkin İçerik</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-2">
+                  <div class="profile__group">
+                    <label class="profile__label" for="select2___visibility">Görünürlük</label>
+                    <select class="js-example-basic-single" id="select2___visibility" name="select2___visibility">
+                      <option value="1">Herkese Açık</option>
+                      <option value="0">Gizli</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-2">
+                  <div class="profile__group">
+                    <label class="profile__label" for="select2___type">Tür</label>
+                    <select class="js-example-basic-single" id="select2___type" name="select2___type">
+                      <option value="MOVIE">Film</option>
+                      <option value="TV">Dizi</option>
+                    </select>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="row">
+
+                <div class="col-12">
+                  <input type="submit" id="button___save" name="button___save" value="Kaydet" class="form__btn" style="border: 0px; cursor: pointer; float: right;">
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+<div id="modal-listPosters" class="zoom-anim-dialog modal mfp-hide">
+    <h6 class="modal__title">Poster Seç</h6>
+    <p class="modal__text">Bunlardan birini poster olarak seçin.</p>
+    <br/>
+    <p class="modal__text">
+      {%for poster in posters_list_info%}
+      <input type="radio" id="{{poster}}" name="poster" value="{{poster}}" style="width: 75px; height: 75px;
+                                                                                  margin-top: 5px; margin-left: 5px; margin-right: 5px; margin-bottom: 5px; background-image: url({{url_for('storage', filename='content/' + content_info.idContent + '/poster/' + poster)}}); background-size: cover; background-position: center; background-repeat: no-repeat; cursor: pointer;">
+      {%endfor%}
+    </p>
+    <div class="modal__btns">
+      <button class="modal__btn modal__btn--dismiss" type="button">Seç</button>
+    </div>
+</div>
+
+<div id="modal-listBackgrounds" class="zoom-anim-dialog modal mfp-hide">
+    <h6 class="modal__title">Arkaplan Seç</h6>
+    <p class="modal__text">Bunlardan birini arkaplan olarak seçin.</p>
+    <br/>
+    <p class="modal__text">
+      {%for background in backgrounds_list_info%}
+      <input type="radio" id="{{background}}" name="background" value="{{background}}" style="width: 100px; height: 75px;
+                                                                                  margin-top: 5px; margin-left: 5px; margin-right: 5px; margin-bottom: 5px; background-image: url({{url_for('storage', filename='content/' + content_info.idContent + '/background/' + background)}}); background-size: cover; background-position: center; background-repeat: no-repeat; cursor: pointer;">
+      {%endfor%}
+    </p>
+    <div class="modal__btns">
+      <button class="modal__btn modal__btn--dismiss" type="button">Seç</button>
+    </div>
+</div>
+
+        </form>
+      </div>
+      <!-- end form -->
+    </div>
+  </div>
+</main>
+<!-- end main content -->
+
+{%endblock%}
+
+{%block script%}
+<script>
+  $(document).ready(() => {
+    $('.js-example-basic-single').select2();
+    // inputs
+    $('#input___title').val(`{{content_info.title|safe}}`);
+    $('#input___titleOriginal').val(`{{content_info.titleOriginal|safe}}`);
+    $('#input___titleUrl').val(`{{content_info.titleUrl|safe}}`);
+    $('#input___overview').val(`{{content_info.overview|safe}}`);
+    $('#input___voteAverage').val(`{{content_info.voteAverage|safe}}`);
+    $('#input___idTmdb').val(`{{content_info.idTmdb|safe}}`);
+    $('#input___idImdb').val(`{{content_info.idImdb|safe}}`);
+    $('#input___imagePoster').val(`{{content_info.imagePoster|safe}}`);
+    $('#input___imageBackground').val(`{{content_info.imageBackground|safe}}`);
+    $('#input___releaseDate').val(`{{content_info.releaseDate|safe}}`);
+    // select2
+    if ('{{content_info.adult}}' == 0){
+      $('#select2-select2___adult-container').text('Herkese Açık');
+      $('#select2___adult').val('0');
+    } if ('{{content_info.adult}}' == 1){
+      $('#select2-select2___adult-container').text('Yetişkin İçerik');
+      $('#select2___adult').val('1');
+    }
+
+    if ('{{content_info.visibility}}' == 0){
+      $('#select2-select2___visibility-container').text('Gizli');
+      $('#select2___visibility').val('0');
+    } else if ('{{content_info.visibility}}' == 1){
+      $('#select2-select2___visibility-container').text('Herkese Açık');
+      $('#select2___visibility').val('1');
+    }
+
+    if ('{{content_info.type}}' == 'MOVIE'){
+      $('#select2-select2___type-container').text('Film');
+      $('#select2___type').val('MOVIE');
+    } else if ('{{content_info.type}}' == 'TV'){
+      $('#select2-select2___type-container').text('Dizi');
+      $('#select2___type').val('TV');
+    }
+  });
+</script>
+{%endblock%}

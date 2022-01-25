@@ -1,0 +1,108 @@
+{% macro card_long(content) %}
+  {% if content.visibility %}
+    <!-- card -->
+    <div class="card">
+      <div class="card__cover">
+        <img src="{{ content.imagePoster }}" loading="lazy" alt="{{ content.title }} poster">
+        <a href="{{ url_for('content_redirect', title_url=content.titleUrl) }}" class="card__play">
+          <i class="icon ion-ios-play"></i>
+        </a>
+      </div>
+      <div class="card__content">
+        <h3 class="card__title"><a href="{{ url_for('content_redirect', title_url=content.titleUrl) }}">{{ content.title }}</a></h3>
+        <span class="card__category">
+          {% for genre in content.get_genres() %}
+          <a href="#">{{ genre.get_title() }}</a>
+          {% endfor %}
+        </span>
+        <span class="card__rate"><i class="icon ion-ios-star"></i>{{ content.voteAverage }}</span>
+      </div>
+    </div>
+    <!-- end card -->
+  {% endif %}
+{% endmacro %}
+
+{% macro card_long_detailed(content) %}
+  {% if content.visibility %}
+    <!-- card -->
+    <div class="card card--list">
+      <div class="row">
+        <div class="col-12 col-sm-6">
+          <div class="card__cover">
+            <img src="{{ content.imagePoster }}" loading="lazy" alt="{{ content.title }} poster">
+            <a href="{{ url_for('content_redirect', title_url=content.titleUrl) }}" class="card__play">
+              <i class="icon ion-ios-play"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6">
+          <div class="card__content">
+            <h3 class="card__title"><a href=" {{url_for('content_redirect', title_url=content.titleUrl)}} ">{{content.title}}</a></h3>
+            <h1 class="card__title" style="font-size: 15px;">{% if content.type == 'MOVIE' %}Film{% elif content.type == 'TV' %}Dizi{% endif %}</h1>
+            <span class="card__category">
+              {% for genre in content.get_genres() %}
+              <a href="#">{{ genre.get_title() }}</a>
+              {% endfor %}
+            </span>
+
+            <div class="card__wrap">
+              <span class="card__rate"><i class="icon ion-ios-star"></i>{{ content.voteAverage }}</span>
+
+              <ul class="card__list">
+                <li>HD</li>
+                {% if content.adult == True %}
+                <li>Yetişkin İçerik</li>
+                {% endif %}
+              </ul>
+            </div>
+
+            <div class="card__description">
+              <p>{{ content.overview }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end card -->
+  {% endif %}
+{% endmacro %}
+
+{% macro card_wide(content=None, episode=None) %}
+  {% if episode %}
+    {% if episode.visibility %}
+    <!-- card -->
+    <div class="card">
+      <div class="card__cover">
+        <img src="{{ episode.imagePoster }}" loading="lazy" alt="{{ episode.get_content().title }} poster">
+        <a href="{{ url_for('tv_watch', title_url=episode.get_content().titleUrl, season_number=episode.seasonNumber, episode_number=episode.episodeNumber) }}" class="card__play">
+          <i class="icon ion-ios-play"></i>
+        </a>
+      </div>
+      <div class="card__content">
+        <h3 class="card__title"><a href="{{ url_for('tv_title', title_url=episode.get_content().titleUrl) }}">{{ episode.get_content().title }}</a></h3>
+        <span class="card__rate" style="font-size: 14px; font-weight: lighter;">{{ episode.seasonNumber }}. Sezon {{ episode.episodeNumber }}. Bölüm</span>
+        <span class="card__category"></span>
+        <span class="card__rate"><i class="icon ion-ios-star"></i>{{ episode.voteAverage }}</span>
+      </div>
+    </div>
+    <!-- end card -->
+    {% endif %}
+  {% endif %}
+{% endmacro %}
+
+{% macro ad_leaderboard() %}
+<!-- ad -->
+<a href="mailto:iletisim@watchgraf.com">
+  <img src="{{ url_for('static', filename='img/adv_leaderboard.jpg') }}" height=90 style="margin: 15px; border: 0px solid red;" alt="KARE REKLAM ALANI">
+</a>
+<!-- end ad -->
+{% endmacro %}
+
+{% macro ad_rectangle() %}
+<!-- ad -->
+<a href="mailto:iletisim@watchgraf.com">
+  <img src="{{ url_for('static', filename='img/adv_rectangle.jpg') }}" height=250 style="margin: 15px; border: 0px solid red;" alt="KARE REKLAM ALANI">
+</a>
+<!-- end ad -->
+{% endmacro %}

@@ -1,0 +1,615 @@
+{%extends 'layouts/default.html'%}
+{%block container%}
+<style media="screen">
+	input[type=checkbox], input[type=radio] {
+		transition: border 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+	}
+	input[type=checkbox], input[type=radio]:checked {
+		border: 2px solid white;
+	}
+	.form__img label {background-color: #030303;}
+</style>
+
+<br/>
+<br/>
+<br/>
+
+	<!-- content -->
+	<div class="content">
+		<!-- profile -->
+		<div class="profile">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-12">
+						<div class="profile__content">
+							<div class="profile__user">
+                <div style="min-width: 50px; min-height: 50px; background-image: url('{{get_profile_db(profile_id=session['PROFILE']['idProfile']).imageAvatar}}'); background-size: cover; background-position: center; border-radius: 50%; margin-right: 20px; float: left;"></div>
+								<div class="profile__meta" style="max-width: 100px;">
+									<h3>{{get_profile_db(profile_id=session['PROFILE']['idProfile']).username}}</h3>
+								</div>
+							</div>
+
+							<!-- content tabs nav -->
+							<ul class="nav nav-tabs content__tabs content__tabs--profile" id="content__tabs" role="tablist">
+								<li class="nav-item">
+									<a class="nav-link active" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Kullanıcı Adı & Parola</a>
+								</li>
+
+								<li class="nav-item">
+									<a class="nav-link" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Gizlilik & Güvenlik</a>
+								</li>
+
+								<li class="nav-item">
+									<a class="nav-link" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">Kişiselleştirme</a>
+								</li>
+							</ul>
+							<!-- end content tabs nav -->
+
+							<!-- content mobile tabs nav -->
+							<div class="content__mobile-tabs content__mobile-tabs--profile" id="content__mobile-tabs">
+								<div class="content__mobile-tabs-btn dropdown-toggle" role="navigation" id="mobile-tabs" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<input type="button" value="Kullanıcı Adı & Parola">
+									<span></span>
+								</div>
+
+								<div class="content__mobile-tabs-menu dropdown-menu" aria-labelledby="mobile-tabs">
+									<ul class="nav nav-tabs" role="tablist">
+										<li class="nav-item"><a class="nav-link active" id="1-tab" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Kullanıcı Adı & Parola</a></li>
+
+										<li class="nav-item"><a class="nav-link" id="2-tab" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Gizlilik & Güvenlik</a></li>
+
+										<li class="nav-item"><a class="nav-link" id="3-tab" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">Kişiselleştirme</a></li>
+									</ul>
+								</div>
+							</div>
+							<!-- end content mobile tabs nav -->
+
+							<a href="#modal-drop-profile" class="profile__logout main__table-btn main__table-btn--banned open-modal" style="background-color: #c31515;">
+								<i class="icon ion-ios-trash"></i>
+								<span>Profili Sil</span>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- end profile -->
+
+		<div class="container">
+			<!-- content tabs -->
+			<div class="tab-content" id="myTabContent">
+				<div class="tab-pane fade show active" id="tab-1" role="tabpanel" aria-labelledby="1-tab">
+					<div class="row">
+						<!-- details form -->
+						<div class="col-12 col-lg-6">
+							<form action="#" method="#" class="profile__form">
+								<div class="row">
+									<div class="col-12">
+										<h4 class="profile__title">Kullanıcı Adını Değiştir</h4>
+									</div>
+
+									<div class="col-12 col-md-12 col-lg-12 col-xl-12">
+										<div class="profile__group">
+											<label class="profile__label" for=""><b>Hesap ID:</b> {{session['ACCOUNT']['idAccount']}}</label>
+										</div>
+										<div class="profile__group">
+											<label class="profile__label" for=""><b>Profil ID:</b> {{session['PROFILE']['idProfile']}}</label>
+										</div>
+										<div class="profile__group">
+											<label class="profile__label" for="username">Yeni Kullanıcı Adı</label>
+                      <input type="text" class="profile__input" id="input_new_username" value="{{get_profile_db(profile_id=session['PROFILE']['idProfile']).username}}">
+										</div>
+									</div>
+
+									<div class="col-12">
+                    <input type="button" class="profile__btn" id="button_change_username" value="Değiştir" style="border: 0px; cursor: pointer;">
+									</div>
+								</div>
+							</form>
+						</div>
+						<!-- end details form -->
+
+						<!-- password form -->
+						<div class="col-12 col-lg-6">
+							<form action="#" method="#" class="profile__form">
+								<div class="row">
+									<div class="col-12">
+										<h4 class="profile__title">Parolanı Değiştir</h4>
+									</div>
+
+									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
+										<div class="profile__group">
+											<label class="profile__label" for="oldpass">Mevcut Parola</label>
+                      <input type="password" class="profile__input" id="input_old_password" value="">
+										</div>
+									</div>
+
+									<!-- empty space -->
+									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
+										<div class="profile__group">
+											<label class="profile__label" for="">Parolayı kaldırmak için yeni parola ve doğrulama bölümünü boş bırakın.</label>
+										</div>
+									</div>
+
+									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
+										<div class="profile__group">
+											<label class="profile__label" for="newpass">Yeni Parola</label>
+                      <input type="password" class="profile__input" id="input_new_password" value="">
+										</div>
+									</div>
+
+									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
+										<div class="profile__group">
+											<label class="profile__label" for="confirmpass">Yeni Parolayı Doğrula</label>
+                      <input type="password" class="profile__input" id="input_confirm_new_password" value="">
+										</div>
+									</div>
+
+									<div class="col-12">
+                    <input type="button" class="profile__btn" id="button_change_password" value="Değiştir" style="border: 0px; cursor: pointer;">
+									</div>
+								</div>
+							</form>
+						</div>
+						<!-- end password form -->
+					</div>
+				</div>
+
+				<div class="tab-pane 1ade" id="tab-2" role="tabpanel" aria-labelledby="2-tab">
+					<div class="row">
+						{%for i in range(1)%}
+						<!-- price -->
+						<div class="col-12 col-md-6 col-lg-6">
+							<div id="profile_private_false_div" class="price price--profile {%if profile_info.private == False%}price--premium{%endif%}">
+								<div class="price__item price__item--first"><span>Herkese Açık Hesap</span> <span id="profile_private_false_status">{%if profile_info.private == False%}Seçili{%endif%}</span></div>
+								<div class="price__item"><span>Hesap durumu, oynatma listeleri ve diğer bilgiler yabancılar tarafından görülebilir.</span></div>
+								<div id="button_make_public" class="price__btn" style="cursor: pointer;">Uygula</div>
+							</div>
+						</div>
+						<!-- end price -->
+
+						<!-- price -->
+						<div class="col-12 col-md-6 col-lg-6">
+							<div id="profile_private_true_div" class="price price--profile {%if profile_info.private == True%}price--premium{%endif%}">
+								<div class="price__item price__item--first"><span>Gizli Hesap</span> <span id="profile_private_true_status">{%if profile_info.private == True%}Seçili{%endif%}</span></div>
+								<div class="price__item"><span>Hesabınız ile ilgili detaylar sadece siz ve giriş yapan profiller için görülebilir.</span></div>
+								<div id="button_make_private" class="price__btn" style="cursor: pointer;">Uygula</div>
+							</div>
+						</div>
+						<!-- end price -->
+
+						<!-- price -->
+						<div class="col-12 col-md-6 col-lg-6">
+							<div id="profile_adult_true_div" class="price price--profile {%if profile_info.adult == True%}price--premium{%endif%}">
+								<div class="price__item price__item--first"><span>Yetişkin Hesabı</span> <span id="profile_adult_true_status">{%if profile_info.adult == True%}Seçili{%endif%}</span></div>
+								<div class="price__item"><span>Yetişkin kategorisine giren dizi, filmleri izleyebilirsiniz.</span></div>
+								<div id="button_make_adult" class="price__btn" style="cursor: pointer;">Uygula</div>
+							</div>
+						</div>
+						<!-- end price -->
+
+						<!-- price -->
+						<div class="col-12 col-md-6 col-lg-6">
+							<div id="profile_adult_false_div" class="price price--profile {%if profile_info.adult == False%}price--premium{%endif%}">
+								<div class="price__item price__item--first"><span>Çocuk Hesabı</span> <span id="profile_adult_false_status">{%if profile_info.adult == False%}Seçili{%endif%}</span></div>
+								<div class="price__item"><span>Yetişkin kategorisine giren dizi, filmleri izleyemezsiniz.</span></div>
+								<div id="button_make_child" class="price__btn" style="cursor: pointer;">Uygula</div>
+							</div>
+						</div>
+						<!-- end price -->
+						{%endfor%}
+					</div>
+				</div>
+
+        <style>
+          .form__input, .form__textarea {
+            /*background-color: #646464;*/
+          }
+          .select2-container--default .select2-selection--single {
+            background-color: unset;
+          }
+          .select2-dropdown {
+            background-color: #030303;
+          }
+          .form__textarea {
+            height: 287px;
+          }
+          .form__img, .form__img label {
+            background-color: unset;
+          }
+          .form__img {
+            height: 275px;
+            background-position: center;
+            background-size: cover;
+            background-image: url('{{profile_info.imageAvatar}}');
+          }
+          .form__btn { display: inline-flex; margin-right: 25px; }
+          input[type=checkbox], input[type=radio] {
+            transition: border 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+          }
+          input[type=checkbox], input[type=radio]:checked {
+            border: 2px solid white;
+          }
+        </style>
+
+				<div class="tab-pane fade" id="tab-3" role="tabpanel" aria-labelledby="3-tab">
+
+          <!-- form -->
+          <div class="col-12">
+            <form action="{{url_for('settings_profile')}}" method="POST" class="form" enctype="multipart/form-data">
+              <div class="row">
+                <div class="col-12 col-md-5 form__cover">
+                  <!-- IMAGE UPLOAD BEGIN -->
+                  <div class="row">
+                    <div class="col-12 col-sm-6 col-md-12">
+                      <div class="form__img">
+                        <label for="form__img-upload">Avatar Yükle</label>
+                        <input id="form__img-upload" name="form__img-upload" type="file" accept=".png, .jpg, .jpeg">
+                        <img id="form__img" src="#" alt=" ">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="form__gallery">
+                        <label for="form__imgBg-upload">Arkaplan Yükle</label>
+                        <input class="form__video-upload" id="form__imgBg-upload" name="form__imgBg-upload"  type="file" accept=".png, .jpg, .jpeg">
+                      </div>
+                    </div>
+                  </div>
+                  <!-- IMAGE UPLOAD END -->
+                </div>
+                
+                <div class="col-12 col-md-7 form__content">
+                  <div class="row">
+                    <div class="col-6">
+                      <label class="profile__label" for="input___username">Kullanıcı Adı</label>
+                      <input id="input___username" name="input___username" type="text" class="form__input" placeholder="Kullanıcı Adı">
+                    </div>
+
+                    <div class="col-6">
+                      <label class="profile__label" for="input___password">Parola</label>
+                      <input id="input___password" name="input___password" type="password" class="form__input" placeholder="Parola">
+                    </div>
+
+                    <div class="col-12">
+                      <label class="profile__label" for="input___biography">Biyografi</label>
+                      <textarea id="input___biography" name="input___biography" class="form__textarea" placeholder="Biyografi"></textarea>
+                    </div>
+
+                    <div class="col-8">
+                      <label class="profile__label" for="input___imageAvatar">Avatar Resmi</label>
+                      <input id="input___imageAvatar" name="input___imageAvatar" type="text" class="form__input" placeholder="Avatar Resmi">
+                    </div>
+
+                    <div class="col-4">
+                      <a href="#modal-listAvatars" id="button___listAvatars" class="form__btn open-modal" style="border: 0px; cursor: pointer; float: left; width: 100%; margin-top: 30px;">Yüklenenlerden Seç</a>
+                    </div>
+
+                    <div class="col-8">
+                      <label class="profile__label" for="input___imageBackground">Arkaplan Resmi</label>
+                      <input id="input___imageBackground" name="input___imageBackground" type="text" class="form__input" placeholder="Arkaplan Resmi">
+                    </div>
+
+                    <div class="col-4">
+                      <a href="#modal-listBackgrounds" id="button___listBackgrounds" class="form__btn open-modal" style="border: 0px; cursor: pointer; float: left; width: 100%; margin-top: 30px;">Yüklenenlerden Seç</a>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <div class="row">
+
+                    <div class="col-12">
+                      <input type="submit" id="button___save" name="button___save" value="Kaydet" class="form__btn" style="border: 0px; cursor: pointer; float: right;">
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+    <div id="modal-listAvatars" class="zoom-anim-dialog modal mfp-hide">
+        <h6 class="modal__title">Avatar Seç</h6>
+        <p class="modal__text">Bunlardan birini avatar olarak seçin.</p>
+        <br/>
+        <p class="modal__text">
+          {%for avatar in avatars_list_info%}
+          <input type="radio" id="{{avatar}}" name="avatar" value="{{avatar}}" style="width: 75px; height: 75px;
+                                                                                      margin-top: 5px; margin-left: 5px; margin-right: 5px; margin-bottom: 5px; background-image: url({{url_for('storage', filename='account/' + account_info.idAccount + '/profile/' + profile_info.idProfile + '/avatar/' + avatar)}}); background-size: cover; background-position: center; background-repeat: no-repeat; cursor: pointer;">
+          {%endfor%}
+        </p>
+        <div class="modal__btns">
+          <button class="modal__btn modal__btn--dismiss" type="button">Seç</button>
+        </div>
+    </div>
+
+    <div id="modal-listBackgrounds" class="zoom-anim-dialog modal mfp-hide">
+        <h6 class="modal__title">Arkaplan Seç</h6>
+        <p class="modal__text">Bunlardan birini arkaplan olarak seçin.</p>
+        <br/>
+        <p class="modal__text">
+          {%for background in backgrounds_list_info%}
+          <input type="radio" id="{{background}}" name="background" value="{{background}}" style="width: 75px; height: 75px;
+                                                                                      margin-top: 5px; margin-left: 5px; margin-right: 5px; margin-bottom: 5px; background-image: url({{url_for('storage', filename='account/' + account_info.idAccount + '/profile/' + profile_info.idProfile + '/background/' + background)}}); background-size: cover; background-position: center; background-repeat: no-repeat; cursor: pointer;">
+          {%endfor%}
+        </p>
+        <div class="modal__btns">
+          <button class="modal__btn modal__btn--dismiss" type="button">Seç</button>
+        </div>
+    </div>
+
+            </form>
+          </div>
+          <!-- end form -->
+
+			</div>
+			<!-- end content tabs -->
+		</div>
+	</div>
+	<!-- end content -->
+
+<div id="modal-drop-profile" class="zoom-anim-dialog modal mfp-hide">
+		<h6 class="modal__title">Profilimi Sil</h6>
+		<p class="modal__text">Profilinizi silmek istediğinize emin misiniz? <span style="font-weight: bold;">Bu işlem geri alınamaz. Paylaştıklarınız içerikler, başka bir hesaba aktarılır.</span></p>
+		<div class="modal__btns">
+			<a href="{{url_for('settings_profile_dropprofile_confirmation')}}" class="modal__btn modal__btn--apply" type="button">Sil</a>
+			<button class="modal__btn modal__btn--dismiss" type="button" style="width: calc(50%); margin-left: calc(25%);">İptal Et</button>
+		</div>
+</div>
+
+{%endblock%}
+
+{%block script%}
+<script>
+
+/*
+tab-1
+*/
+
+$('#button_change_username').on('click', function(){
+  $.ajax({
+    url: '{{url_for("settings_profile_func_proc", function="change_username")}}',
+    data: JSON.stringify({
+      'new_username': document.getElementById('input_new_username').value,
+    }),
+    dataType: 'json',
+    type: 'POST',
+    contentType: 'application/json; charset=utf-8',
+    processData: false,
+    headers: {
+      'X-CSRFToken': '{{csrf_token()}}',
+    },
+    success: function(response){
+      if (response.ret_url){
+        window.location = response.ret_url
+      }
+      else if (response.succ_msg){
+        $('.alertMainDiv').show();
+        $('.alertMainText').text(response.succ_msg);
+        setTimeout(() => {
+          $('.alertMainDiv').hide();
+        }, 2500);  
+        location.reload();
+      }
+      else if (response.err_msg){
+        $('.alertMainDiv').show();
+        $('.alertMainText').text(response.err_msg);
+        setTimeout(() => {
+          $('.alertMainDiv').hide();
+        }, 2500);
+      }
+    },
+    error: function(error){
+      console.log(error);
+    }
+  });
+});
+
+$('#button_change_password').on('click', function(){
+  $.ajax({
+    url: '{{url_for("settings_profile_func_proc", function="change_password")}}',
+    data: JSON.stringify({
+      'current_password': document.getElementById('input_old_password').value,
+      'new_password': document.getElementById('input_new_password').value,
+      'confirm_new_password': document.getElementById('input_confirm_new_password').value,
+    }),
+    dataType: 'json',
+    type: 'POST',
+    contentType: 'application/json; charset=utf-8',
+    processData: false,
+    headers: {
+      'X-CSRFToken': '{{csrf_token()}}',
+    },
+    success: function(response){
+      if (response.ret_url){
+        window.location = response.ret_url
+      }
+      else if (response.succ_msg){
+        $('.alertMainDiv').show();
+        $('.alertMainText').text(response.succ_msg);
+        setTimeout(() => {
+          $('.alertMainDiv').hide();
+        }, 52500);  
+        //location.reload();
+      }
+      else if (response.err_msg){
+        $('.alertMainDiv').show();
+        $('.alertMainText').text(response.err_msg);
+        setTimeout(() => {
+          $('.alertMainDiv').hide();
+        }, 2500);
+      }
+    },
+    error: function(error){
+      console.log(error);
+    }
+  });
+});
+
+/*
+tab-2
+*/
+
+$('#button_make_public').on('click', function(){
+  $.ajax({
+    url: '{{url_for("settings_profile_func_proc", function="make_private_false")}}',
+    data: JSON.stringify({
+      'test': '1',
+    }),
+    dataType: 'json',
+    type: 'POST',
+    contentType: 'application/json; charset=utf-8',
+    processData: false,
+    headers: {
+      'X-CSRFToken': '{{csrf_token()}}',
+    },
+    success: function(response){
+      if (response.ret_url){
+        window.location = response.ret_url
+      }
+      else if (response.succ_msg){
+        $('#profile_private_true_div').removeClass('price--premium');
+        $('#profile_private_false_div').addClass('price--premium');
+        $('#profile_private_true_status').text('');
+      	$('#profile_private_false_status').text('Seçili');
+      }
+      else if (response.err_msg){
+        $('.alertMainDiv').show();
+        $('.alertMainText').text(response.err_msg);
+        setTimeout(() => {
+          $('.alertMainDiv').hide();
+        }, 2500);
+      }
+    },
+    error: function(error){
+      console.log(error);
+    }
+  });
+});
+
+$('#button_make_private').on('click', function(){
+  $.ajax({
+    url: '{{url_for("settings_profile_func_proc", function="make_private_true")}}',
+    data: JSON.stringify({
+      'test': '1',
+    }),
+    dataType: 'json',
+    type: 'POST',
+    contentType: 'application/json; charset=utf-8',
+    processData: false,
+    headers: {
+      'X-CSRFToken': '{{csrf_token()}}',
+    },
+    success: function(response){
+      if (response.ret_url){
+        window.location = response.ret_url
+      }
+      else if (response.succ_msg){
+        $('#profile_private_true_div').addClass('price--premium');
+        $('#profile_private_false_div').removeClass('price--premium');
+        $('#profile_private_true_status').text('Seçili');
+      	$('#profile_private_false_status').text('');
+      }
+      else if (response.err_msg){
+        $('.alertMainDiv').show();
+        $('.alertMainText').text(response.err_msg);
+        setTimeout(() => {
+          $('.alertMainDiv').hide();
+        }, 2500);
+      }
+    },
+    error: function(error){
+      console.log(error);
+    }
+  });
+});
+
+$('#button_make_adult').on('click', function(){
+  $.ajax({
+    url: '{{url_for("settings_profile_func_proc", function="make_adult_true")}}',
+    data: JSON.stringify({
+      'test': '1',
+    }),
+    dataType: 'json',
+    type: 'POST',
+    contentType: 'application/json; charset=utf-8',
+    processData: false,
+    headers: {
+      'X-CSRFToken': '{{csrf_token()}}',
+    },
+    success: function(response){
+      if (response.ret_url){
+        window.location = response.ret_url
+      }
+      else if (response.succ_msg){
+        $('#profile_adult_true_div').addClass('price--premium');
+        $('#profile_adult_false_div').removeClass('price--premium');
+        $('#profile_adult_true_status').text('Seçili');
+      	$('#profile_adult_false_status').text('');
+      }
+      else if (response.err_msg){
+        $('.alertMainDiv').show();
+        $('.alertMainText').text(response.err_msg);
+        setTimeout(() => {
+          $('.alertMainDiv').hide();
+        }, 2500);
+      }
+    },
+    error: function(error){
+      console.log(error);
+    }
+  });
+});
+
+$('#button_make_child').on('click', function(){
+  $.ajax({
+    url: '{{url_for("settings_profile_func_proc", function="make_adult_false")}}',
+    data: JSON.stringify({
+      'test': '1',
+    }),
+    dataType: 'json',
+    type: 'POST',
+    contentType: 'application/json; charset=utf-8',
+    processData: false,
+    headers: {
+      'X-CSRFToken': '{{csrf_token()}}',
+    },
+    success: function(response){
+      if (response.ret_url){
+        window.location = response.ret_url
+      }
+      else if (response.succ_msg){
+        $('#profile_adult_true_div').removeClass('price--premium');
+        $('#profile_adult_false_div').addClass('price--premium');
+        $('#profile_adult_true_status').text('');
+      	$('#profile_adult_false_status').text('Seçili');
+      }
+      else if (response.err_msg){
+        $('.alertMainDiv').show();
+        $('.alertMainText').text(response.err_msg);
+        setTimeout(() => {
+          $('.alertMainDiv').hide();
+        }, 2500);
+      }
+    },
+    error: function(error){
+      console.log(error);
+    }
+  });
+});
+
+$(document).ready(() => {
+  $('.js-example-basic-single').select2();
+  // inputs
+  $('#input___username').val(`{{profile_info.username|safe}}`);
+  $('#input___password').val(`{{profile_info.password|safe}}`);
+  $('#input___biography').val(`{{profile_info.biography|safe}}`);
+  $('#input___imageAvatar').val(`{{profile_info.imageAvatar|safe}}`);
+  $('#input___imageBackground').val(`{{profile_info.imageBackground|safe}}`);
+});
+</script>
+{%endblock%}

@@ -1,0 +1,1435 @@
+{%extends 'layouts/default.html'%}
+{% from "macros/cards.html" import ad_leaderboard, ad_rectangle %}
+{%block container%}
+<style media="screen">
+	.header__sign-in--go-to-tv-page {
+		background-image: linear-gradient(90deg, white 0%, #dedede 100%);
+	}
+	.header__sign-in--selected_player {
+		/*background-image: linear-gradient(90deg, #121212 0%, #090909 100%);*/
+		background-image: linear-gradient(90deg, #121212 0%, #090909 100%);
+    border: 1px solid white;
+	}
+	.header__sign-in--selected_player span {
+		color: white;
+	}
+  #comment__like__selected {
+    color: rgb(0, 255, 85);
+    opacity: 1;
+  }
+  #comment__dislike__selected {
+    color: red;
+    opacity: 1;
+  }
+</style>
+
+{%if request.args.get('debug') == '1'%}
+<br>
+<br>
+<br>
+<br>
+
+<h3 style="color: white; font-size: 25px;">idContent: {{content_info.idContent}}</h3>
+{% if content_info.type == 'TV' %}
+<h3 style="color: white; font-size: 25px;">idTvSeason: {{season_info.idTvSeason}}</h3>
+<h3 style="color: white; font-size: 25px;">idTvEpisode: {{episode_info.idTvEpisode}}</h3>
+{% endif %}
+<h3 style="color: white; font-size: 25px;">idTmdb: {{content_info.idTmdb}}</h3>
+<h3 style="color: white; font-size: 25px;">idAddAccount: {{content_info.idAddAccount}}</h3>
+<h3 style="color: white; font-size: 25px;">idAddProfile: {{content_info.idAddProfile}}</h3>
+<h3 style="color: white; font-size: 25px;">idAddAccount: {{get_account_db(account_id=content_info.idAddAccount).username}}</h3>
+<h3 style="color: white; font-size: 25px;">idAddProfile: {{get_profile_db(profile_id=content_info.idAddProfile).username}}</h3>
+{%endif%}
+
+	<!-- details -->
+	<section class="section details">
+		<!-- details background -->
+		<div class="details__bg" data-bg="{{content_info.imageBackground}}"></div>
+		<!-- end details background -->
+
+		<!-- details content -->
+		<div class="container">
+			<div class="row">
+
+        <!-- ad leaderboard -->
+        <div class="col-12 d-flex justify-content-center align-items-center" style="margin-bottom: 25px;">
+          {{ ad_leaderboard() }}
+        </div>
+
+				<!-- title -->
+				<div class="col-12">
+					<h1 class="details__title">{{content_info.title}} {%if content_info.type == 'TV'%}<span class="details__title" style="font-size: 20px;">{{season_info.seasonNumber}}. Sezon {{episode_info.episodeNumber}}. Bölüm</span>{%endif%}</h1>
+          {%if content_info.type == 'TV'%}{%endif%}
+				</div>
+				<!-- end title -->
+
+				<!-- player -->
+				<div class="col-12 col-xl-12">
+					{%if current_player_info.type == 'PLYR'%}
+					<video controls="" crossorigin="" playsinline="" poster="{{url_for('static', filename='img/defaults/poster_player.png')}}" id="player">
+						<!-- Video files -->
+						{%if 2 == 1%}
+						<source src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4" type="video/mp4" size="576">
+						<source src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-720p.mp4" type="video/mp4" size="720">
+						<source src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4" type="video/mp4" size="1080">
+						<source src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1440p.mp4" type="video/mp4" size="1440">
+						{%endif%}
+						<source src="{{current_player_info.source}}" type="video/mp4" size="">
+
+						<!-- Caption files -->
+						<track kind="captions" label="English" srclang="en" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.en.vtt" default="">
+						<track kind="captions" label="Français" srclang="fr" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.fr.vtt">
+
+						<!-- Fallback for browsers that don't support the <video> element -->
+						<a href="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4" download="">Download</a>
+					</track></track></video>
+					{%elif current_player_info.type == 'VIDEOJS'%}
+					<video
+					  id="my-video"
+					  class="video-js"
+					  controls
+					  preload="auto"
+					  width="640"
+					  height="264"
+					  poster="{{url_for('static', filename='img/defaults/poster_player.png')}}"
+					  data-setup="{}"
+					  style="width: 100%; height: 500px;"
+					>
+					  <source src="{{current_player_info.source}}" type="video/mp4" />
+					  <source src="MY_VIDEO.webm" type="video/webm" />
+					  <p class="vjs-no-js">
+					    To view this video please enable JavaScript, and consider upgrading to a
+					    web browser that
+					    <a href="https://videojs.com/html5-video-support/" target="_blank"
+					      >supports HTML5 video</a
+					    >
+					  </p>
+					</video>
+					{%elif current_player_info.type == 'IFRAME' or current_player_info.type == 'TRAILER'%}
+					<iframe style="width: 100%; height: 500px; border: 0px;"
+                  src="{{current_player_info.source}}"
+                  allowfullscreen="true"
+                  webkitallowfullscreen="true"
+                  mozallowfullscreen="true"
+                  >
+					</iframe>
+					{%else%}
+					<p style="color: white; font-size: 50px;">Unsupported Player Type.</p>
+					{%endif%}
+				</div>
+				<!-- end player -->
+
+        <div class="col-12" style="margin-top: 25px;">
+          <div class="card card--details">
+            <div class="row">
+							{%if content_info.type == 'TV'%}
+              <a href="{{url_for('tv_season_title', title_url=content_info.titleUrl, season_number=season_info.seasonNumber)}}" class="header__sign-in  header__sign-in--go-to-tv-page" style="min-width: 150px; margin-left: 5px; margin-top: 5px;"><span style="display: block; color: black;">Dizi Sayfası</span></a>
+							{%endif%}
+
+							<!-- filter item -->
+							<div class="filter__item" id="filter__genre" style="margin-left: 15px; margin-top: 5px;">
+								<span class="filter__item-label">Oynatıcı Seç</span>
+
+								<div class="filter__item-btn dropdown-toggle" role="navigation" id="filter-genre" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <input type="button" value="{%if not current_player_info.type == 'TRAILER'%}{%if current_player_info.language == 'DUBBED'%}Dublaj{%elif current_player_info.language == 'SUBBED'%}Altyazı{%elif current_player_info.language == 'ORIGINAL'%}Orjinal Dil{%endif%} — {%endif%}{{current_player_info.title}}">
+									<span></span>
+								</div>
+
+								<ul class="filter__item-menu dropdown-menu scrollbar-dropdown" aria-labelledby="filter-genre" style="min-width: 325px;">
+                  {%for player in all_players_info%}
+                  <a href="
+                          {%if content_info.type == 'TV'%}
+                            {{url_for('tv_watch', title_url=content_info.titleUrl, season_number=season_info.seasonNumber, episode_number=episode_info.episodeNumber)}}?viewkey={{player.viewKey}}
+                          {%elif content_info.type == 'MOVIE'%}
+                            {{url_for('movie_watch', title_url=content_info.titleUrl)}}?viewkey={{player.viewKey}}
+                          {%endif%}
+                  "><li {%if current_player_info.idPlayer == player.idPlayer %}style="color: #F2D750;"{%endif%}>
+                    {%if not player.type == 'TRAILER'%}
+                      <span>
+                        {%if player.language == 'DUBBED'%}Dublaj{%elif player.language == 'SUBBED'%}Altyazı{%elif player.language == 'ORIGINAL'%}Orjinal Dil{%endif%}
+                      </span> |
+                    {%endif%}
+                      <span>{{player.title}}</span>
+                </li>
+              </a>
+                  {%endfor%}
+								</ul>
+							</div>
+							<!-- end filter item -->
+
+							{%if content_info.type == 'TV'%}
+							<!-- filter item -->
+							<div class="filter__item" id="filter__genre" style="position: absolute; right: 0px; margin-left: 15px; margin-top: 5px;">
+								<span class="filter__item-label">Bu Sezona Ait Diğer Bölümler</span>
+
+								<div class="filter__item-btn dropdown-toggle" role="navigation" id="filter-genre" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<input type="button" value="{{season_info.seasonNumber}}. Sezon {{episode_info.episodeNumber}}. Bölüm">
+									<span></span>
+								</div>
+
+								<ul class="filter__item-menu dropdown-menu scrollbar-dropdown" aria-labelledby="filter-genre" style="min-height: 250px;">
+                  {%if 2 == 1%}<li onclick="mainproc_content_seasons_selectRandomEpisode(content_id='{{content_info.idContent}}');">Rastgele</li>{%endif%}
+                  <a href="{{url_for('tv_random_episode', title_url=content_info.titleUrl)}}"><li>Rastgele <span style="font-size: 11px;">(Tüm Sezonlar)</span></li></a>
+                  <a href="{{url_for('tv_season_random_episode', title_url=content_info.titleUrl, season_number=season_info.seasonNumber)}}"><li>Rastgele <span style="font-size: 11px;">(Bu Sezon)</span></li></a>
+                  {%for episode in get_tv_episodelist(content_id=content_info.idContent, season_id=season_info.idTvSeason)%}
+                  <li onclick="mainproc_content_seasons_selectFirstPlayer(content_id='{{content_info.idContent}}', tv_season_id='{{season_info.idTvSeason}}', tv_episode_id='{{episode.idTvEpisode}}');" {%if episode_info.idTvEpisode == episode.idTvEpisode %}style="color: #F2D750;"{%endif%}>{{episode.seasonNumber}}. Sezon {{episode.episodeNumber}}. Bölüm</li>
+                  {%endfor%}
+								</ul>
+							</div>
+							<!-- end filter item -->
+							{%endif%}
+
+            </div>
+            {% if content_info.type == 'TV' %}
+            {% if 2 == 1 %}<h2 style="color: white;">{{ episode_info.get_previous_episode() }}</h2>{% endif %}
+            <div class="row pt-4">
+              {% if episode_info.get_previous_episode() %}
+                <div onclick="mainproc_content_season_episodes_selectPreviousEpisode(content_id='{{content_info.idContent}}', tv_season_id='{{season_info.idTvSeason}}', tv_episode_id='{{episode_info.idTvEpisode}}');" class="header__sign-in" style="min-width: 150px; margin-left: 5px; margin-top: 5px; cursor: pointer;"><span style="display: block; color: black;">Önceki Bölüm</span></div>
+              {% endif %}
+              {% if episode_info.get_next_episode() %}
+                <div onclick="mainproc_content_season_episodes_selectNextEpisode(content_id='{{content_info.idContent}}', tv_season_id='{{season_info.idTvSeason}}', tv_episode_id='{{episode_info.idTvEpisode}}');" class="header__sign-in" style="min-width: 150px; margin-left: 5px; margin-top: 5px; cursor: pointer;"><span style="display: block; color: black;">Sonraki Bölüm</span></div>
+              {% endif %}
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+				<!-- content -->
+				<div class="col-12 col-xl-8" style="margin-top: 25px;">
+					<div class="card card--details">
+						<div class="row">
+							<!-- card cover -->
+							<div class="col-12 col-sm-4 col-md-4 col-lg-3 col-xl-5">
+								<div class="card__cover">
+									<img src="{{content_info.imagePoster}}" alt="">
+								</div>
+							</div>
+							<!-- end card cover -->
+
+							<!-- card content -->
+							<div class="col-12 col-sm-8 col-md-8 col-lg-9 col-xl-7">
+								<div class="card__content">
+									<div class="card__wrap">
+										<span class="card__rate"><i class="icon ion-ios-star"></i>{{content_info.voteAverage}}</span>
+
+										<ul class="card__list">
+											<li>HD</li>
+											{%if content_info.adult%}
+											<li>Yetişkin İçerik</li>
+											{%endif%}
+										</ul>
+									</div>
+
+									<ul class="card__meta">
+										<li><span>Kategoriler:</span>
+                      {%for genre in get_content_genre(content_id=content_info.idContent)%}
+										  <a href="#">{{get_genre_list(genre_id=genre.idGenre, content_type=content_info.type).title}}</a>
+                      {%endfor%}
+										<li><span>Çıkış Yılı:</span> <a href="#">{{content_info.releaseDate[0:4]}}</a></li>
+										<li><span>Ülke:</span>
+                      {%for country in get_content_country(content_id=content_info.idContent)%}
+                      <a href="#">{{get_country_list(country_idiso_3166_1=country.idISO_3166_1).title}}</a>
+                      {%endfor%}
+                    </li>
+										<li><span>Diller:</span>
+                      {%for language in get_content_language(content_id=content_info.idContent)%}
+                      <a href="#">{{get_language_list(language_idiso_639_1=language.idISO_639_1).title}}</a>
+                      {%endfor%}
+                    </li>
+									</ul>
+
+									<div class="card__description card__description--details">
+                    {%if content_info.type == 'TV'%}
+                      {%if episode_info.overview|length != 0%}
+                        {{episode_info.overview}}
+                        <br>
+                        <br>
+                      {%endif%}
+                    {%endif%}
+                    {{content_info.overview}}
+									</div>
+								</div>
+							</div>
+							<!-- end card content -->
+						</div>
+					</div>
+				</div>
+				<!-- end content -->
+
+        <!-- ad rectangle -->
+        <div class="col-12 col-xl-4 d-flex justify-content-center align-items-center">
+          {{ ad_rectangle() }}
+        </div>
+
+        <!-- content tags -->
+				<div class="col-12" style="margin-top: 25px;">
+          {%for tag in tags_info%}
+          <p style="max-width: 250px; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.65); line-break: anywhere; padding: 5px; float: left; margin-right: 10px; cursor: pointer;">{{tag.title}}</p>
+          {%endfor%}
+        </div>
+        <!-- end content tags -->
+
+				{%if 2 == 1%}
+				<div class="col-12">
+					<div class="details__wrap">
+						<!-- availables -->
+						<div class="details__devices">
+							<span class="details__devices-title">Available on devices:</span>
+							<ul class="details__devices-list">
+								<li><i class="icon ion-logo-apple"></i><span>IOS</span></li>
+								<li><i class="icon ion-logo-android"></i><span>Android</span></li>
+								<li><i class="icon ion-logo-windows"></i><span>Windows</span></li>
+								<li><i class="icon ion-md-tv"></i><span>Smart TV</span></li>
+							</ul>
+						</div>
+						<!-- end availables -->
+
+						<!-- share -->
+						<div class="details__share">
+							<span class="details__share-title">Share with friends:</span>
+
+							<ul class="details__share-list">
+								<li class="facebook"><a href="#"><i class="icon ion-logo-facebook"></i></a></li>
+								<li class="instagram"><a href="#"><i class="icon ion-logo-instagram"></i></a></li>
+								<li class="twitter"><a href="#"><i class="icon ion-logo-twitter"></i></a></li>
+								<li class="vk"><a href="#"><i class="icon ion-logo-vk"></i></a></li>
+							</ul>
+						</div>
+						<!-- end share -->
+					</div>
+				</div>
+				{%endif%}
+			</div>
+		</div>
+		<!-- end details content -->
+	</section>
+	<!-- end details -->
+
+  <section class="content">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <p class="content__title" style="font-size: 16px; color: rgba(255, 255, 255, 0.5);">Bu sayfa {%if content_info.type == 'MOVIE'%}{{content_info.visitCount}}{%elif content_info.type == 'TV'%}{{episode_info.visitCount}}{%endif%} kez görüntülendi.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+	<!-- content -->
+	<section class="content" id="content_start">
+		<div class="content__head">
+			<div class="container">
+				<div class="row">
+					<div class="col-12">
+						<!-- content title -->
+						<h2 class="content__title">{{content_info.title}}</h2>
+						<!-- end content title -->
+
+						<!-- content tabs nav -->
+						<ul class="nav nav-tabs content__tabs" id="content__tabs" role="tablist">
+							<li class="nav-item">
+								<a class="nav-link active" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Yorumlar ({{comments_info|length}})</a>
+							</li>
+
+							<li class="nav-item">
+								<a class="nav-link" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Görseller</a>
+							</li>
+
+							<li class="nav-item">
+								<a class="nav-link" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">Oyuncular</a>
+							</li>
+
+              {%if check_profile() == True%}
+              {% if g.PROFILE_COLLECTIONS_LIST|length > 0 %}
+							<li class="nav-item">
+                <a class="nav-link open-modal" data-toggle="" href="#modal-add-to-my-collection" target="_blank" role="" aria-controls="" aria-selected="false">Koleksiyonuma Ekle</a>
+							</li>
+              {% endif %}
+
+<div id="modal-add-to-my-collection" class="zoom-anim-dialog modal mfp-hide" style="max-width: 400px;">
+		<h6 class="modal__title">Koleksiyonuma Ekle</h6>
+    {%for collection in g.PROFILE_COLLECTIONS_LIST%}
+		<p onclick="profileproc_collection_addcontent('{{collection.idCollection}}', '{{content_info.idContent}}');" class="modal__text"><a class="modal__btn modal__btn--apply" style="margin-top: 25px; width: calc(100%); background-image: unset; color: white; cursor: pointer;">{{collection.title}}</a></p>
+    {%endfor%}
+    <h5 id="collection_h5_succ" style="color:rgb(0, 255, 85);"></h5>
+    <h5 id="collection_h5_err" style="color:rgb(255, 74, 74);"></h5>
+		<div class="modal__btns">
+			<button class="modal__btn modal__btn--dismiss" style="margin-top: 5px; width: calc(100%);" type="button">Kapat</button>
+		</div>
+</div>
+
+              {%endif%}
+
+							<li class="nav-item">
+								<a class="nav-link" data-toggle="" href="{{url_for('contact')}}" target="_blank" role="" aria-controls="" aria-selected="false">Hata Bildir</a>
+							</li>
+						</ul>
+						<!-- end content tabs nav -->
+
+						<!-- content mobile tabs nav -->
+						<div class="content__mobile-tabs" id="content__mobile-tabs">
+							<div class="content__mobile-tabs-btn dropdown-toggle" role="navigation" id="mobile-tabs" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<input type="button" value="Yorumlar ({{comments_info|length}})">
+								<span></span>
+							</div>
+
+							<div class="content__mobile-tabs-menu dropdown-menu" aria-labelledby="mobile-tabs">
+								<ul class="nav nav-tabs" role="tablist">
+									<li class="nav-item"><a class="nav-link active" id="1-tab" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Yorumlar ({{comments_info|length}})</a></li>
+
+									<li class="nav-item"><a class="nav-link" id="2-tab" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Görseller</a></li>
+
+									<li class="nav-item"><a class="nav-link" id="3-tab" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">Oyuncular</a></li>
+
+                  {%if check_profile() == True%}
+                    {% if g.PROFILE_COLLECTIONS_LIST|length > 0 %}
+									<li class="nav-item"><a class="nav-link open-modal" id="2-tab" data-toggle="" href="#modal-add-to-my-collection" target="_blank" role="" aria-controls="" aria-selected="false">Koleksiyonuma Ekle</a></li>
+                    {% endif %}
+                  {%endif%}
+
+									<li class="nav-item"><a class="nav-link" id="" data-toggle="" href="{{url_for('contact')}}" target="_blank" role="" aria-controls="" aria-selected="false">Hata Bildir</a></li>
+								</ul>
+							</div>
+						</div>
+						<!-- end content mobile tabs nav -->
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container">
+			<div class="row">
+				<div class="col-12 col-lg-8 col-xl-8">
+					<!-- content tabs -->
+					<div class="tab-content" id="myTabContent">
+						<div class="tab-pane fade show active" id="tab-1" role="tabpanel" aria-labelledby="1-tab">
+              <div class="row" style="background-color: #030303; margin-bottom: 25px; border-radius: 5px; height: 75px;">
+
+              <!-- spoiler box -->
+							<div class="sign__group sign__group--checkbox" style="margin: 25px;">
+								<input type="checkbox" id="spoiler_box" name="spoiler_box">
+								<label for="spoiler_box">Spoiler İçeren Yorumları Göster</label>
+							</div>
+              <!-- end spoiler box -->
+
+              </div>
+							<div class="row">
+								<!-- comments -->
+								<div class="col-12">
+									<div class="comments">
+										<ul class="comments__list">
+
+                    <!-- comments backend/frontend -->
+                    {%for comment in comments_info%}
+                      {%if comment.visibility%}
+                        {%if comment.replyTo == ''%}
+                      <li id="{{comment.idComment}}" class="comments__item{%if comment.spoiler%} comments__item--spoiler{%endif%} {{comment.idComment}}">
+                        <div style="min-width: 50px; min-height: 50px; background-image: url('{{get_profile_db(profile_id=comment.idAddProfile).imageAvatar}}'); background-size: cover; background-position: center; border-radius: 50%; margin-right: 20px; float: left;"></div>
+                        <div class="comments__autor">
+                          <span class="comments__name">{{get_profile_db(profile_id=comment.idAddProfile).username}}</span>
+                          <span class="comments__time">{{format_date(comment.addDate, 'full', locale='tr')}} {%if comment.addDate.day|string + comment.addDate.month|string + comment.addDate.year|string + comment.addDate.hour|string + comment.addDate.minute|string != comment.lastEditDate.day|string + comment.lastEditDate.month|string + comment.lastEditDate.year|string + comment.lastEditDate.hour|string + comment.lastEditDate.minute|string%}(düzenlendi){%endif%}</span>
+                        </div>
+                        <p class="comments__text">{{comment.text}}</p>
+                        {%if comment.spoiler%}
+                        <p class="comments__text" style="padding-top: 0px; color: rgb(255, 74, 74); font-weight: bold; text-align: right;">S P O I L E R !</p>
+                        {%endif%}
+                        <div class="comments__actions">
+                          <div class="comments__rate">
+                            {%if content_info.type == 'MOVIE'%}
+                            <button type="button" id="{{comment.idComment}}_comment__like" {%if check_profile() == True%}onclick="likeComment('{{comment.idComment}}');"{%endif%}><i {%if check_profile() == True and get_moviecomment_rate(comment_id=comment.idComment, profile_id=session["PROFILE"]["idProfile"], rate_type='LIKE')%}id="comment__like__selected"{%endif%} class="icon ion-md-thumbs-up"></i><p id="{{comment.idComment}}_comment__like_count" style="display: contents;">{{get_moviecomment_rates(content_id=content_info.idContent, comment_id=comment.idComment, rate_type='LIKE')|length}}</p></button>
+
+                            <button type="button" id="{{comment.idComment}}_comment__dislike" {%if check_profile() == True%}onclick="dislikeComment('{{comment.idComment}}');"{%endif%}><p id="{{comment.idComment}}_comment__dislike_count" style="display: contents;">{{get_moviecomment_rates(content_id=content_info.idContent, comment_id=comment.idComment, rate_type='DISLIKE')|length}}</p><i {%if check_profile() == True and get_moviecomment_rate(comment_id=comment.idComment, profile_id=session["PROFILE"]["idProfile"], rate_type='DISLIKE')%}id="comment__dislike__selected"{%endif%} class="icon ion-md-thumbs-down"></i></button>
+                            {%elif content_info.type == 'TV'%}
+                            <button type="button" id="{{comment.idComment}}_comment__like" {%if check_profile() == True%}onclick="likeComment('{{comment.idComment}}');"{%endif%}><i {%if check_profile() == True and get_tvcomment_rate(comment_id=comment.idComment, profile_id=session["PROFILE"]["idProfile"], rate_type='LIKE')%}id="comment__like__selected"{%endif%} class="icon ion-md-thumbs-up"></i><p id="{{comment.idComment}}_comment__like_count" style="display: contents;">{{get_tvcomment_rates(content_id=content_info.idContent, tv_season_id=season_info.idTvSeason, tv_episode_id=episode_info.idTvEpisode, comment_id=comment.idComment, rate_type='LIKE')|length}}</p></button>
+
+                            <button type="button" id="{{comment.idComment}}_comment__dislike" {%if check_profile() == True%}onclick="dislikeComment('{{comment.idComment}}');"{%endif%}><p id="{{comment.idComment}}_comment__dislike_count" style="display: contents;">{{get_tvcomment_rates(content_id=content_info.idContent, tv_season_id=season_info.idTvSeason, tv_episode_id=episode_info.idTvEpisode, comment_id=comment.idComment, rate_type='DISLIKE')|length}}</p><i {%if check_profile() == True and get_tvcomment_rate(comment_id=comment.idComment, profile_id=session["PROFILE"]["idProfile"], rate_type='DISLIKE')%}id="comment__dislike__selected"{%endif%} class="icon ion-md-thumbs-down"></i></button>
+                            {%endif%}
+                          </div>
+
+                          {%if check_profile() == True%}
+                          <button type="button" onclick="showReplyComment('{{comment.idComment}}');"><i class="icon ion-ios-share-alt"></i>Yanıtla</button>
+                            {%if comment.idAddProfile == session['PROFILE']['idProfile']%}
+                          <button type="button" onclick="deleteComment('{{comment.idComment}}');"><i class="icon ion-ios-trash"></i>Sil</button>
+                            {%endif%}
+                          {%endif%}
+                        </div>
+                      </li>
+
+                        {%if content_info.type == 'MOVIE'%}
+                          <!-- COMMENT REPLY FOR MOVIE -->
+                          {%for reply in get_moviecomment_replies(comment_id=comment.idComment)%}
+                            <li id="{{reply.idComment}}" class="comments__item comments__item--answer{%if comment.spoiler%} comments__item--spoiler{%endif%} {{comment.idComment}}">
+                              <div style="min-width: 50px; min-height: 50px; background-image: url('{{get_profile_db(profile_id=reply.idAddProfile).imageAvatar}}'); background-size: cover; background-position: center; border-radius: 50%; margin-right: 20px; float: left;"></div>
+                              <div class="comments__autor">
+                                <span class="comments__name">{{get_profile_db(profile_id=reply.idAddProfile).username}}</span>
+                                <span class="comments__time">{{format_date(reply.addDate, 'full', locale='tr')}} {%if reply.addDate.day|string + reply.addDate.month|string + reply.addDate.year|string + reply.addDate.hour|string + reply.addDate.minute|string != reply.lastEditDate.day|string + reply.lastEditDate.month|string + reply.lastEditDate.year|string + reply.lastEditDate.hour|string + reply.lastEditDate.minute|string%}(düzenlendi){%endif%}</span>
+                              </div>
+                              <p class="comments__text">{{reply.text}}</p>
+                              <div class="comments__actions">
+                                <div class="comments__rate">
+                                  {%if content_info.type == 'MOVIE'%}
+                                  <button type="button" id="{{reply.idComment}}_comment__like" {%if check_profile() == True%}onclick="likeComment('{{reply.idComment}}');"{%endif%}><i {%if check_profile() == True and get_moviecomment_rate(comment_id=reply.idComment, profile_id=session["PROFILE"]["idProfile"], rate_type='LIKE')%}id="comment__like__selected"{%endif%} class="icon ion-md-thumbs-up"></i><p id="{{reply.idComment}}_comment__like_count" style="display: contents;">{{get_moviecomment_rates(content_id=content_info.idContent, comment_id=reply.idComment, rate_type='LIKE')|length}}</p></button>
+
+                                  <button type="button" id="{{reply.idComment}}_comment__dislike" {%if check_profile() == True%}onclick="dislikeComment('{{reply.idComment}}');"{%endif%}><p id="{{reply.idComment}}_comment__dislike_count" style="display: contents;">{{get_moviecomment_rates(content_id=content_info.idContent, comment_id=reply.idComment, rate_type='DISLIKE')|length}}</p><i {%if check_profile() == True and get_moviecomment_rate(comment_id=reply.idComment, profile_id=session["PROFILE"]["idProfile"], rate_type='DISLIKE')%}id="comment__dislike__selected"{%endif%} class="icon ion-md-thumbs-down"></i></button>
+                                  {%elif content_info.type == 'TV'%}
+                                  <button type="button" id="{{reply.idComment}}_comment__like" {%if check_profile() == True%}onclick="likeComment('{{reply.idComment}}');"{%endif%}><i {%if check_profile() == True and get_tvcomment_rate(comment_id=reply.idComment, profile_id=session["PROFILE"]["idProfile"], rate_type='LIKE')%}id="comment__like__selected"{%endif%} class="icon ion-md-thumbs-up"></i><p id="{{reply.idComment}}_comment__like_count" style="display: contents;">{{get_tvcomment_rates(content_id=content_info.idContent, tv_season_id=season_info.idTvSeason, tv_episode_id=episode_info.idTvEpisode, comment_id=reply.idComment, rate_type='LIKE')|length}}</p></button>
+
+                                  <button type="button" id="{{reply.idComment}}_comment__dislike" {%if check_profile() == True%}onclick="dislikeComment('{{reply.idComment}}');"{%endif%}><p id="{{reply.idComment}}_comment__dislike_count" style="display: contents;">{{get_tvcomment_rates(content_id=content_info.idContent, tv_season_id=season_info.idTvSeason, tv_episode_id=episode_info.idTvEpisode, comment_id=reply.idComment, rate_type='DISLIKE')|length}}</p><i {%if check_profile() == True and get_tvcomment_rate(comment_id=reply.idComment, profile_id=session["PROFILE"]["idProfile"], rate_type='DISLIKE')%}id="comment__dislike__selected"{%endif%} class="icon ion-md-thumbs-down"></i></button>
+                                  {%endif%}
+                                </div>
+
+                                {%if check_profile() == True%}
+                                  {%if reply.idAddProfile == session['PROFILE']['idProfile']%}
+                                <button type="button" onclick="deleteComment('{{reply.idComment}}');"><i class="icon ion-ios-trash"></i>Sil</button>
+                                  {%endif%}
+                                {%endif%}
+                              </div>
+                            </li>
+                          {%endfor%}
+                          <!-- END COMMENT REPLY FOR MOVIE -->
+                        {%elif content_info.type == 'TV'%}
+                          <!-- COMMENT REPLY FOR TV -->
+                          {%for reply in get_tvcomment_replies(comment_id=comment.idComment)%}
+                            <li id="{{reply.idComment}}" class="comments__item comments__item--answer{%if comment.spoiler%} comments__item--spoiler{%endif%} {{comment.idComment}}">
+                              <div style="min-width: 50px; min-height: 50px; background-image: url('{{get_profile_db(profile_id=reply.idAddProfile).imageAvatar}}'); background-size: cover; background-position: center; border-radius: 50%; margin-right: 20px; float: left;"></div>
+                              <div class="comments__autor">
+                                <span class="comments__name">{{get_profile_db(profile_id=reply.idAddProfile).username}}</span>
+                                <span class="comments__time">{{format_date(reply.addDate, 'full', locale='tr')}} {%if reply.addDate.day|string + reply.addDate.month|string + reply.addDate.year|string + reply.addDate.hour|string + reply.addDate.minute|string != reply.lastEditDate.day|string + reply.lastEditDate.month|string + reply.lastEditDate.year|string + reply.lastEditDate.hour|string + reply.lastEditDate.minute|string%}(düzenlendi){%endif%}</span>
+                              </div>
+                              <p class="comments__text">{{reply.text}}</p>
+                              <div class="comments__actions">
+                                <div class="comments__rate">
+                                  {%if content_info.type == 'MOVIE'%}
+                                  <button type="button" id="{{reply.idComment}}_comment__like" {%if check_profile() == True%}onclick="likeComment('{{reply.idComment}}');"{%endif%}><i {%if check_profile() == True and get_moviecomment_rate(comment_id=reply.idComment, profile_id=session["PROFILE"]["idProfile"], rate_type='LIKE')%}id="comment__like__selected"{%endif%} class="icon ion-md-thumbs-up"></i><p id="{{reply.idComment}}_comment__like_count" style="display: contents;">{{get_moviecomment_rates(content_id=content_info.idContent, comment_id=reply.idComment, rate_type='LIKE')|length}}</p></button>
+
+                                  <button type="button" id="{{reply.idComment}}_comment__dislike" {%if check_profile() == True%}onclick="dislikeComment('{{reply.idComment}}');"{%endif%}><p id="{{reply.idComment}}_comment__dislike_count" style="display: contents;">{{get_moviecomment_rates(content_id=content_info.idContent, comment_id=reply.idComment, rate_type='DISLIKE')|length}}</p><i {%if check_profile() == True and get_moviecomment_rate(comment_id=reply.idComment, profile_id=session["PROFILE"]["idProfile"], rate_type='DISLIKE')%}id="comment__dislike__selected"{%endif%} class="icon ion-md-thumbs-down"></i></button>
+                                  {%elif content_info.type == 'TV'%}
+                                  <button type="button" id="{{reply.idComment}}_comment__like" {%if check_profile() == True%}onclick="likeComment('{{reply.idComment}}');"{%endif%}><i {%if check_profile() == True and get_tvcomment_rate(comment_id=reply.idComment, profile_id=session["PROFILE"]["idProfile"], rate_type='LIKE')%}id="comment__like__selected"{%endif%} class="icon ion-md-thumbs-up"></i><p id="{{reply.idComment}}_comment__like_count" style="display: contents;">{{get_tvcomment_rates(content_id=content_info.idContent, tv_season_id=season_info.idTvSeason, tv_episode_id=episode_info.idTvEpisode, comment_id=reply.idComment, rate_type='LIKE')|length}}</p></button>
+
+                                  <button type="button" id="{{reply.idComment}}_comment__dislike" {%if check_profile() == True%}onclick="dislikeComment('{{reply.idComment}}');"{%endif%}><p id="{{reply.idComment}}_comment__dislike_count" style="display: contents;">{{get_tvcomment_rates(content_id=content_info.idContent, tv_season_id=season_info.idTvSeason, tv_episode_id=episode_info.idTvEpisode, comment_id=reply.idComment, rate_type='DISLIKE')|length}}</p><i {%if check_profile() == True and get_tvcomment_rate(comment_id=reply.idComment, profile_id=session["PROFILE"]["idProfile"], rate_type='DISLIKE')%}id="comment__dislike__selected"{%endif%} class="icon ion-md-thumbs-down"></i></button>
+                                  {%endif%}
+                                </div>
+
+                                {%if check_profile() == True%}
+                                  {%if reply.idAddProfile == session['PROFILE']['idProfile']%}
+                                <button type="button" onclick="deleteComment('{{reply.idComment}}');"><i class="icon ion-ios-trash"></i>Sil</button>
+                                  {%endif%}
+                                {%endif%}
+                              </div>
+                            </li>
+                          {%endfor%}
+
+                          <!-- END COMMENT REPLY FOR TV -->
+                        {%endif%}
+                        {%endif%}
+                      {%endif%}
+                    {%endfor%}
+                    <!-- end comments backend/frontend -->
+
+                    {%if check_profile() == True%}
+                    <!-- comment reply -->
+										<form id="form_reply_comment" action="#" method="#" class="form" style='border-radius: 5px;'>
+                      <input type="hidden" id="reply_selected_comment_id" value="">
+                      <button style="float: right;" type="button" onclick="showSendComment();"><i class="icon ion-md-close" style="color: rgb(255, 74, 74);"></i></button>
+                      <div style="width: 100%; min-height: 150px;">
+                        <p id="p_reply_comment" style="color: #9a9a9a;">
+                        Şuna karşılık yanıtlanıyor:
+                        ""
+                        </p>
+                      </div>
+                      <textarea id="input_reply_text" class="form__textarea" placeholder="Yanıtınızı buraya girin."></textarea>
+                      <input type="button" class="form__btn" value="Yanıtla" style="border: 0px; cursor: pointer;" onclick="sendReply();">
+										</form>
+                    <!-- end comment reply -->
+
+                    <!-- comment independent -->
+										<form id="form_send_comment" action="#" method="#" class="form" style='border-radius: 5px;'>
+                      <textarea id="input_comment_text" class="form__textarea" placeholder="Yorumunuzu buraya girin."></textarea>
+                      <input type="button" class="form__btn" value="Gönder" style="border: 0px; cursor: pointer;" onclick="sendComment();">
+                      <!-- containts spoiler box -->
+                      <div class="sign__group sign__group--checkbox" style="margin: 25px;">
+                        <input type="checkbox" id="contains_spoiler_box" name="contains_spoiler_box">
+                        <label for="contains_spoiler_box">Yorumum Spoiler İçeriyor</label>
+                      </div>
+                      <!-- end containts spoiler box -->
+										</form>
+                    <!-- end comment independent -->
+                    {%endif%}
+									</div>
+								</div>
+								<!-- end comments -->
+							</div>
+						</div>
+
+						<div class="tab-pane fade" id="tab-2" role="tabpanel" aria-labelledby="2-tab">
+							<!-- project gallery -->
+							<div class="gallery" itemscope="">
+								<div class="row">
+									<!-- gallery item -->
+									<figure class="col-12 col-sm-6 col-xl-4" itemprop="associatedMedia" itemscope="">
+										<a href="{{content_info.imagePoster}}" itemprop="contentUrl" data-size="1920x1280">
+											<img src="{{content_info.imagePoster}}" itemprop="thumbnail" alt="Image description">
+										</a>
+										<figcaption itemprop="caption description">Some image caption 1</figcaption>
+									</figure>
+									<!-- end gallery item -->
+
+									<!-- gallery item -->
+									<figure class="col-12 col-sm-6 col-xl-4" itemprop="associatedMedia" itemscope="">
+										<a href="{{content_info.imageBackground}}" itemprop="contentUrl" data-size="1920x1280">
+											<img src="{{content_info.imageBackground}}" itemprop="thumbnail" alt="Image description">
+										</a>
+										<figcaption itemprop="caption description">Some image caption 1</figcaption>
+									</figure>
+									<!-- end gallery item -->
+								</div>
+							</div>
+							<!-- end project gallery -->
+						</div>
+
+						<div class="tab-pane fade" id="tab-3" role="tabpanel" aria-labelledby="3-tab">
+							<!-- project gallery -->
+              <div class="container">
+                <div class="row">
+
+                  {%for cast in casts_info%}
+			          	<!-- card -->
+                  <a href="{{url_for('cast_title', name_url=get_cast_db(cast_id=cast.idCast).nameUrl)}}" class="col-12 col-sm-6 col-md-4 col-xl-3" style="color: rgb(0, 0, 0); text-decoration: none; width: 250px; padding-left: 10px; padding-bottom: 20px;">
+                    <div class="col-12" style="width: 100%; height: 225px; background-image: url('{{get_cast_db(cast_id=cast.idCast).imagePoster}}'); background-size: cover; background-repeat: no-repeat; background-position: center; border-top-left-radius: 5px; border-top-right-radius: 5px;"></div>
+                    <div class="col-12" style="width: 100%; min-height: 35px; background-color: #51CC85; color: #0D0D0D; border-bottom-right-radius: 5px;"><p style="font-size: 13px; text-align: center; line-height: 30px; line-break: anywhere;"><b>{{get_cast_db(cast_id=cast.idCast).name}}</b><br>{{cast.character}}</p></div>
+                  </a>
+				          <!-- end card -->
+                  {%endfor%}
+
+                </div>
+              </div>
+							<!-- end project gallery -->
+						</div>
+
+					</div>
+					<!-- end content tabs -->
+				</div>
+
+				<!-- sidebar -->
+				<div class="col-12 col-lg-4 col-xl-4">
+					<div class="row">
+						<!-- section title -->
+						<div class="col-12">
+							<h2 class="section__title section__title--sidebar">Bunları da beğenebilirsiniz.</h2>
+						</div>
+						<!-- end section title -->
+
+            {%for recommend in recommendations_info%}
+						<!-- card -->
+						<div class="col-6 col-sm-4 col-lg-6">
+							<div class="card">
+								<div class="card__cover">
+									<img src="{{recommend.imagePoster}}" alt="">
+									<a href="{{url_for('content_redirect', title_url=recommend.titleUrl)}}" class="card__play">
+										<i class="icon ion-ios-play"></i>
+									</a>
+								</div>
+								<div class="card__content">
+									<h3 class="card__title"><a href="{{url_for('content_redirect', title_url=recommend.titleUrl)}}">{{recommend.title}}</a></h3>
+									<span class="card__category">
+                    {%for genre in get_content_genre(content_id=recommend.idContent)%}
+										<a href="#">{{get_genre_list(genre_id=genre.idGenre, content_type=content_info.type).title}}</a>
+                    {%endfor%}
+									</span>
+									<span class="card__rate"><i class="icon ion-ios-star"></i>{{recommend.voteAverage}}</span>
+								</div>
+							</div>
+						</div>
+						<!-- end card -->
+            {%endfor%}
+					</div>
+				</div>
+				<!-- end sidebar -->
+			</div>
+		</div>
+	</section>
+	<!-- end content -->
+{%endblock%}
+
+{%block script%}
+<script>
+/*
+
+JAVASCRIPT GLOBAL FOR CURRENT PAGE BEGIN
+
+*/
+$(document).ready(function(){
+  if (document.getElementById('spoiler_box').checked == false){
+    $('.comments__item--spoiler').hide();
+    /*
+    alert if content.adult == True and check_profile() == False. BETA!
+    */
+    /*
+    if ('{{check_profile()}}' == 'False'){
+      if ('{{content_info.adult}}' == 'True'){
+        if (confirm('Bu içerik sadece yetişkinlere uygundur. 18 yaşından büyük olduğunu kabul ediyor musun?')){pass} else {window.location.href = "{{url_for('home')}}";}
+      }
+    }
+    */
+  }
+});
+
+$('#spoiler_box').on('change', function(){
+  if (this.checked){showSpoilerComments();}
+  else {hideSpoilerComments();}
+});
+/* for spoiler including comments in the watch page */
+function showSpoilerComments(){
+  $('.comments__item--spoiler').show();
+  $('.alertMainDiv').show();
+  $('.alertMainText').text('Spoiler Alert!');
+  setTimeout(function(){
+    $('.alertMainDiv').hide();
+  }, 3500);
+};
+function hideSpoilerComments(){
+  $('.comments__item--spoiler').hide();
+  $('.alertMainDiv').show();
+  $('.alertMainText').text('Artık güvendesin!');
+  setTimeout(function(){
+    $('.alertMainDiv').hide();
+  }, 3500);
+};
+/* end for spoiler including comments in the watch page */
+/*
+
+JAVASCRIPT GLOBAL FOR CURRENT PAGE END
+
+*/
+</script>
+
+{%if check_profile() == True%}
+  {%if content_info.type == 'MOVIE'%}
+  <script>
+  /*
+
+  LOGIN MOVIE BEGIN
+
+  */
+  $(document).ready(function(){
+    showSendComment();
+  });
+
+  function showSendComment(){$('#form_send_comment').show();$('#form_reply_comment').hide()};
+
+  function likeComment(comment_id){
+    var get_like_count = parseInt($(`#${comment_id}_comment__like_count`).text());
+    var get_dislike_count = parseInt($(`#${comment_id}_comment__dislike_count`).text());
+    $.ajax({
+      url: '{{url_for("movie_watch_func_proc", function="like_comment")}}',
+      data: JSON.stringify({
+        'idContent': '{{content_info.idContent}}',
+        'idComment': comment_id,
+      }),
+      dataType: 'json',
+      type: 'POST',
+      contentType: 'application/json; charset=utf-8',
+      processData: false,
+      headers: {
+        'X-CSRFToken': '{{csrf_token()}}',
+      },
+      success: function(response){
+        if (response.ret_url){
+          window.location = response.ret_url
+        }
+        if (response.gave_like){
+          $(`#${comment_id}_comment__like i`).attr('id', 'comment__like__selected');
+          $(`#${comment_id}_comment__like_count`).text(get_like_count + 1);
+        }
+        if (response.took_like){
+          $(`#${comment_id}_comment__like i`).attr('id', '');
+          $(`#${comment_id}_comment__like_count`).text(get_like_count - 1);
+        }
+        if (response.gave_dislike){
+          $(`#${comment_id}_comment__dislike i`).attr('id', 'comment__dislike__selected');
+          $(`#${comment_id}_comment__dislike_count`).text(get_dislike_count + 1);
+        }
+        if (response.took_dislike){
+          $(`#${comment_id}_comment__dislike i`).attr('id', '');
+          $(`#${comment_id}_comment__dislike_count`).text(get_dislike_count - 1);
+        }
+        else if (response.err_msg){
+          $('.alertMainDiv').show();
+          $('.alertMainText').text(response.err_msg);
+          setTimeout(() => {
+            $('.alertMainDiv').hide();
+          }, 2500);
+        }
+      },
+      error: function(error){
+        console.log(error);
+      }
+    });
+  };
+
+  function dislikeComment(comment_id){
+    var get_dislike_count = parseInt($(`#${comment_id}_comment__dislike_count`).text());
+    var get_like_count = parseInt($(`#${comment_id}_comment__like_count`).text());
+    $.ajax({
+      url: '{{url_for("movie_watch_func_proc", function="dislike_comment")}}',
+      data: JSON.stringify({
+        'idContent': '{{content_info.idContent}}',
+        'idComment': comment_id,
+      }),
+      dataType: 'json',
+      type: 'POST',
+      contentType: 'application/json; charset=utf-8',
+      processData: false,
+      headers: {
+        'X-CSRFToken': '{{csrf_token()}}',
+      },
+      success: function(response){
+        if (response.ret_url){
+          window.location = response.ret_url
+        }
+        if (response.gave_dislike){
+          $(`#${comment_id}_comment__dislike i`).attr('id', 'comment__dislike__selected');
+          $(`#${comment_id}_comment__dislike_count`).text(get_dislike_count + 1);
+        }
+        if (response.took_dislike){
+          $(`#${comment_id}_comment__dislike i`).attr('id', '');
+          $(`#${comment_id}_comment__dislike_count`).text(get_dislike_count - 1);
+        }
+        if (response.gave_like){
+          $(`#${comment_id}_comment__like i`).attr('id', 'comment__like__selected');
+          $(`#${comment_id}_comment__like_count`).text(get_like_count + 1);
+        }
+        if (response.took_like){
+          $(`#${comment_id}_comment__like i`).attr('id', '');
+          $(`#${comment_id}_comment__like_count`).text(get_like_count - 1);
+        }
+        else if (response.err_msg){
+          $('.alertMainDiv').show();
+          $('.alertMainText').text(response.err_msg);
+          setTimeout(() => {
+            $('.alertMainDiv').hide();
+          }, 2500);
+        }
+      },
+      error: function(error){
+        console.log(error);
+      }
+    });
+  };
+
+  function showReplyComment(selected_comment_id){
+    $('#form_send_comment').hide();
+    $('#form_reply_comment').show();
+    $('#input_reply_text').val('');
+    window.location.hash = '#form_reply_comment';
+    $.ajax({
+      url: '{{url_for("movie_watch_func_proc", function="select_comment")}}',
+      data: JSON.stringify({
+        'idContent': '{{content_info.idContent}}',
+        'idComment': selected_comment_id,
+      }),
+      dataType: 'json',
+      type: 'POST',
+      contentType: 'application/json; charset=utf-8',
+      processData: false,
+      headers: {
+        'X-CSRFToken': '{{csrf_token()}}',
+      },
+      success: function(response){
+        if (response.ret_url){
+          window.location = response.ret_url
+        }
+        else if (response.succ_msg){
+          $('#p_reply_comment').text('Bu için yanıtlanıyor: "' + response.selected_comment_text + '"');
+          $('#reply_selected_comment_id').val(selected_comment_id);
+        }
+        else if (response.err_msg){
+          $('.alertMainDiv').show();
+          $('.alertMainText').text(response.err_msg);
+          setTimeout(() => {
+            $('.alertMainDiv').hide();
+          }, 2500);
+        }
+      },
+      error: function(error){
+        console.log(error);
+      }
+    });
+  };
+
+  function sendReply(){
+    get_selected_comment_id = $('#reply_selected_comment_id').val();
+    get_reply = $('#input_reply_text').val();
+    if (get_selected_comment_id && get_reply){
+      $.ajax({
+        url: '{{url_for("movie_watch_func_proc", function="send_reply")}}',
+        data: JSON.stringify({
+          'idContent': '{{content_info.idContent}}',
+          'reply': get_reply,
+          'replyTo': get_selected_comment_id,
+        }),
+        dataType: 'json',
+        type: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        processData: false,
+        headers: {
+          'X-CSRFToken': '{{csrf_token()}}',
+        },
+        success: function(response){
+          if (response.ret_url){
+            window.location = response.ret_url
+          }
+          else if (response.succ_msg){
+            $('.alertMainDiv').show();
+            $('.alertMainText').text(response.succ_msg);
+            setTimeout(() => {
+              $('.alertMainDiv').hide();
+            }, 2500);
+            $('#' + get_selected_comment_id).after(`
+
+              <li id="${response.latest_reply_id}" class="comments__item comments__item--answer ${response.latest_reply_replyto}">
+                <div style="min-width: 50px; min-height: 50px; background-image: url('{{get_profile_db(profile_id=session['PROFILE']['idProfile']).imageAvatar}}'); background-size: cover; background-position: center; border-radius: 50%; margin-right: 20px; float: left;"></div>
+                <div class="comments__autor">
+                  <span class="comments__name">{{get_profile_db(profile_id=session['PROFILE']['idProfile']).username}}</span>
+                  <span class="comments__time">şimdi</span>
+                </div>
+                <p class="comments__text">${response.latest_reply_text}</p>
+                <div class="comments__actions">
+                  <div class="comments__rate">
+                    <button type="button" id="${response.latest_reply_id}_comment__like" onclick="likeComment('${response.latest_reply_id}');"><i class="icon ion-md-thumbs-up"></i><p id="${response.latest_reply_id}_comment__like_count" style="display: contents;">0</p></button>
+
+                    <button type="button" id="${response.latest_reply_id}_comment__dislike" onclick="dislikeComment('${response.latest_reply_id}');"><p id="${response.latest_reply_id}_comment__dislike_count" style="display: contents;">0</p><i class="icon ion-md-thumbs-down"></i></button>
+                  </div>
+                  <button type="button" onclick="deleteComment('${response.latest_reply_id}');"><i class="icon ion-ios-trash"></i>Sil</button>
+                </div>
+              </li>
+
+            `);
+            $('#input_reply_text').val('');
+            window.location.hash = '#' + get_selected_comment_id;
+            $('#form_reply_comment .form__textarea').prop('disabled', true);
+            $('#form_reply_comment .form__btn').prop('disabled', true);
+            setTimeout(() => {
+              $('#form_reply_comment .form__textarea').prop('disabled', false);
+              $('#form_reply_comment .form__btn').prop('disabled', false);
+            }, 5000);
+          }
+          else if (response.err_msg){
+            $('.alertMainDiv').show();
+            $('.alertMainText').text(response.err_msg);
+            setTimeout(() => {
+              $('.alertMainDiv').hide();
+            }, 2500);
+          }
+        },
+        error: function(error){
+          console.log(error);
+        }
+      });
+    } else {
+      $('.alertMainDiv').show();
+      $('.alertMainText').text('Boş yanıt gönderilemez.');
+      setTimeout(() => {
+        $('.alertMainDiv').hide();
+      }, 2500);
+    }
+  };
+
+  function sendComment(){
+    get_text = $('#input_comment_text').val();
+    get_contains_spoiler = document.getElementById('contains_spoiler_box').checked
+    if (get_text){
+      $.ajax({
+        url: '{{url_for("movie_watch_func_proc", function="send_comment")}}',
+        data: JSON.stringify({
+          'idContent': '{{content_info.idContent}}',
+          'text': get_text,
+          'contains_spoiler': get_contains_spoiler,
+        }),
+        dataType: 'json',
+        type: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        processData: false,
+        headers: {
+          'X-CSRFToken': '{{csrf_token()}}',
+        },
+        success: function(response){
+          if (response.ret_url){
+            window.location = response.ret_url
+          }
+          else if (response.succ_msg){
+            $('.alertMainDiv').show();
+            $('.alertMainText').text(response.succ_msg);
+            setTimeout(() => {
+              $('.alertMainDiv').hide();
+            }, 2500);
+            $('.comments__list').prepend(`
+
+              <li id="${response.latest_comment_id}" class="comments__item ${response.latest_comment_id}">
+                <div style="min-width: 50px; min-height: 50px; background-image: url('{{get_profile_db(profile_id=session['PROFILE']['idProfile']).imageAvatar}}'); background-size: cover; background-position: center; border-radius: 50%; margin-right: 20px; float: left;"></div>
+                <div class="comments__autor">
+                  <span class="comments__name">{{get_profile_db(profile_id=session['PROFILE']['idProfile']).username}}</span>
+                  <span class="comments__time">şimdi</span>
+                </div>
+                <p class="comments__text">${response.latest_comment_text}</p>
+                <div class="comments__actions">
+                  <div class="comments__rate">
+                    <button type="button" id="${response.latest_comment_id}_comment__like" onclick="likeComment('${response.latest_comment_id}');"><i class="icon ion-md-thumbs-up"></i><p id="${response.latest_comment_id}_comment__like_count" style="display: contents;">0</p></button>
+
+                    <button type="button" id="${response.latest_comment_id}_comment__dislike" onclick="dislikeComment('${response.latest_comment_id}');"><p id="${response.latest_comment_id}_comment__dislike_count" style="display: contents;">0</p><i class="icon ion-md-thumbs-down"></i></button>
+                  </div>
+
+                  <button type="button" onclick="showReplyComment('${response.latest_comment_id}');"><i class="icon ion-ios-share-alt"></i>Yanıtla</button>
+                  <button type="button" onclick="deleteComment('${response.latest_comment_id}');"><i class="icon ion-ios-trash"></i>Sil</button>
+
+                </div>
+              </li>
+
+            `);
+            $('#input_comment_text').val('');
+            window.location.hash = '#content_start';
+            $('#form_send_comment .form__textarea').prop('disabled', true);
+            $('#form_send_comment .form__btn').prop('disabled', true);
+            setTimeout(() => {
+              $('#form_send_comment .form__textarea').prop('disabled', false);
+              $('#form_send_comment .form__btn').prop('disabled', false);
+            }, 5000);
+          }
+          else if (response.err_msg){
+            $('.alertMainDiv').show();
+            $('.alertMainText').text(response.err_msg);
+            setTimeout(() => {
+              $('.alertMainDiv').hide();
+            }, 2500);
+          }
+        },
+        error: function(error){
+          console.log(error);
+        }
+      });
+    } else {
+      $('.alertMainDiv').show();
+      $('.alertMainText').text('Boş mesaj gönderilemez.');
+      setTimeout(() => {
+        $('.alertMainDiv').hide();
+      }, 2500);
+    }
+  };
+
+  function deleteComment(comment_id){
+    $.ajax({
+      url: '{{url_for("movie_watch_func_proc", function="delete_comment")}}',
+      data: JSON.stringify({
+        'idContent': '{{content_info.idContent}}',
+        'idComment': comment_id,
+      }),
+      dataType: 'json',
+      type: 'POST',
+      contentType: 'application/json; charset=utf-8',
+      processData: false,
+      headers: {
+        'X-CSRFToken': '{{csrf_token()}}',
+      },
+      success: function(response){
+        if (response.ret_url){
+          window.location = response.ret_url
+        }
+        else if (response.succ_msg){
+          $('.alertMainDiv').show();
+          $('.alertMainText').text(response.succ_msg);
+          setTimeout(() => {
+            $('.alertMainDiv').hide();
+          }, 2500);
+          $('#' + response.deleted_comment_id).remove();
+          $('.' + response.deleted_comment_id).remove();
+        }
+        else if (response.err_msg){
+          $('.alertMainDiv').show();
+          $('.alertMainText').text(response.err_msg);
+          setTimeout(() => {
+            $('.alertMainDiv').hide();
+          }, 2500);
+        }
+      },
+      error: function(error){
+        console.log(error);
+      }
+    });
+  };
+  /*
+
+  LOGIN MOVIE END
+
+  */
+  </script>
+  {%elif content_info.type == 'TV'%}
+  <script>
+  /*
+
+  LOGIN TV BEGIN
+
+  */
+  $(document).ready(function(){
+    showSendComment();
+    window.setTimeout(() => {
+      //let addTime = 1240000; // 1240000ms = 20.66666664m
+      {%if request.args.get('add_time')-%}
+      let addTime = {{request.args.get('add_time')}};
+			{%-else-%}
+      let addTime = 1240000; // just beta
+			{%-endif%}
+      profileproc_tvepisodecontent_addToLatestWatchedEpisode(content_id=`{{content_info.idContent|safe}}`, tv_season_id=`{{season_info.idTvSeason|safe}}`, tv_episode_id=`{{episode_info.idTvEpisode|safe}}`);
+    }, this.addTime);
+  });
+
+  function showSendComment(){$('#form_send_comment').show();$('#form_reply_comment').hide()};
+
+  function likeComment(comment_id){
+    var get_like_count = parseInt($(`#${comment_id}_comment__like_count`).text());
+    var get_dislike_count = parseInt($(`#${comment_id}_comment__dislike_count`).text());
+    $.ajax({
+      url: '{{url_for("tv_watch_func_proc", function="like_comment")}}',
+      data: JSON.stringify({
+        'idContent': '{{content_info.idContent}}',
+        'idTvSeason': '{{season_info.idTvSeason}}',
+        'idTvEpisode': '{{episode_info.idTvEpisode}}',
+        'idComment': comment_id,
+      }),
+      dataType: 'json',
+      type: 'POST',
+      contentType: 'application/json; charset=utf-8',
+      processData: false,
+      headers: {
+        'X-CSRFToken': '{{csrf_token()}}',
+      },
+      success: function(response){
+        if (response.ret_url){
+          window.location = response.ret_url
+        }
+        if (response.gave_like){
+          $(`#${comment_id}_comment__like i`).attr('id', 'comment__like__selected');
+          $(`#${comment_id}_comment__like_count`).text(get_like_count + 1);
+        }
+        if (response.took_like){
+          $(`#${comment_id}_comment__like i`).attr('id', '');
+          $(`#${comment_id}_comment__like_count`).text(get_like_count - 1);
+        }
+        if (response.gave_dislike){
+          $(`#${comment_id}_comment__dislike i`).attr('id', 'comment__dislike__selected');
+          $(`#${comment_id}_comment__dislike_count`).text(get_dislike_count + 1);
+        }
+        if (response.took_dislike){
+          $(`#${comment_id}_comment__dislike i`).attr('id', '');
+          $(`#${comment_id}_comment__dislike_count`).text(get_dislike_count - 1);
+        }
+        else if (response.err_msg){
+          $('.alertMainDiv').show();
+          $('.alertMainText').text(response.err_msg);
+          setTimeout(() => {
+            $('.alertMainDiv').hide();
+          }, 2500);
+        }
+      },
+      error: function(error){
+        console.log(error);
+      }
+    });
+  };
+
+  function dislikeComment(comment_id){
+    var get_dislike_count = parseInt($(`#${comment_id}_comment__dislike_count`).text());
+    var get_like_count = parseInt($(`#${comment_id}_comment__like_count`).text());
+    $.ajax({
+      url: '{{url_for("tv_watch_func_proc", function="dislike_comment")}}',
+      data: JSON.stringify({
+        'idContent': '{{content_info.idContent}}',
+        'idTvSeason': '{{season_info.idTvSeason}}',
+        'idTvEpisode': '{{episode_info.idTvEpisode}}',
+        'idComment': comment_id,
+      }),
+      dataType: 'json',
+      type: 'POST',
+      contentType: 'application/json; charset=utf-8',
+      processData: false,
+      headers: {
+        'X-CSRFToken': '{{csrf_token()}}',
+      },
+      success: function(response){
+        if (response.ret_url){
+          window.location = response.ret_url
+        }
+        if (response.gave_dislike){
+          $(`#${comment_id}_comment__dislike i`).attr('id', 'comment__dislike__selected');
+          $(`#${comment_id}_comment__dislike_count`).text(get_dislike_count + 1);
+        }
+        if (response.took_dislike){
+          $(`#${comment_id}_comment__dislike i`).attr('id', '');
+          $(`#${comment_id}_comment__dislike_count`).text(get_dislike_count - 1);
+        }
+        if (response.gave_like){
+          $(`#${comment_id}_comment__like i`).attr('id', 'comment__like__selected');
+          $(`#${comment_id}_comment__like_count`).text(get_like_count + 1);
+        }
+        if (response.took_like){
+          $(`#${comment_id}_comment__like i`).attr('id', '');
+          $(`#${comment_id}_comment__like_count`).text(get_like_count - 1);
+        }
+        else if (response.err_msg){
+          $('.alertMainDiv').show();
+          $('.alertMainText').text(response.err_msg);
+          setTimeout(() => {
+            $('.alertMainDiv').hide();
+          }, 2500);
+        }
+      },
+      error: function(error){
+        console.log(error);
+      }
+    });
+  };
+
+  function showReplyComment(selected_comment_id){
+    $('#form_send_comment').hide();
+    $('#form_reply_comment').show();
+    $('#input_reply_text').val('');
+    window.location.hash = '#form_reply_comment';
+    $.ajax({
+      url: '{{url_for("tv_watch_func_proc", function="select_comment")}}',
+      data: JSON.stringify({
+        'idContent': '{{content_info.idContent}}',
+        'idTvSeason': '{{season_info.idTvSeason}}',
+        'idTvEpisode': '{{episode_info.idTvEpisode}}',
+        'idComment': selected_comment_id,
+      }),
+      dataType: 'json',
+      type: 'POST',
+      contentType: 'application/json; charset=utf-8',
+      processData: false,
+      headers: {
+        'X-CSRFToken': '{{csrf_token()}}',
+      },
+      success: function(response){
+        if (response.ret_url){
+          window.location = response.ret_url
+        }
+        else if (response.succ_msg){
+          $('#p_reply_comment').text('Bu için yanıtlanıyor: "' + response.selected_comment_text + '"');
+          $('#reply_selected_comment_id').val(selected_comment_id);
+        }
+        else if (response.err_msg){
+          $('.alertMainDiv').show();
+          $('.alertMainText').text(response.err_msg);
+          setTimeout(() => {
+            $('.alertMainDiv').hide();
+          }, 2500);
+        }
+      },
+      error: function(error){
+        console.log(error);
+      }
+    });
+  };
+
+  function sendReply(){
+    get_selected_comment_id = $('#reply_selected_comment_id').val();
+    get_reply = $('#input_reply_text').val();
+    if (get_selected_comment_id && get_reply){
+      $.ajax({
+        url: '{{url_for("tv_watch_func_proc", function="send_reply")}}',
+        data: JSON.stringify({
+          'idContent': '{{content_info.idContent}}',
+          'idTvSeason': '{{season_info.idTvSeason}}',
+          'idTvEpisode': '{{episode_info.idTvEpisode}}',
+          'reply': get_reply,
+          'replyTo': get_selected_comment_id,
+        }),
+        dataType: 'json',
+        type: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        processData: false,
+        headers: {
+          'X-CSRFToken': '{{csrf_token()}}',
+        },
+        success: function(response){
+          if (response.ret_url){
+            window.location = response.ret_url
+          }
+          else if (response.succ_msg){
+            $('.alertMainDiv').show();
+            $('.alertMainText').text(response.succ_msg);
+            setTimeout(() => {
+              $('.alertMainDiv').hide();
+            }, 2500);
+            $('#' + get_selected_comment_id).after(`
+
+              <li id="${response.latest_reply_id}" class="comments__item comments__item--answer ${response.latest_reply_replyto}">
+                <div style="min-width: 50px; min-height: 50px; background-image: url('{{get_profile_db(profile_id=session['PROFILE']['idProfile']).imageAvatar}}'); background-size: cover; background-position: center; border-radius: 50%; margin-right: 20px; float: left;"></div>
+                <div class="comments__autor">
+                  <span class="comments__name">{{get_profile_db(profile_id=session['PROFILE']['idProfile']).username}}</span>
+                  <span class="comments__time">şimdi</span>
+                </div>
+                <p class="comments__text">${response.latest_reply_text}</p>
+                <div class="comments__actions">
+                  <div class="comments__rate">
+                    <button type="button" id="${response.latest_reply_id}_comment__like" onclick="likeComment('${response.latest_reply_id}');"><i class="icon ion-md-thumbs-up"></i><p id="${response.latest_reply_id}_comment__like_count" style="display: contents;">0</p></button>
+
+                    <button type="button" id="${response.latest_reply_id}_comment__dislike" onclick="dislikeComment('${response.latest_reply_id}');"><p id="${response.latest_reply_id}_comment__dislike_count" style="display: contents;">0</p><i class="icon ion-md-thumbs-down"></i></button>
+                  </div>
+                  <button type="button" onclick="deleteComment('${response.latest_reply_id}');"><i class="icon ion-ios-trash"></i>Sil</button>
+                </div>
+              </li>
+
+            `);
+            $('#input_reply_text').val('');
+            window.location.hash = '#' + get_selected_comment_id;
+          }
+          else if (response.err_msg){
+            $('.alertMainDiv').show();
+            $('.alertMainText').text(response.err_msg);
+            setTimeout(() => {
+              $('.alertMainDiv').hide();
+            }, 2500);
+          }
+        },
+        error: function(error){
+          console.log(error);
+        }
+      });
+    } else {
+      $('.alertMainDiv').show();
+      $('.alertMainText').text('Boş yanıt gönderilemez.');
+      setTimeout(() => {
+        $('.alertMainDiv').hide();
+      }, 2500);
+    }
+  };
+
+  function sendComment(){
+    get_text = $('#input_comment_text').val();
+    get_contains_spoiler = document.getElementById('contains_spoiler_box').checked
+    if (get_text){
+      $.ajax({
+        url: '{{url_for("tv_watch_func_proc", function="send_comment")}}',
+        data: JSON.stringify({
+          'idContent': '{{content_info.idContent}}',
+          'idTvSeason': '{{season_info.idTvSeason}}',
+          'idTvEpisode': '{{episode_info.idTvEpisode}}',
+          'text': get_text,
+          'contains_spoiler': get_contains_spoiler,
+        }),
+        dataType: 'json',
+        type: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        processData: false,
+        headers: {
+          'X-CSRFToken': '{{csrf_token()}}',
+        },
+        success: function(response){
+          if (response.ret_url){
+            window.location = response.ret_url
+          }
+          else if (response.succ_msg){
+            $('.alertMainDiv').show();
+            $('.alertMainText').text(response.succ_msg);
+            setTimeout(() => {
+              $('.alertMainDiv').hide();
+            }, 2500);
+            $('.comments__list').prepend(`
+
+              <li id="${response.latest_comment_id}" class="comments__item ${response.latest_comment_id}">
+                <div style="min-width: 50px; min-height: 50px; background-image: url('{{get_profile_db(profile_id=session['PROFILE']['idProfile']).imageAvatar}}'); background-size: cover; background-position: center; border-radius: 50%; margin-right: 20px; float: left;"></div>
+                <div class="comments__autor">
+                  <span class="comments__name">{{get_profile_db(profile_id=session['PROFILE']['idProfile']).username}}</span>
+                  <span class="comments__time">şimdi</span>
+                </div>
+                <p class="comments__text">${response.latest_comment_text}</p>
+                <div class="comments__actions">
+                  <div class="comments__rate">
+                    <button type="button" id="${response.latest_comment_id}_comment__like" onclick="likeComment('${response.latest_comment_id}');"><i class="icon ion-md-thumbs-up"></i><p id="${response.latest_comment_id}_comment__like_count" style="display: contents;">0</p></button>
+
+                    <button type="button" id="${response.latest_comment_id}_comment__dislike" onclick="dislikeComment('${response.latest_comment_id}');"><p id="${response.latest_comment_id}_comment__dislike_count" style="display: contents;">0</p><i class="icon ion-md-thumbs-down"></i></button>
+                  </div>
+
+                  <button type="button" onclick="showReplyComment('${response.latest_comment_id}');"><i class="icon ion-ios-share-alt"></i>Yanıtla</button>
+                  <button type="button" onclick="deleteComment('${response.latest_comment_id}');"><i class="icon ion-ios-trash"></i>Sil</button>
+
+                </div>
+              </li>
+
+            `);
+            $('#input_comment_text').val('');
+            window.location.hash = '#content_start';
+          }
+          else if (response.err_msg){
+            $('.alertMainDiv').show();
+            $('.alertMainText').text(response.err_msg);
+            setTimeout(() => {
+              $('.alertMainDiv').hide();
+            }, 2500);
+          }
+        },
+        error: function(error){
+          console.log(error);
+        }
+      });
+    } else {
+      $('.alertMainDiv').show();
+      $('.alertMainText').text('Boş mesaj gönderilemez.');
+      setTimeout(() => {
+        $('.alertMainDiv').hide();
+      }, 2500);
+    }
+  };
+
+  function deleteComment(comment_id){
+    $.ajax({
+      url: '{{url_for("tv_watch_func_proc", function="delete_comment")}}',
+      data: JSON.stringify({
+        'idContent': '{{content_info.idContent}}',
+        'idTvSeason': '{{season_info.idTvSeason}}',
+        'idTvEpisode': '{{episode_info.idTvEpisode}}',
+        'idComment': comment_id,
+      }),
+      dataType: 'json',
+      type: 'POST',
+      contentType: 'application/json; charset=utf-8',
+      processData: false,
+      headers: {
+        'X-CSRFToken': '{{csrf_token()}}',
+      },
+      success: function(response){
+        if (response.ret_url){
+          window.location = response.ret_url
+        }
+        else if (response.succ_msg){
+          $('.alertMainDiv').show();
+          $('.alertMainText').text(response.succ_msg);
+          setTimeout(() => {
+            $('.alertMainDiv').hide();
+          }, 2500);
+          $('#' + response.deleted_comment_id).remove();
+          $('.' + response.deleted_comment_id).remove();
+        }
+        else if (response.err_msg){
+          $('.alertMainDiv').show();
+          $('.alertMainText').text(response.err_msg);
+          setTimeout(() => {
+            $('.alertMainDiv').hide();
+          }, 2500);
+        }
+      },
+      error: function(error){
+        console.log(error);
+      }
+    });
+  };
+  /*
+
+  LOGIN TV END
+
+  */
+  </script>
+  {%endif%}
+{%endif%}
+
+{%endblock%}

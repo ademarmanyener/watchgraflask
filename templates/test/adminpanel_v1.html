@@ -1,0 +1,89 @@
+{%extends 'layouts/adminpanel/default.html'%}
+{%block container%}
+
+<style>
+  .col-1 {
+    padding: 2px;
+  }
+  .border {
+    color: white;
+    border: 0px solid red;
+  }
+  .form__input {
+    background-color: rgb(85, 85, 85);
+  }
+  .form__btn { margin: 0px; margin-left: 5px; margin-bottom: 5px; }
+</style>
+
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+
+      <div class="col-12" style="margin-bottom: 10px; font-weight: 900;">
+        <div class="row">
+          {%for column in listResults.__table__.columns%}
+          <div class="col-1 border">{{column.key}}</div>
+          {%endfor%}
+        </div>
+      </div>
+
+      <div class="col-12">
+        {%for comment in listResults.query.all()%}
+        <div class="row" id="row__{{comment.idComment|safe}}">
+          {%for column in listResults.__table__.columns%}
+          <div class="col-1 border"><input id="input__{{comment.idComment|safe}}_{{column.key|safe}}" type="text" class="form__input" value="{{comment[column.key]|safe}}"></div>
+          {%endfor%}
+          <div class="col-12 border" style="margin-bottom: 25px;">
+            <div class="row" style="float: right;">
+              <span onclick="update_comment(comment_id='{{comment.idComment|safe}}');" class="form__btn" style="cursor: pointer;">Kaydet</span>
+              <span onclick="drop_comment(comment_id='{{comment.idComment|safe}}');" class="form__btn" style="cursor: pointer;">Sil</span>
+            </div>
+          </div>
+        </div>
+        {%endfor%}
+      </div>
+
+    </div>
+  </div>
+</main>
+{%endblock%}
+
+{%block script%}
+  <script>
+    function update_comment(comment_id){
+      $.ajax($.extend(true, DEF_AJAX_CONFIG, {
+        url: Flask.url_for('{{request.endpoint|safe}}_proc'),
+        data: JSON.stringify({
+          'function': 'update',
+          {%for column in listResults.__table__.columns%}
+          '{{column.key|safe}}': $(`#input__${comment_id}_{{column.key|safe}}`).val(),
+          {%endfor%}
+        }),
+        success: function(response){
+          if (response.succ_msg){
+            $('.alertMainDiv').show();
+            $('.alertMainText').text(response.succ_msg);
+            setTimeout(() => {
+              $('.alertMainDiv').hide();
+            }, 4000);
+          }
+        },
+      }))
+    };
+
+    function drop_comment(comment_id){
+      $.ajax($.extend(true, DEF_AJAX_CONFIG, {
+        url: Flask.url_for('{{request.endpoint|safe}}_proc'),
+        data: JSON.stringify({
+          'function': 'drop',
+          'idComment': comment_id,
+        }),
+        success: function(response){
+          if (response.succ_msg){
+            $(`#row__${comment_id}`).remove();
+          }
+        },
+      }))
+    };
+  </script>
+{%endblock%}

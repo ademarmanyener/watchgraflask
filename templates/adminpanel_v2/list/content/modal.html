@@ -1,0 +1,84 @@
+<!-- modal importFromTmdb -->
+<div id="modal-importFromTmdb" class="zoom-anim-dialog mfp-hide modal">
+	<h6 class="modal__title">TMDB'den Aktar</h6>
+
+  <select class="js-example-basic-single" id="selectImportFromTmdb_type">
+    <option value="Movie">Film</option>
+    <option value="TV">Dizi</option>
+  </select>
+
+  <input type="text" class="form__input" placeholder="İçerik Adı" id="inputImportFromTmdb_queryTitle">
+
+  <table>
+    <tbody id="queryTBody"></tbody>
+  </table>
+
+	<div class="modal__btns">
+		<button class="modal__btn modal__btn--dismiss" style="width: 100%;" type="button">İptal Et</button>
+	</div>
+</div>
+<!-- end modal importFromTmdb -->
+
+<!-- modal fetchThePopulars -->
+<div id="modal-fetchThePopulars" class="zoom-anim-dialog mfp-hide modal">
+	<h6 class="modal__title">Popülerleri Aktar</h6>
+
+  <button onclick="fetchThePopulars(type='MOVIE');" class="modal__btn modal__btn--apply" style="width: 100%;">Popüler Filmleri Aktar</button><br>
+  <button onclick="fetchThePopulars(type='TV');" class="modal__btn modal__btn--apply" style="width: 100%;">Popüler Dizileri Aktar</button>
+
+	<div class="modal__btns">
+		<button class="modal__btn modal__btn--dismiss" style="width: 100%;" type="button">İptal Et</button>
+	</div>
+</div>
+<!-- end modal fetchThePopulars -->
+
+<!-- modal fetchTheClassics -->
+<div id="modal-fetchTheClassics" class="zoom-anim-dialog mfp-hide modal">
+	<h6 class="modal__title">Klasikleri Aktar</h6>
+
+  <button onclick="fetchTheClassics(type='MOVIE');" class="modal__btn modal__btn--apply" style="width: 100%;">Klasik Filmleri Aktar</button><br>
+  <button onclick="fetchTheClassics(type='TV');" class="modal__btn modal__btn--apply" style="width: 100%;">Klasik Dizileri Aktar</button>
+
+	<div class="modal__btns">
+		<button class="modal__btn modal__btn--dismiss" style="width: 100%;" type="button">İptal Et</button>
+	</div>
+</div>
+<!-- end modal fetchTheClassics -->
+
+<!-- modal insertNew -->
+<div id="modal-insertNew" class="zoom-anim-dialog mfp-hide modal">
+	<h6 class="modal__title">Yeni İçerik Ekle</h6>
+
+  <input type="text" class="form__input" placeholder="Başlık" id="inputInsertNew_title">
+  <input type="text" class="form__input" placeholder="Orjinal Başlık" id="inputInsertNew_titleOriginal">
+  <input type="text" class="form__input" placeholder="URL Linki" id="inputInsertNew_titleUrl">
+  <textarea name="text" class="form__textarea" placeholder="Açıklama" id="inputInsertNew_overview"></textarea>
+  <input type="text" class="form__input" placeholder="TMDB ID'si" id="inputInsertNew_idTmdb">
+  <input type="text" class="form__input" placeholder="IMDB ID'si" id="inputInsertNew_idImdb">
+
+  <select class="js-example-basic-single" id="selectInsertNew_type">
+    <option value="MOVIE">Film</option>
+    <option value="TV">Dizi</option>
+  </select>
+
+	<div class="modal__btns">
+    <button id="btnInsertNew_insertNew" class="modal__btn modal__btn--apply" type="button">Oluştur</button>
+		<button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+	</div>
+</div>
+<!-- end modal insertNew -->
+
+{%for result in results_info%}
+  <!-- modal drop -->
+  <div id="modal-drop-{{result.idContent}}" class="zoom-anim-dialog mfp-hide modal">
+    <h6 class="modal__title">{{result.title}} Adlı İçeriği Sil</h6>
+
+    <p class="modal__text">Bu içeriği kalıcı olarak silmek istediğinize emin misiniz?</p>
+
+    <div class="modal__btns">
+      <button onclick="adminpanel_v2_function(tableName='content', functionName='drop', dictionary={'idContent': '{{result.idContent|safe}}'})" class="modal__btn modal__btn--apply" type="button">Sil</button>
+      <button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+    </div>
+  </div>
+  <!-- end modal drop -->
+{%endfor%}

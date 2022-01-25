@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title></title>
+</head>
+<body>
+
+  {{ request.base_url }}
+  <br/>
+  {% if _ARG and _ARG['canonical_url'] %}
+  full path: {{ request.host_url }}{{ _ARG['canonical_url'][1:] }}
+  {% else %}
+  full path: {{ request.host_url }}{{ request.path[1:] }}
+  {% endif %}
+  <br/>
+
+<table>
+  <tr>
+    <td>İçerik</td>
+  </tr>
+  {%for _ in db.session.query(content).join(movieContentGenre).filter(and_(content.type == 'MOVIE', movieContentGenre.idGenre == '27')).all()%}
+  <tr>
+    <td><img src="{{ _.imagePoster }}"> {{ _.title }}</td>
+  </tr>
+  {%endfor%}
+</table>
+
+</body>
+</html>

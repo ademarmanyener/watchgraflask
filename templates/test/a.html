@@ -1,0 +1,54 @@
+<html>
+  <head>
+    <title>suck my pp</title>
+  </head>
+  <body>
+    
+
+    <input type="text" name="input___name" id="input___name">
+    <p id="p___name"></p>
+    <button id="button___change">Değiştir</button>
+
+
+
+
+    <script src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}"></script>
+    <script>
+
+      $(document).ready(() => {
+        $.ajaxSetup({
+          headers: {
+            'X-CSRFToken': '{{csrf_token()}}',
+          },
+          dataType: 'json',
+          type: 'POST',
+          contentType: 'application/json; charset=utf-8',
+          processData: false,
+        });
+      });
+
+      $('#button___change').on('click', () => {
+        get_val = $('#input___name').val();
+        //alert(get_val);
+        $.ajax({
+          url: `{{url_for('PROC_test_a')}}`,
+          data: JSON.stringify({
+            name: get_val,
+          }),
+          success: function(e){
+            if (e.succ_msg){
+              alert(` ===> ${e.succ_msg}`);
+            }
+          },
+          error: function(e){
+            alert(e);
+          }
+        });
+      });
+
+
+
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,165 @@
+﻿{%extends 'layouts/adminpanel/default.html'%}
+{%block container%}
+<style>
+  .ion-ios-arrow-back::before {
+    line-height: 40px;
+  }
+  .ion-ios-arrow-forward::before {
+    line-height: 40px;
+  }
+  .paginator {
+    background-color: transparent;
+  }
+  .paginator__item--active a:hover {
+    color: rgb(90, 90, 90);
+  }
+</style>
+
+<!-- main content -->
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- main title -->
+      <div class="col-12">
+        <div class="main__title">
+          <h2>Öne Çıkarılanlar</h2>
+
+          <span class="main__title-stat">Mevcut sayfada {{list_results_info|length}} içerik sergileniyor.</span>
+
+          <div class="main__title-wrap">
+            <!-- filter sort -->
+            <div class="filter" id="filter__sort">
+              <span class="filter__item-label">Sırala:</span>
+
+              <div class="filter__item-btn dropdown-toggle" role="navigation" id="filter-sort" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <input type="button" value="Eklenme Tarihi">
+                <span></span>
+              </div>
+
+              <ul class="filter__item-menu dropdown-menu scrollbar-dropdown" aria-labelledby="filter-sort">
+                <a href="{{request.path}}?page=1&sort=newest&list_count={{_ARG['list_count']}}"><li>Yeniden Eskiye</li></a>
+                <a href="{{request.path}}?page=1&sort=oldest&list_count={{_ARG['list_count']}}"><li>Eskiden Yeniye</li></a>
+              </ul>
+            </div>
+            <!-- end filter sort -->
+            <a href="#modal-highlight-add" class="main__title-link open-modal">Yeni Ekle</a>
+          </div>
+        </div>
+      </div>
+      <!-- end main title -->
+
+      <!-- users -->
+      <div class="col-12">
+        <div class="main__table-wrap">
+          <table class="main__table">
+            <thead>
+              <tr>
+                <th>İÇERİK</th>
+                <th>ID</th>
+                <th>ORTALAMA OY</th>
+                <th>EKLEYEN KİŞİ</th>
+                <th>YETİŞKİN İÇERİK</th>
+                <th>EKLENME TARİHİ</th>
+                <th>İŞLEM</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {%for content in list_results_info%}
+              <tr id="main__table--tr-{{content.idContent}}">
+                <td>
+                  <div class="main__user">
+                    <div class="main__avatar" style="min-width: 75px; height: 100px; border-radius: 5px; -webkit-border-radius: 5px;">
+                      <div style="width: 100%; height: 100%; background-image: url('{{get_content_db(content_id=content.idContent).imagePoster}}'); background-size: cover; background-position: center;"></div>
+                    </div>
+                    <div class="main__meta">
+                      <h3>{{get_content_db(content_id=content.idContent).title}}</h3>
+                      <span>{{get_content_db(content_id=content.idContent).titleOriginal}}</span>
+                      <div class="main__table-text" style="font-size: 11px;">{{get_content_db(content_id=content.idContent).type}}</div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="main__table-text">{{content.idContent}}</div>
+                </td>
+                <td>
+                  <div class="main__table-text main__table-text--rate"><i class="icon ion-ios-star"></i> {{get_content_db(content_id=content.idContent).voteAverage}}</div>
+                </td>
+                <td>
+                  <div class="main__table-text">{{get_profile_db(profile_id=content.idAddProfile).username}}</div>
+                </td>
+                <td>
+                  <div class="main__table-text {%if get_content_db(content_id=content.idContent).adult == True%}main__table-text--red{%else%}main__table-text--green{%endif%}">{%if get_content_db(content_id=content.idContent).adult == True%}Yetişkin{%else%}Yetişkin Değil{%endif%}</div>
+                </td>
+                <td>
+                  <div class="main__table-text">{{format_date(content.highlightDate, 'full', locale='tr')}}</div>
+                </td>
+                <td>
+                  <div class="main__table-btns">
+                    <a href="{{url_for('content_redirect', title_url=get_content_db(content_id=content.idContent).titleUrl)}}" target="_blank" class="main__table-btn main__table-btn--banned">
+											<i class="icon ion-ios-play"></i>
+										</a>
+                    <span onclick="adminproc_highlights_addOrDrop(content_input='{{content.idContent}}');" class="main__table-btn main__table-btn--delete open-modal" style="cursor: pointer;">
+                      <i class="icon ion-ios-trash"></i>
+                    </span>
+                  </div>
+                </td>
+              </tr>
+              {%endfor%}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- end users -->
+
+      <!-- paginator -->
+      <div class="col-12">
+        <ul class="paginator paginator--list" style="background-color: transparent; box-shadow: unset; float: right; margin-right: 150px; margin-top: 25px;">
+          {%if not _ARG['page'] == 1%}<li class="paginator__item"><a href="{{request.path}}?page=1&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">1</a></li>{%endif%}
+          {%if _ARG['page'] - 1 >= 1%}
+          <li class="paginator__item paginator__item--prev">
+            <a href="{{request.path}}?page={{_ARG['page'] - 1}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}"><i class="icon ion-ios-arrow-back"></i></a>
+          </li>
+          {%endif%}
+          {%if _ARG['page'] - 4 >= 1%}<li class="paginator__item"><a href="{{request.path}}?page={{_ARG['page'] - 4}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] - 4}}</a></li>{%endif%}
+          {%if _ARG['page'] - 3 >= 1%}<li class="paginator__item"><a href="{{request.path}}?page={{_ARG['page'] - 3}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] - 3}}</a></li>{%endif%}
+          {%if _ARG['page'] - 2 >= 1%}<li class="paginator__item"><a href="{{request.path}}?page={{_ARG['page'] - 2}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] - 2}}</a></li>{%endif%}
+          {%if _ARG['page'] - 1 >= 1%}<li class="paginator__item"><a href="{{request.path}}?page={{_ARG['page'] - 1}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] - 1}}</a></li>{%endif%}
+          <li class="paginator__item paginator__item--active"><a href="#">{{_ARG['page']}}</a></li>
+          {%if _ARG['page'] + 1 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?page={{_ARG['page'] + 1}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] + 1}}</a></li>{%endif%}
+          {%if _ARG['page'] + 2 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?page={{_ARG['page'] + 2}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] + 2}}</a></li>{%endif%}
+          {%if _ARG['page'] + 3 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?page={{_ARG['page'] + 3}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] + 3}}</a></li>{%endif%}
+          {%if _ARG['page'] + 4 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?page={{_ARG['page'] + 4}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] + 4}}</a></li>{%endif%}
+          {%if _ARG['page'] + 1 <= _ARG['page_max']%}
+          <li class="paginator__item paginator__item--next">
+            <a href="{{request.path}}?page={{_ARG['page'] + 1}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}"><i class="icon ion-ios-arrow-forward"></i></a>
+          </li>
+          {%endif%}
+          {%if not _ARG['page'] == _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?page={{_ARG['page_max']}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page_max']}}</a></li>{%endif%}
+        </ul>
+      </div>
+      <!-- end paginator -->
+
+    </div>
+  </div>
+</main>
+<!-- end main content -->
+
+<!-- modal new -->
+<div id="modal-highlight-add" class="zoom-anim-dialog mfp-hide modal">
+  <h6 class="modal__title">Öne Çıkarılanlara Ekle</h6>
+  <p class="modal__text">İçerik ID'si veya içerik adını girin.</p>
+  <input id="highlight_input" type="text" class="form__input">
+  <div class="modal__btns">
+    <button id="highlight_button"  type="button" class="modal__btn modal__btn--apply" style="border: 0px;">Ekle</button>
+    <button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+  </div>
+</div>
+<!-- end modal new -->
+{%endblock%}
+
+{%block script%}
+<script>
+  $('#highlight_button').click(() => {adminproc_highlights_addOrDrop(content_input=$('#highlight_input').val());});
+</script>
+{%endblock%}

@@ -1,0 +1,96 @@
+﻿{%extends 'layouts/default.html'%}
+{%block container%}
+  {%if 2 == 1%}
+	<!-- page title -->
+	<section class="section section--first section--bg" data-bg="img/section/section.jpg">
+		<div class="container">
+			<div class="row">
+				<div class="col-12">
+					<div class="section__wrap">
+						<!-- section title -->
+						<h2 class="section__title"><b>WatchGraf</b> – Ücretsiz Dizi ve Film Platformu <span style="font-size: 16px;">İletişim</span></h2>
+						<!-- end section title -->
+
+						<!-- breadcrumb -->
+						<ul class="breadcrumb">
+							<li class="breadcrumb__item"><a href="{{url_for('home')}}">Ana Sayfa</a></li>
+							<li class="breadcrumb__item breadcrumb__item--active">İletişim</li>
+						</ul>
+						<!-- end breadcrumb -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- end page title -->
+  {%endif%}
+
+  <br /><br /><br /><br />
+
+	<!-- about -->
+	<section class="section">
+		<div class="container">
+			<div class="row">
+				<!-- section title -->
+				<div class="col-12">
+					<h2 class="section__title">Yasal</h2>
+				</div>
+				<!-- end section title -->
+
+				<!-- section text -->
+				<div class="col-12">
+					<p class="section__text">Bu platform, 5651 sayılı kanuna ait 5. maddesinde tanımlanmış yer sağlayıcı olarak hizmet vermektedir. Telif hakkına konu olan içeriklerin yasal olmayan bir şekilde paylaşıldığını, yasal hakların çiğnendiğini düşünmekte olan hak sahipleri bizimle <b>iletisim@watchgraf.com</b> yoluyla iletişime geçebilirler. Bize ulaşan talepler ve şikayet yerinde görüldüğünde bahsi geçen içerik en fazla 3 iş günü içerisinde kaldırılacaktır.</p>
+				</div>
+				<!-- end section text -->
+      </div>
+      <br /><br />
+      <div class="row">
+				<!-- section title -->
+				<div class="col-12">
+					<h2 class="section__title">İlgili Yasa Hakkında</h2>
+				</div>
+				<!-- end section title -->
+
+				<!-- section text -->
+				<div class="col-12">
+					<p class="section__text section__text--last-with-margin"><b>Madde 5</b></p>
+					<p class="section__text section__text--last-with-margin"><b>(1)</b> Yer sağlayıcı, yer sağladığı içeriği kontrol etmek veya hukuka aykırı bir faaliyetin söz konusu olup olmadığını araştırmakla yükümlü değildir.</p>
+					<p class="section__text section__text--last-with-margin"><b>(2)</b> Yer sağlayıcı, yer sağladığı hukuka aykırı içerikten, ceza sorumluluğu ile ilgili hükümler saklı kalmak kaydıyla, bu Kanunun 8 inci ve 9 uncu maddelerine göre haberdar edilmesi halinde ve teknik olarak imkân bulunduğu ölçüde hukuka aykırı içeriği yayından kaldırmakla yükümlüdür.</p>
+				</div>
+				<!-- end section text -->
+			</div>
+      <br /><br />
+      <div class="row">
+				<!-- section title -->
+				<div class="col-12">
+					<h2 class="section__title">Bize Ulaşın</h2>
+				</div>
+				<!-- end section title -->
+
+				<!-- section text -->
+				<div class="col-12">
+          <form action="{{ url_for('contact') }}" method="POST" class="form form--contacts">
+            {{form.name(class="form__input", placeholder='Adınız')}}
+            {{form.email_address(class="form__input", placeholder='E-Posta Adresiniz')}}
+            {{form.title(class="form__input", placeholder='Başlık')}}
+            {{form.message(class="form__textarea", placeholder='Mesaj')}}
+            {{form.recaptcha}}
+            {{form.send(class="form__btn", style="border: 0px; cursor: pointer;")}}
+          {{form.csrf_token}}
+          </form>
+				</div>
+				<!-- end section text -->
+      </div>
+		</div>
+	</section>
+	<!-- end about -->
+{%endblock%}
+
+{%block script%}
+  {%if check_profile()%}
+    <script>
+      $('#name').val(`{{get_profile_db(profile_id=session['PROFILE']['idProfile']).username|safe}}`);
+      $('#email_address').val(`{{get_account_db(account_id=session['ACCOUNT']['idAccount']).emailAddress|safe}}`);
+    </script>
+  {%endif%}
+{%endblock%}

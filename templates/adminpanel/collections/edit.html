@@ -1,0 +1,223 @@
+﻿{%extends 'layouts/adminpanel/default.html'%}
+{%block container%}
+
+<style>
+  .form__input, .form__textarea {
+    /*background-color: #646464;*/
+  }
+  .select2-container--default .select2-selection--single {
+    background-color: unset;
+  }
+  .select2-dropdown {
+    background-color: #030303;
+  }
+  .form__textarea {
+    height: 287px;
+  }
+  .form__img, .form__img label {
+    background-color: unset;
+  }
+  .form__img {
+    height: 275px;
+    background-position: center;
+    background-size: cover;
+    background-image: url('{{collection_info.imagePoster}}');
+  }
+	.form__btn { display: inline-flex; margin-right: 25px; }
+	input[type=checkbox], input[type=radio] {
+		transition: border 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+	}
+	input[type=checkbox], input[type=radio]:checked {
+		border: 2px solid white;
+	}
+</style>
+
+{%if 2 == 1%}
+{%include 'adminpanel/contents/includes/sidebar.html'%}
+{%endif%}
+
+<!-- main content -->
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- main title -->
+      <div class="col-12">
+        <div class="main__title">
+          <h2>{{collection_info.title}}</h2>
+        </div>
+      </div>
+      <!-- end main title -->
+
+      <!-- form -->
+      <div class="col-12">
+        <form action="{{url_for('adminpanel_collection_edit', title_url=collection_info.titleUrl)}}" method="POST" class="form" enctype="multipart/form-data">
+          <div class="row">
+            <div class="col-12 col-md-5 form__cover">
+              <!-- IMAGE UPLOAD BEGIN -->
+              <div class="row">
+                <div class="col-12 col-sm-6 col-md-12">
+                  <div class="form__img">
+                    <label for="form__img-upload">Poster Yükle</label>
+                    <input id="form__img-upload" name="form__img-upload" type="file" accept=".png, .jpg, .jpeg">
+                    <img id="form__img" src="#" alt=" ">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <div class="form__gallery">
+                    <label for="form__imgBg-upload">Arkaplan Yükle</label>
+                    <input class="form__video-upload" id="form__imgBg-upload" name="form__imgBg-upload"  type="file" accept=".png, .jpg, .jpeg">
+                  </div>
+                </div>
+              </div>
+              <!-- IMAGE UPLOAD END -->
+            </div>
+            
+            <div class="col-12 col-md-7 form__content">
+              <div class="row">
+                <div class="col-6">
+                  <label class="profile__label" for="input___title">Başlık</label>
+                  <input id="input___title" name="input___title" type="text" class="form__input" placeholder="Başlık">
+                </div>
+
+                <div class="col-6">
+                  <label class="profile__label" for="input___titleUrl">Başlık URL</label>
+                  <input id="input___titleUrl" name="input___titleUrl" type="text" class="form__input" placeholder="Başlık URL">
+                </div>
+
+                <div class="col-12">
+                  <label class="profile__label" for="input___overview">Açıklama</label>
+                  <textarea id="input___overview" name="input___overview" class="form__textarea" placeholder="Açıklama"></textarea>
+                </div>
+
+                <div class="col-9">
+                  <label class="profile__label" for="input___imagePoster">Poster Resmi</label>
+                  <input id="input___imagePoster" name="input___imagePoster" type="text" class="form__input" placeholder="Poster Resmi">
+                </div>
+
+                <div class="col-3">
+                  <a href="#modal-listPosters" id="button___listPosters" class="form__btn open-modal" style="border: 0px; cursor: pointer; float: left; width: 100%; margin-top: 30px;">Yüklenenlerden Seç</a>
+                </div>
+
+                <div class="col-9">
+                  <label class="profile__label" for="input___imageBackground">Arkaplan Resmi</label>
+                  <input id="input___imageBackground" name="input___imageBackground" type="text" class="form__input" placeholder="Arkaplan Resmi">
+                </div>
+
+                <div class="col-3">
+                  <a href="#modal-listBackgrounds" id="button___listBackgrounds" class="form__btn open-modal" style="border: 0px; cursor: pointer; float: left; width: 100%; margin-top: 30px;">Yüklenenlerden Seç</a>
+                </div>
+
+                <div class="col-2">
+                  <div class="profile__group">
+                    <label class="profile__label" for="select2___private">Gizlilik</label>
+                    <select class="js-example-basic-single" id="select2___private" name="select2___private">
+                      <option value="1">Gizli</option>
+                      <option value="0">Herkese Açık</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-3">
+                  <div class="profile__group">
+                    <label class="profile__label" for="select2___recommended">Öne Çıkarılma Durumu</label>
+                    <select class="js-example-basic-single" id="select2___recommended" name="select2___recommended">
+                      <option value="0">Öne Çıkarılmamış</option>
+                      <option value="1">Öne Çıkarılmış</option>
+                    </select>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="row">
+
+                <div class="col-12">
+                  <input type="submit" id="button___save" name="button___save" value="Kaydet" class="form__btn" style="border: 0px; cursor: pointer; float: right;">
+                  <input type="button" id="button___goToTheCollection" name="button___goToTheCollection" value="Koleksiyona Git" class="form__btn" style="border: 0px; cursor: pointer; float: right; min-width: 300px;">
+
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+<div id="modal-listPosters" class="zoom-anim-dialog modal mfp-hide">
+    <h6 class="modal__title">Poster Seç</h6>
+    <p class="modal__text">Bunlardan birini poster olarak seçin.</p>
+    <br/>
+    <p class="modal__text">
+      {%for poster in posters_list_info%}
+      <input type="radio" id="{{poster}}" name="poster" value="{{poster}}" style="width: 75px; height: 75px;
+                                                                                  margin-top: 5px; margin-left: 5px; margin-right: 5px; margin-bottom: 5px; background-image: url({{url_for('storage', filename='collection/' + collection_info.idCollection + '/poster/' + poster)}}); background-size: cover; background-position: center; background-repeat: no-repeat; cursor: pointer;">
+      {%endfor%}
+    </p>
+    <div class="modal__btns">
+      <button class="modal__btn modal__btn--dismiss" type="button">Seç</button>
+    </div>
+</div>
+
+<div id="modal-listBackgrounds" class="zoom-anim-dialog modal mfp-hide">
+    <h6 class="modal__title">Arkaplan Seç</h6>
+    <p class="modal__text">Bunlardan birini arkaplan olarak seçin.</p>
+    <br/>
+    <p class="modal__text">
+      {%for background in backgrounds_list_info%}
+      <input type="radio" id="{{background}}" name="background" value="{{background}}" style="width: 75px; height: 75px;
+                                                                                  margin-top: 5px; margin-left: 5px; margin-right: 5px; margin-bottom: 5px; background-image: url({{url_for('storage', filename='collection/' + collection_info.idCollection + '/background/' + background)}}); background-size: cover; background-position: center; background-repeat: no-repeat; cursor: pointer;">
+      {%endfor%}
+    </p>
+    <div class="modal__btns">
+      <button class="modal__btn modal__btn--dismiss" type="button">Seç</button>
+    </div>
+</div>
+
+        </form>
+      </div>
+      <!-- end form -->
+    </div>
+  </div>
+</main>
+<!-- end main content -->
+{%endblock%}
+
+{%block script%}
+<script>
+  $(document).ready(() => {
+    $('.js-example-basic-single').select2();
+    // inputs
+    $('#input___title').val(`{{collection_info.title|safe}}`);
+    $('#input___titleUrl').val(`{{collection_info.titleUrl|safe}}`);
+    $('#input___overview').val(`{{collection_info.overview|safe}}`);
+    $('#input___imagePoster').val(`{{collection_info.imagePoster|safe}}`);
+    $('#input___imageBackground').val(`{{collection_info.imageBackground|safe}}`);
+    // select2
+    if ('{{collection_info.private}}' == 0){
+      $('#select2-select2___private-container').text('Herkese Açık');
+      $('#select2___private').val('0');
+    } else if ('{{collection_info.private}}' == 1){
+      $('#select2-select2___private-container').text('Gizli');
+      $('#select2___private').val('1');
+    }
+
+    if ('{{collection_info.recommended}}' == 0){
+      $('#select2-select2___recommended-container').text('Öne Çıkarılmamış');
+      $('#select2___recommended').val('0');
+    } else if ('{{collection_info.recommended}}' == 1){
+      $('#select2-select2___recommended-container').text('Öne Çıkarılmış');
+      $('#select2___recommended').val('1');
+    }
+
+  });
+
+  $('#button___goToTheCollection').on('click', () => {
+    window.location.href = `{{url_for('collection_title', title_url=collection_info.titleUrl)}}`
+  });
+</script>
+{%endblock%}

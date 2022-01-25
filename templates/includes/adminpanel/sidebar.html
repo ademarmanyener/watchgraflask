@@ -1,0 +1,171 @@
+	<!-- header -->
+	<header class="header">
+		<div class="header__content">
+			<!-- header logo -->
+			<a href="{{url_for('home')}}" class="header__logo">
+				<img src="{{url_for('static', filename='img/logo.png')}}" alt="">
+			</a>
+			<!-- end header logo -->
+
+			<!-- header menu btn -->
+			<button class="header__btn" type="button">
+				<span></span>
+				<span></span>
+				<span></span>
+			</button>
+			<!-- end header menu btn -->
+		</div>
+	</header>
+	<!-- end header -->
+
+	<!-- sidebar -->
+	<div class="sidebar">
+		<!-- sidebar logo -->
+		<a href="{{url_for('home')}}" class="sidebar__logo">
+			<img src="{{url_for('static', filename='img/logo.png')}}" alt="">
+		</a>
+		<!-- end sidebar logo -->
+		
+		<!-- sidebar user -->
+    <div class="sidebar__user" style="padding: 0px; height: 60px; margin-top: 20px; display: block;">
+      <div class="row">
+        <div class="col-4">
+          <div style="width: 50px; height: 50px; margin-left: 25px; background-image: url('{{get_profile_db(profile_id=session['PROFILE']['idProfile']).imageAvatar}}'); background-size: cover; background-position: center; background-repeat: no-repeat; border-radius: 100%;"></div>
+        </div>
+        <div class="col-5">
+
+			  <div class="sidebar__user-title">
+  				<span>Yönetici</span>
+				  <p>{{get_profile_db(profile_id=session['PROFILE']['idProfile']).username}}</p>       
+        </div>
+
+        </div>
+        <div class="col-2">
+          <a href="#modal-header-signout" class="sidebar__user-btn open-modal">
+            <i class="icon ion-ios-log-out"></i>
+          </a>
+
+<div id="modal-header-signout" class="zoom-anim-dialog modal mfp-hide">
+		<h6 class="modal__title">Çıkış Yap</h6>
+		<p class="modal__text"><a href="{{url_for('home')}}" class="modal__btn modal__btn--apply" style="margin-top: 25px; width: calc(100%);">Yönetici Panelini Kapat</a></p>
+		<p class="modal__text"><a href="{{url_for('destroy_account')}}" class="modal__btn modal__btn--apply" style="margin-top: 25px; width: calc(100%);">Çıkış Yap</a></p>
+		<div class="modal__btns">
+			<button class="modal__btn modal__btn--dismiss" style="margin-top: 5px; width: calc(100%);" type="button">Kapat</button>
+		</div>
+</div>
+
+        </div>
+      </div>
+    </div>
+		<!-- end sidebar user -->
+
+    {%if 2 == 1%}
+		<!-- sidebar nav -->
+		<ul class="sidebar__nav">
+			<li class="sidebar__nav-item">
+				<a href="{{url_for('adminpanel_home')}}" class="sidebar__nav-link {%if request.path == url_for('adminpanel_home')%}sidebar__nav-link--active{%endif%}"><i class="icon ion-ios-keypad"></i> Anasayfa</a>
+			</li>
+
+			<li class="sidebar__nav-item">
+				<a href="{{url_for('adminpanel_highlights')}}" class="sidebar__nav-link {%if request.path == url_for('adminpanel_highlights')%}sidebar__nav-link--active{%endif%}"><i class="icon ion-ios-star"></i> Öne Çıkarılanlar</a>
+			</li>
+
+			<li class="sidebar__nav-item">
+				<a href="{{url_for('adminpanel_contents')}}" class="sidebar__nav-link {%if request.path == url_for('adminpanel_contents')%}sidebar__nav-link--active{%endif%}"><i class="icon ion-ios-tv"></i> İçerikler</a>
+			</li>
+
+			<li class="sidebar__nav-item">
+				<a href="{{url_for('adminpanel_accounts')}}" class="sidebar__nav-link {%if request.path == url_for('adminpanel_accounts') or request.endpoint == 'adminpanel_account_edit'%}sidebar__nav-link--active{%endif%}"><i class="icon ion-ios-person"></i> Hesaplar</a>
+			</li>
+
+			<li class="sidebar__nav-item">
+				<a href="{{url_for('adminpanel_profiles')}}" class="sidebar__nav-link {%if request.path == url_for('adminpanel_profiles') or request.endpoint == 'adminpanel_profile_edit'%}sidebar__nav-link--active{%endif%}"><i class="icon ion-ios-people"></i> Profiller</a>
+			</li>
+
+			<li class="sidebar__nav-item">
+				<a href="{{url_for('adminpanel_casts')}}" class="sidebar__nav-link {%if request.endpoint == 'adminpanel_casts' or request.endpoint == 'adminpanel_cast_edit'%}sidebar__nav-link--active{%endif%}"><i class="icon ion-ios-contacts"></i> Oyuncular</a>
+			</li>
+
+			<li class="sidebar__nav-item">
+				<a href="{{url_for('adminpanel_collections')}}" class="sidebar__nav-link {%if request.endpoint == 'adminpanel_collections' or request.endpoint == 'adminpanel_collection_edit'%}sidebar__nav-link--active{%endif%}"><i class="icon ion-ios-albums"></i> Koleksiyonlar</a>
+			</li>
+
+			<!-- dropdown -->
+			<li class="dropdown sidebar__nav-item">
+				<a class="dropdown-toggle sidebar__nav-link {%if request.endpoint == 'adminpanel_comments' or request.endpoint == 'adminpanel_comment_edit'%}sidebar__nav-link--active{%endif%}" href="#" role="button" id="dropdownMenuMore" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon ion-ios-chatbubbles"></i> Yorumlar</a>
+
+				<ul class="dropdown-menu sidebar__dropdown-menu scrollbar-dropdown" aria-labelledby="dropdownMenuMore">
+					<li><a href="{{url_for('adminpanel_comments') + '?query=*&page=1&type=movie&related_id=*&sort=newest&list_count=10'}}">Film Yorumları</a></li>
+					<li><a href="{{url_for('adminpanel_comments') + '?query=*&page=1&type=tv&related_id=*&sort=newest&list_count=10'}}">Dizi Yorumları</a></li>
+					<li><a href="{{url_for('adminpanel_comments') + '?query=*&page=1&type=tv_title&related_id=*&sort=newest&list_count=10'}}">Dizi Başlık Yorumları</a></li>
+					<li><a href="{{url_for('adminpanel_comments') + '?query=*&page=1&type=cast&related_id=*&sort=newest&list_count=10'}}">Oyuncu Yorumları</a></li>
+				</ul>
+			</li>
+			<!-- end dropdown -->
+      {%endif%}
+
+    <!-- BETA FOR adminpanel_v2 -->
+		<!-- sidebar nav -->
+		<ul class="sidebar__nav">
+			<li class="sidebar__nav-item">
+        <a href="{{url_for('adminpanel_v2_home')}}" class="sidebar__nav-link {%if request.endpoint == 'adminpanel_v2_home'%}sidebar__nav-link--active{%endif%}"><i class="icon ion-ios-keypad"></i> Anasayfa</a>
+			</li>
+
+			<li class="sidebar__nav-item">
+        <a href="{{url_for('adminpanel_v2_list')}}?table=content" class="sidebar__nav-link {%if _ARG and _ARG['table'] == 'content'%}sidebar__nav-link--active{%endif%}"><i class="icon ion-ios-tv"></i> İçerikler</a>
+			</li>
+
+			<li class="sidebar__nav-item">
+        <a href="{{url_for('adminpanel_v2_list')}}?table=account" class="sidebar__nav-link {%if _ARG and _ARG['table'] == 'account'%}sidebar__nav-link--active{%endif%}"><i class="icon ion-ios-person"></i> Hesaplar</a>
+			</li>
+
+			<li class="sidebar__nav-item">
+        <a href="{{url_for('adminpanel_v2_list')}}?table=profile" class="sidebar__nav-link {%if _ARG and _ARG['table'] == 'profile'%}sidebar__nav-link--active{%endif%}"><i class="icon ion-ios-people"></i> Profiller</a>
+			</li>
+
+			<li class="sidebar__nav-item">
+        <a href="{{url_for('adminpanel_v2_list')}}?table=cast" class="sidebar__nav-link {%if _ARG and _ARG['table'] == 'cast'%}sidebar__nav-link--active{%endif%}"><i class="icon ion-ios-contacts"></i> Oyuncular</a>
+			</li>
+
+			<li class="sidebar__nav-item">
+        <a href="{{url_for('adminpanel_v2_list')}}?table=collection" class="sidebar__nav-link {%if _ARG and _ARG['table'] == 'collection'%}sidebar__nav-link--active{%endif%}"><i class="icon ion-ios-albums"></i> Koleksiyonlar</a>
+			</li>
+
+      <!-- dropdown -->
+      <li class="dropdown sidebar__nav-item">
+        <a class="dropdown-toggle sidebar__nav-link" href="#" role="button" id="dropdownMenuMore" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon ion-ios-chatbubbles"></i> Yorumlar</a>
+
+        <ul class="dropdown-menu sidebar__dropdown-menu scrollbar-dropdown" aria-labelledby="dropdownMenuMore">
+          <li><a href="{{url_for('adminpanel_v2_list')}}?table=moviecomment">Film Yorumları</a></li>
+          <li><a href="{{url_for('adminpanel_v2_list')}}?table=tvcomment">Dizi Yorumları</a></li>
+          <li><a href="{{url_for('adminpanel_v2_list')}}?table=tvtitlecomment">Dizi Başlığı Yorumları</a></li>
+          <li><a href="{{url_for('adminpanel_v2_list')}}?table=castcomment">Oyuncu Yorumları</a></li>
+        </ul>
+      </li>
+      <!-- end dropdown -->
+
+      <!-- dropdown -->
+      <li class="dropdown sidebar__nav-item">
+        <a class="dropdown-toggle sidebar__nav-link {%if request.endpoint == 'adminpanel_comments' or request.endpoint == 'adminpanel_comment_edit'%}sidebar__nav-link--active{%endif%}" href="#" role="button" id="dropdownMenuMore" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon ion-ios-list"></i> Listeler</a>
+
+        <ul class="dropdown-menu sidebar__dropdown-menu scrollbar-dropdown" aria-labelledby="dropdownMenuMore">
+          <li><a href="{{url_for('adminpanel_v2_list')}}?table=countrylist">Ülke Listesi</a></li>
+          <li><a href="{{url_for('adminpanel_v2_list')}}?table=languagelist">Dil Listesi</a></li>
+          <li><a href="{{url_for('adminpanel_v2_list')}}?table=moviegenrelist">Film Türü Listesi</a></li>
+          <li><a href="{{url_for('adminpanel_v2_list')}}?table=tvgenrelist">Dizi Türü Listesi</a></li>
+        </ul>
+      </li>
+      <!-- end dropdown -->
+
+			<li class="sidebar__nav-item">
+        <a href="{{url_for('adminpanel_v2_list')}}?table=report" class="sidebar__nav-link {%if _ARG and _ARG['table'] == 'report'%}sidebar__nav-link--active{%endif%}"><i class="icon ion-ios-bug"></i> Raporlar</a>
+			</li>
+
+		</ul>
+		<!-- end sidebar nav -->
+
+		<!-- sidebar copyright -->
+		<div class="sidebar__copyright">© 2021 WatchGraf.</div>
+		<!-- end sidebar copyright -->
+	</div>
+	<!-- end sidebar -->

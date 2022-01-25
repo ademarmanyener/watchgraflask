@@ -1,0 +1,243 @@
+﻿{%extends 'layouts/adminpanel/default.html'%}
+{%block container%}
+
+<style>
+  .form__input, .form__textarea {
+    /*background-color: #646464;*/
+  }
+  .select2-container--default .select2-selection--single {
+    background-color: unset;
+  }
+  .select2-dropdown {
+    background-color: #030303;
+  }
+  .form__textarea {
+    height: 287px;
+  }
+  .form__img, .form__img label {
+    background-color: unset;
+  }
+  .form__img {
+    height: 275px;
+    background-position: center;
+    background-size: cover;
+    background-image: url('{{profile_info.imageAvatar}}');
+  }
+	.form__btn { display: inline-flex; margin-right: 25px; }
+	input[type=checkbox], input[type=radio] {
+		transition: border 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+	}
+	input[type=checkbox], input[type=radio]:checked {
+		border: 2px solid white;
+	}
+</style>
+
+{%if 2 == 1%}
+{%include 'adminpanel/contents/includes/sidebar.html'%}
+{%endif%}
+
+<!-- main content -->
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- main title -->
+      <div class="col-12">
+        <div class="main__title">
+          <h2>{{profile_info.username}} <span style="font-size: 16px;">{{account_info.username}}</span></h2>
+        </div>
+      </div>
+      <!-- end main title -->
+
+      <!-- form -->
+      <div class="col-12">
+        <form action="{{url_for('adminpanel_profile_edit', account_username=account_info.username, profile_username=profile_info.username)}}" method="POST" class="form" enctype="multipart/form-data">
+          <div class="row">
+            <div class="col-12 col-md-5 form__cover">
+              <!-- IMAGE UPLOAD BEGIN -->
+              <div class="row">
+                <div class="col-12 col-sm-6 col-md-12">
+                  <div class="form__img">
+                    <label for="form__img-upload">Avatar Yükle</label>
+                    <input id="form__img-upload" name="form__img-upload" type="file" accept=".png, .jpg, .jpeg">
+                    <img id="form__img" src="#" alt=" ">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <div class="form__gallery">
+                    <label for="form__imgBg-upload">Arkaplan Yükle</label>
+                    <input class="form__video-upload" id="form__imgBg-upload" name="form__imgBg-upload"  type="file" accept=".png, .jpg, .jpeg">
+                  </div>
+                </div>
+              </div>
+              <!-- IMAGE UPLOAD END -->
+            </div>
+            
+            <div class="col-12 col-md-7 form__content">
+              <div class="row">
+                <div class="col-4">
+                  <label class="profile__label" for="input___username">Kullanıcı Adı</label>
+                  <input id="input___username" name="input___username" type="text" class="form__input" placeholder="Kullanıcı Adı">
+                </div>
+
+                <div class="col-4">
+                  <label class="profile__label" for="input___password">Parola</label>
+                  <input id="input___password" name="input___password" type="password" class="form__input" placeholder="Parola">
+                </div>
+
+                <div class="col-10">
+                  <label class="profile__label" for="input___biography">Biyografi</label>
+                  <textarea id="input___biography" name="input___biography" class="form__textarea" placeholder="Biyografi"></textarea>
+                </div>
+
+                <div class="col-9">
+                  <label class="profile__label" for="input___imageAvatar">Avatar Resmi</label>
+                  <input id="input___imageAvatar" name="input___imageAvatar" type="text" class="form__input" placeholder="Avatar Resmi">
+                </div>
+
+                <div class="col-3">
+                  <a href="#modal-listAvatars" id="button___listAvatars" class="form__btn open-modal" style="border: 0px; cursor: pointer; float: left; width: 100%; margin-top: 30px;">Yüklenenlerden Seç</a>
+                </div>
+
+                <div class="col-9">
+                  <label class="profile__label" for="input___imageBackground">Arkaplan Resmi</label>
+                  <input id="input___imageBackground" name="input___imageBackground" type="text" class="form__input" placeholder="Arkaplan Resmi">
+                </div>
+
+                <div class="col-3">
+                  <a href="#modal-listBackgrounds" id="button___listBackgrounds" class="form__btn open-modal" style="border: 0px; cursor: pointer; float: left; width: 100%; margin-top: 30px;">Yüklenenlerden Seç</a>
+                </div>
+
+                <div class="col-2">
+                  <div class="profile__group">
+                    <label class="profile__label" for="select2___adult">Yetişkinlik</label>
+                    <select class="js-example-basic-single" id="select2___adult" name="select2___adult">
+                      <option value="1">Yetişkin Hesabı</option>
+                      <option value="0">Çocuk Hesabı</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-2">
+                  <div class="profile__group">
+                    <label class="profile__label" for="select2___permission">Yetki</label>
+                    <select class="js-example-basic-single" id="select2___permission" name="select2___permission">
+                      <option value="USER">Kullanıcı</option>
+                      <option value="EDITOR">Editör</option>
+                      <option value="ADMIN">Yönetici</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-2">
+                  <div class="profile__group">
+                    <label class="profile__label" for="select2___private">Gizlilik</label>
+                    <select class="js-example-basic-single" id="select2___private" name="select2___private">
+                      <option value="1">Gizli</option>
+                      <option value="0">Herkese Açık</option>
+                    </select>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="row">
+
+                <div class="col-12">
+                  <input type="submit" id="button___save" name="button___save" value="Kaydet" class="form__btn" style="border: 0px; cursor: pointer; float: right;">
+                  <input type="button" id="button___goToTheProfile" name="button___goToTheProfile" value="Profile Git" class="form__btn" style="border: 0px; cursor: pointer; float: right;">
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+<div id="modal-listAvatars" class="zoom-anim-dialog modal mfp-hide">
+    <h6 class="modal__title">Avatar Seç</h6>
+    <p class="modal__text">Bunlardan birini avatar olarak seçin.</p>
+    <br/>
+    <p class="modal__text">
+      {%for avatar in avatars_list_info%}
+      <input type="radio" id="{{avatar}}" name="avatar" value="{{avatar}}" style="width: 75px; height: 75px;
+                                                                                  margin-top: 5px; margin-left: 5px; margin-right: 5px; margin-bottom: 5px; background-image: url({{url_for('storage', filename='account/' + account_info.idAccount + '/profile/' + profile_info.idProfile + '/avatar/' + avatar)}}); background-size: cover; background-position: center; background-repeat: no-repeat; cursor: pointer;">
+      {%endfor%}
+    </p>
+    <div class="modal__btns">
+      <button class="modal__btn modal__btn--dismiss" type="button">Seç</button>
+    </div>
+</div>
+
+<div id="modal-listBackgrounds" class="zoom-anim-dialog modal mfp-hide">
+    <h6 class="modal__title">Arkaplan Seç</h6>
+    <p class="modal__text">Bunlardan birini arkaplan olarak seçin.</p>
+    <br/>
+    <p class="modal__text">
+      {%for background in backgrounds_list_info%}
+      <input type="radio" id="{{background}}" name="background" value="{{background}}" style="width: 75px; height: 75px;
+                                                                                  margin-top: 5px; margin-left: 5px; margin-right: 5px; margin-bottom: 5px; background-image: url({{url_for('storage', filename='account/' + account_info.idAccount + '/profile/' + profile_info.idProfile + '/background/' + background)}}); background-size: cover; background-position: center; background-repeat: no-repeat; cursor: pointer;">
+      {%endfor%}
+    </p>
+    <div class="modal__btns">
+      <button class="modal__btn modal__btn--dismiss" type="button">Seç</button>
+    </div>
+</div>
+
+        </form>
+      </div>
+      <!-- end form -->
+    </div>
+  </div>
+</main>
+<!-- end main content -->
+{%endblock%}
+
+{%block script%}
+<script>
+  $(document).ready(() => {
+    $('.js-example-basic-single').select2();
+    // inputs
+    $('#input___username').val(`{{profile_info.username|safe}}`);
+    $('#input___password').val(`{{profile_info.password|safe}}`);
+    $('#input___biography').val(`{{profile_info.biography|safe}}`);
+    $('#input___imageAvatar').val(`{{profile_info.imageAvatar|safe}}`);
+    $('#input___imageBackground').val(`{{profile_info.imageBackground|safe}}`);
+    // select2
+    if ('{{profile_info.adult}}' == 0){
+      $('#select2-select2___adult-container').text('Çocuk Hesabı');
+      $('#select2___adult').val('0');
+    } else if ('{{profile_info.adult}}' == 1){
+      $('#select2-select2___adult-container').text('Yetişkin Hesabı');
+      $('#select2___adult').val('1');
+    }
+
+    if ('{{profile_info.permission}}' == 'USER'){
+      $('#select2-select2___permission-container').text('Kullanıcı');
+      $('#select2___permission').val('USER');
+    } else if ('{{profile_info.permission}}' == 'EDITOR'){
+      $('#select2-select2___permission-container').text('Editör');
+      $('#select2___permission').val('EDITOR');
+    } else if ('{{profile_info.permission}}' == 'ADMIN'){
+      $('#select2-select2___permission-container').text('Yönetici');
+      $('#select2___permission').val('ADMIN');
+    }
+
+    if ('{{profile_info.private}}' == 0){
+      $('#select2-select2___private-container').text('Herkese Açık');
+      $('#select2___private').val('0');
+    } else if ('{{profile_info.private}}' == 1){
+      $('#select2-select2___private-container').text('Gizli');
+      $('#select2___private').val('1');
+    }
+  });
+
+  $('#button___goToTheProfile').on('click', () => {
+    window.location.href = `{{url_for('accountprofile', account_username=account_info.username, profile_username=profile_info.username)}}`
+  });
+</script>
+{%endblock%}

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>_init -> login</title>
+    <style>
+      body {background-color: black; color: white;}
+    </style>
+  </head>
+  <body>
+    <a href="{{url_for('home')}}"><img src="{{url_for('static', filename='img/logo.png')}}" height=50 alt="logo"></a>
+    <h2>_init -> login</h2>
+    <form action="{{url_for('init_login')}}" method="POST">
+      <input type="password" name="input_loginPass" value="">
+      <input type="submit" name="input_loginSubmit" value="Devam Et">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    </form>
+    <h4 style="color: red;">this page is only made for developers. for production, disable this page.</h4>
+  </body>
+</html>

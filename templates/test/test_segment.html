@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <style>
+  
+  body {background-color: #030303;}
+  .segment-title {
+    font-family: "Bernino", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-weight: 600;
+    font-size: 18px;
+    padding-top: 40px;
+    margin-bottom: 20px;
+    color: #fff;
+    letter-spacing: -.41px;
+  }
+  .dark-segment > ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    margin-left: -10px;
+    margin-right: -10px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+	}
+  .dark-segment > ul .segment-poster-sm {
+    display: inline-block;
+    width: 25%;
+    padding: 10px;
+  }
+  .poster.poster-xs {
+    position: relative;
+    overflow: visible;
+	}
+  .poster {
+    overflow: hidden;
+    transition: transform .1s linear;
+	}
+  .new-tvseries .segment-poster-sm .poster.poster-xs a {
+    flex-direction: column-reverse;
+    height: auto;
+    padding: 5px;
+  }
+
+  .poster.poster-xs a {
+    display: flex;
+    flex-direction: row-reverse;
+    height: 60px;
+    background-color: #1e2029;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    -webkit-transition: background-color 0.1s ease-in-out;
+    -moz-transition: background-color 0.1s ease-in-out;
+    -ms-transition: background-color 0.1s ease-in-out;
+    -o-transition: background-color 0.1s ease-in-out;
+    transition: background-color 0.1s ease-in-out;
+  }
+
+  .poster.poster-xs a:hover {background-color: #95FF7E;}
+
+  .new-tvseries .segment-poster-sm .poster.poster-xs a img {
+    max-width: 150px;
+    min-width: 100%;
+    width: 100%;
+    margin: 0;
+    height: 225px;
+    z-index: 1;
+    opacity: .75;
+  }
+
+  .poster.poster-xs img {
+    display: block;
+    max-width: 44px;
+    min-width: 44px;
+    height: 44px;
+    object-fit: cover;
+    border-radius: 2px;
+    margin: 8px 0 8px 8px;
+  }
+
+  .poster .lazy-wide {
+    width: 100%;
+    opacity: 0;
+    -webkit-transition: opacity 0.5s ease-in-out, transform 0.2s linear;
+    -moz-transition: opacity 0.5s ease-in-out, transform 0.2s linear;
+    -ms-transition: opacity 0.5s ease-in-out, transform 0.2s linear;
+    -o-transition: opacity 0.5s ease-in-out, transform 0.2s linear;
+    transition: opacity 0.5s ease-in-out, transform 0.2s linear;
+    z-index: 1;
+    display: block;
+  }
+  
+  </style>
+</head>
+<body>
+
+<div class="dark-segment">
+	<div class="segment-title">Dikkate Değer Diziler</div>
+	<ul class="clearfix new-tvseries">
+    {%for _content in content.query.filter_by().limit(10).all()%}
+    <li class="segment-poster-sm">
+      <div class="poster poster-xs">
+        <a href="{{url_for('content_redirect', title_url=_content.titleUrl)}}" data-navigo="" title="{{_content.titleOriginal}}">
+          <h2 style="color: white; position: absolute; left: 10px; bottom: -5px; z-index: 10; font: caption; font-size: 24px; text-shadow: 2px 3px 14px rgba(0,0,0,0.72);">{{_content.title}}</h2>
+          <img class="lazy-wide loaded" src="{{_content.imageBackground}}" alt="{{_content.titleOriginal}}" data-src="{{_content.imageBackground}}" data-was-processed="true">
+        </a>
+      </div>
+    </li>
+    {%endfor%}
+	</ul>
+</div>
+
+</body>
+</html>

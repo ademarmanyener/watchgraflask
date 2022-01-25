@@ -1,0 +1,125 @@
+{%extends 'layouts/default.html'%}
+{% from "macros/cards.html" import card_long, card_wide %}
+{%block container%}
+
+{%for i in range(4)%}<br />{%endfor%}
+
+<style>
+  .owl-carousel .owl-stage-outer {
+    overflow: unset;
+  }
+  .home {
+    padding: 0px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+</style>
+
+{%if latestWatchedEpisode.query.filter_by(idAddProfile=session['PROFILE']['idProfile']).all()|length >= 1%}
+<!-- latest watched episodes -->
+<section class="home" style="margin-top: 30px;">
+  <!-- section title -->
+  <div class="col-12">
+    <h2 class="section__title" style="margin: 0px; padding: 0px;">Son İzlediğim Bölümler</h2>
+    <ul class="card__list" style="margin: 0px; margin-top: 5px; float: right; position: absolute; bottom: 0px; right: 125px;">
+      <a style="cursor: pointer;" class="open-modal">
+        <li onclick="profileproc_tvepisodecontent_clearLatestWatchedEpisodes();">
+          <i class="icon ion-md-close" style="font-size: 15px; color: rgb(223, 223, 223); margin-right: 5px;"></i>
+          <span>Son İzlenenleri Temizle</span>
+        </li>
+      </a>
+    </ul>
+    <button class="home__nav home__nav--prev" type="button">
+      <i class="icon ion-ios-arrow-round-back"></i>
+    </button>
+    <button class="home__nav home__nav--next" type="button">
+      <i class="icon ion-ios-arrow-round-forward"></i>
+    </button>
+  </div>
+  <!-- end section title -->
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="owl-carousel home__carousel">
+          {%for _l_w_episode in latestWatchedEpisode.query.filter_by(idAddProfile=session['PROFILE']['idProfile']).order_by(latestWatchedEpisode.watchDate.desc()).limit(25).all()%}
+            <div class="item">
+              <!-- card -->
+              <div class="card card--big">
+                <div class="card__cover">
+                  <img src="{{tvEpisodeContent.query.filter_by(idTvEpisode=_l_w_episode.idTvEpisode).first().imagePoster}}" alt="">
+
+                  <a href="{{url_for('tv_watch', title_url=content.query.filter_by(idContent=_l_w_episode.idContent).first().titleUrl, season_number=tvSeasonContent.query.filter_by(idTvSeason=_l_w_episode.idTvSeason).first().seasonNumber, episode_number=tvEpisodeContent.query.filter_by(idTvEpisode=_l_w_episode.idTvEpisode).first().episodeNumber)}}" class="card__play">
+                    <i class="icon ion-ios-play"></i>
+                  </a>
+                </div>
+                <div class="card__content">
+                  <h3 class="card__title"><a href="{{url_for('tv_title', title_url=content.query.filter_by(idContent=_l_w_episode.idContent).first().titleUrl)}}">{{content.query.filter_by(idContent=_l_w_episode.idContent).first().title}}</a></h3>
+                  <span class="card__rate" style="font-size: 17px; font-weight: lighter;">{{tvEpisodeContent.query.filter_by(idTvEpisode=_l_w_episode.idTvEpisode).first().seasonNumber}}. Sezon {{tvEpisodeContent.query.filter_by(idTvEpisode=_l_w_episode.idTvEpisode).first().episodeNumber}}. Bölüm</span>
+                </div>
+              </div>
+              <!-- end card -->
+            </div>
+          {%endfor%}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- end latest watched episodes -->
+{%endif%}
+
+<!-- expected premiere -->
+<section class="section section--bg" data-bg="#" style="padding: 0px;">
+  <div class="content" style="padding: 0px;">
+    <div class="content__head-----disabled-css">
+      <br>
+      <div class="container-fluid">
+        <div class="row" id="row-latestEpisodes">
+          <!-- section title -->
+          <div class="col-12">
+            <h2 class="section__title">Son Eklenen Bölümler</h2>
+          </div>
+          <!-- end section title -->
+
+            {%for episode in tvEpisodeContent.query.order_by(tvEpisodeContent.addDate.desc()).limit(30).all()%}
+              <div class="col-6 col-sm-4 col-lg-3 col-xl-2 card-latestEpisode">
+                {{ card_wide(episode=episode) }}
+              </div>
+            {%endfor%}
+
+          <button id="button-latestEpisodes-loadMore" class="header__sign-in" style="color: #0d0d0d; width: 100%; margin: 0px; border-radius: 0px;">Daha Fazla Göster</button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- end expected premiere -->
+
+<!-- expected premiere -->
+<section class="section section--bg" data-bg="#" style="padding: 0px;">
+  <div class="content" style="padding: 0px;">
+    <div class="content__head-----disabled-css">
+      <br>
+      <div class="container-fluid">
+        <div class="row">
+          <!-- section title -->
+          <div class="col-12">
+            <h2 class="section__title">Son Eklenen Filmler</h2>
+          </div>
+          <!-- end section title -->
+
+            {%for content in content.query.filter_by(type='MOVIE').order_by(content.addDate.desc()).all()%}
+              <div class="col-6 col-sm-4 col-lg-3 col-xl-2">
+                {{ card_long(content=content) }}
+              </div>
+            {%endfor%}
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- end expected premiere -->
+
+{%endblock%}

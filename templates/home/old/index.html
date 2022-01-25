@@ -1,0 +1,403 @@
+{%extends 'layouts/default.html'%}
+
+{%block inside_head%}
+<!-- TEST TEST TEST TEST TEST TEST TEST -->
+<link rel="stylesheet" href="">
+{%endblock%}
+
+{%block container%}
+<style>
+  .owl-carousel .owl-stage-outer {
+    overflow: unset;
+  }
+</style>
+
+  {%if highlight_info|length|int >= 1%}
+	<section class="home">
+    <!-- home bg -->
+		<div class="owl-carousel home__bg">
+      {%for background_image in highlight_info%}
+			<div class="item home__cover" data-bg="{{get_content_db(content_id=background_image.idContent).imageBackground}}"></div>
+      {%endfor%}
+		</div>
+		<!-- end home bg -->
+
+		<div class="container">
+			<div class="row">
+				<div class="col-12">
+					<h1 class="home__title">ÖNE ÇIKARILAN <b>İÇERİKLER</b> <span style="font-size: 13px;">Bu içerikler, <b>yöneticiler</b> tarafından önerilmektedir.</span></h1>
+
+					<button class="home__nav home__nav--prev" type="button">
+						<i class="icon ion-ios-arrow-round-back"></i>
+					</button>
+					<button class="home__nav home__nav--next" type="button">
+						<i class="icon ion-ios-arrow-round-forward"></i>
+					</button>
+				</div>
+
+				<div class="col-12">
+					<div class="owl-carousel home__carousel">
+						{%for content in highlight_info%}
+              {%if get_content_db(content_id=content.idContent).visibility%}
+						<div class="item">
+							<!-- card -->
+							<div class="card card--big">
+								<div class="card__cover">
+									<img src="{{get_content_db(content_id=content.idContent).imagePoster}}" alt="">
+									<a href="{{url_for('content_redirect', title_url=get_content_db(content_id=content.idContent).titleUrl)}}" class="card__play">
+										<i class="icon ion-ios-play"></i>
+									</a>
+								</div>
+								<div class="card__content">
+									<h3 class="card__title"><a href="{{url_for('content_redirect', title_url=get_content_db(content_id=content.idContent).titleUrl)}}">{{get_content_db(content_id=content.idContent).title}}</a></h3>
+                  <span class="card__rate" style="font-size: 15px;">{%if get_content_db(content_id=content.idContent).type == 'MOVIE'%}Film{%elif get_content_db(content_id=content.idContent).type == 'TV'%}Dizi{%endif%}</span>
+									<span class="card__category">
+                    <!-- genre list -->
+                    {%for genre in get_content_genre(content_id=content.idContent)%}
+                    <a href="#">{{get_genre_list(genre_id=genre.idGenre, content_type=get_content_db(content_id=content.idContent).type).title}}</a>
+                    {%endfor%}
+                    <!-- end genre list -->
+									</span>
+									<span class="card__rate"><i class="icon ion-ios-star"></i>{{get_content_db(content_id=content.idContent).voteAverage}}</span>
+								</div>
+							</div>
+							<!-- end card -->
+						</div>
+              {%endif%}
+						{%endfor%}
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- end home -->
+  {%else%}
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+  {%endif%}
+
+	<!-- expected premiere -->
+	<section class="section section--bg" data-bg="img/section/section.jpg" style="padding: 0px;">
+    <div class="content">
+      <div class="content__head{%if not highlight_info|length|int >= 1%}--disabled-css{%endif%}">
+        <br>
+        <div class="container-fluid">
+          <div class="row">
+            <!-- section title -->
+            <div class="col-12">
+              <h2 class="section__title">Son Eklenen Bölümler</h2>
+            </div>
+            <!-- end section title -->
+
+            {%for episode in latest_tv_episodes_info%}
+            <!-- card -->
+            <div class="col-6 col-sm-4 col-lg-3 col-xl-2">
+              <div class="card">
+                <div class="card__cover">
+                  <img src="{{episode.imagePoster}}" alt="">
+                  <a href="{{url_for('tv_watch', title_url=get_content_db(content_id=episode.idContent).titleUrl, season_number=episode.seasonNumber, episode_number=episode.episodeNumber)}}" class="card__play">
+                    <i class="icon ion-ios-play"></i>
+                  </a>
+                </div>
+                <div class="card__content">
+                  <h3 class="card__title"><a href="{{url_for('tv_watch', title_url=get_content_db(content_id=episode.idContent).titleUrl, season_number=episode.seasonNumber, episode_number=episode.episodeNumber)}}">{{get_content_db(content_id=episode.idContent).title}}</a></h3>
+                  <span class="card__rate" style="font-size: 14px;">{{episode.seasonNumber}}. Sezon {{episode.episodeNumber}}. Bölüm</span>
+                  <span class="card__category">
+                    {%for genre in get_content_genre(content_id=episode.idContent)%}
+                    <a href="#">{{get_genre_list(genre_id=genre.idGenre, content_type=get_content_db(content_id=episode.idContent).type).title}}</a>
+                    {%endfor%}
+                  </span>
+                  <span class="card__rate"><i class="icon ion-ios-star"></i>{{episode.voteAverage}}</span>
+                </div>
+              </div>
+            </div>
+            <!-- end card -->
+            {%endfor%}
+          </div>
+        </div>
+      </div>
+    </div>
+	</section>
+	<!-- end expected premiere -->
+
+	<!-- content -->
+	<section class="content">
+		<div class="content__head">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-12">
+						<!-- content title -->
+						<h2 class="content__title">Son Eklenenler</h2>
+						<!-- end content title -->
+
+						<!-- content tabs nav -->
+						<ul class="nav nav-tabs content__tabs" id="content__tabs" role="tablist">
+							<li class="nav-item">
+								<a class="nav-link active" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">TÜMÜ</a>
+							</li>
+
+							<li class="nav-item">
+								<a class="nav-link" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">FİLMLER</a>
+							</li>
+
+							<li class="nav-item">
+								<a class="nav-link" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">DİZİLER</a>
+							</li>
+
+              {%if 2 == 1%}
+							<li class="nav-item">
+								<a class="nav-link" data-toggle="tab" href="#tab-4" role="tab" aria-controls="tab-4" aria-selected="false">TRENDLER</a>
+							</li>
+              {%endif%}
+						</ul>
+						<!-- end content tabs nav -->
+
+						<!-- content mobile tabs nav -->
+						<div class="content__mobile-tabs" id="content__mobile-tabs">
+							<div class="content__mobile-tabs-btn dropdown-toggle" role="navigation" id="mobile-tabs" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<input type="button" value="Son Eklenenler">
+								<span></span>
+							</div>
+
+							<div class="content__mobile-tabs-menu dropdown-menu" aria-labelledby="mobile-tabs">
+								<ul class="nav nav-tabs" role="tablist">
+									<li class="nav-item"><a class="nav-link active" id="1-tab" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">TÜMÜ</a></li>
+
+									<li class="nav-item"><a class="nav-link" id="2-tab" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">FİLMLER</a></li>
+
+									<li class="nav-item"><a class="nav-link" id="3-tab" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">DİZİLER</a></li>
+
+                  {%if 2 == 1%}
+									<li class="nav-item"><a class="nav-link" id="4-tab" data-toggle="tab" href="#tab-4" role="tab" aria-controls="tab-4" aria-selected="false">TRENDLER</a></li>
+                  {%endif%}
+								</ul>
+							</div>
+						</div>
+						<!-- end content mobile tabs nav -->
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+			<!-- content tabs -->
+			<div class="tab-content" id="myTabContent">
+				<div class="tab-pane fade show active" id="tab-1" role="tabpanel" aria-labelledby="1-tab">
+					<div class="row">
+						{%for all in latest_all_info%}
+              {%if all.visibility%}
+						<!-- card -->
+						<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
+							<div class="card">
+								<div class="card__cover">
+									<img src="{{all.imagePoster}}" alt="">
+									<a href="{{url_for('content_redirect', title_url=all.titleUrl)}}" class="card__play">
+										<i class="icon ion-ios-play"></i>
+									</a>
+								</div>
+								<div class="card__content">
+                <h3 class="card__title"><a href="{{url_for('content_redirect', title_url=all.titleUrl)}}">{{all.title}}</a></h3>
+                  {%if all.type == 'MOVIE'%}
+                    {%if get_moviecontent_latestplayer(content_id=all.idContent) == 1%}
+                      <h1 class="card__title" style="font-size: 15px; color: rgb(190, 35, 35); white-space: pre-line;"><b>HENÜZ</b> HİÇ OYNATICI EKLENMEDİ</h1>
+                    {%endif%}
+                  {%elif all.type == 'TV'%}
+                    {%if get_tvcontent_latestepisode(content_id=all.idContent) != 1%}
+                      <h1 class="card__title" style="font-size: 15px;">{{get_tvcontent_latestepisode(content_id=all.idContent).seasonNumber}}. Sezon {{get_tvcontent_latestepisode(content_id=all.idContent).episodeNumber}}. Bölüm</h1>
+                    {%else%}
+                      <h1 class="card__title" style="font-size: 15px; color: rgb(190, 35, 35); white-space: pre-line;"><b>HENÜZ</b> HİÇ SEZON EKLENMEDİ</h1>
+                    {%endif%}
+                  {%endif%}
+									<span class="card__category">
+                    {%for genre in get_content_genre(content_id=all.idContent)%}
+										<a href="#">{{get_genre_list(genre_id=genre.idGenre, content_type=all.type).title}}</a>
+                    {%endfor%}
+									</span>
+									<span class="card__rate"><i class="icon ion-ios-star"></i>{{all.voteAverage}}</span>
+								</div>
+							</div>
+						</div>
+						<!-- end card -->
+              {%endif%}
+						{%endfor%}
+					</div>
+          <div class="row">
+            <a href="{{url_for('search')}}"><button class="header__sign-in" style="position: absolute; right: 10px; width: 200px; color: black;">Tümünü Göster</button></a>
+          </div>
+				</div>
+
+				<div class="tab-pane fade" id="tab-2" role="tabpanel" aria-labelledby="2-tab">
+					<div class="row">
+            {%for movie in latest_movie_info%}
+              {%if movie.visibility%}
+						<!-- card -->
+						<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
+							<div class="card">
+								<div class="card__cover">
+									<img src="{{movie.imagePoster}}" alt="">
+									<a href="{{url_for('content_redirect', title_url=movie.titleUrl)}}" class="card__play">
+										<i class="icon ion-ios-play"></i>
+									</a>
+								</div>
+								<div class="card__content">
+									<h3 class="card__title"><a href="{{url_for('content_redirect', title_url=movie.titleUrl)}}">{{movie.title}}</a></h3>
+                  {%if get_moviecontent_latestplayer(content_id=movie.idContent) == 1%}
+                    <h1 class="card__title" style="font-size: 15px; color: rgb(190, 35, 35); white-space: pre-line;"><b>HENÜZ</b> HİÇ OYNATICI EKLENMEDİ</h1>
+                  {%endif%}
+									<span class="card__category">
+                    {%for genre in get_content_genre(content_id=movie.idContent)%}
+										<a href="#">{{get_genre_list(genre_id=genre.idGenre, content_type=movie.type).title}}</a>
+                    {%endfor%}
+									</span>
+									<span class="card__rate"><i class="icon ion-ios-star"></i>{{movie.voteAverage}}</span>
+								</div>
+							</div>
+						</div>
+						<!-- end card -->
+              {%endif%}
+            {%endfor%}
+					</div>
+          <div class="row">
+            <a href="{{url_for('catalog_movie')}}"><button class="header__sign-in" style="position: absolute; right: 10px; width: 200px; color: black;">Tüm Filmleri Göster</button></a>
+          </div>
+				</div>
+
+				<div class="tab-pane fade" id="tab-3" role="tabpanel" aria-labelledby="3-tab">
+					<div class="row">
+            {%for tv in latest_tv_info%}
+              {%if tv.visibility%}
+						<!-- card -->
+						<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
+							<div class="card">
+								<div class="card__cover">
+									<img src="{{tv.imagePoster}}" alt="">
+									<a href="{{url_for('content_redirect', title_url=tv.titleUrl)}}" class="card__play">
+										<i class="icon ion-ios-play"></i>
+									</a>
+								</div>
+								<div class="card__content">
+									<h3 class="card__title"><a href="{{url_for('content_redirect', title_url=tv.titleUrl)}}">{{tv.title}}</a></h3>
+                  {%if get_tvcontent_latestepisode(content_id=tv.idContent) != 1%}
+                    <h1 class="card__title" style="font-size: 15px;">{{get_tvcontent_latestepisode(content_id=tv.idContent).seasonNumber}}. Sezon {{get_tvcontent_latestepisode(content_id=tv.idContent).episodeNumber}}. Bölüm</h1>
+                  {%else%}
+                    <h1 class="card__title" style="font-size: 15px; color: rgb(190, 35, 35); white-space: pre-line;"><b>HENÜZ</b> HİÇ SEZON EKLENMEDİ</h1>
+                  {%endif%}
+									<span class="card__category">
+                    {%for genre in get_content_genre(content_id=tv.idContent)%}
+										<a href="#">{{get_genre_list(genre_id=genre.idGenre, content_type=tv.type).title}}</a>
+                    {%endfor%}
+									</span>
+									<span class="card__rate"><i class="icon ion-ios-star"></i>{{tv.voteAverage}}</span>
+								</div>
+							</div>
+						</div>
+						<!-- end card -->
+              {%endif%}
+            {%endfor%}
+					</div>
+          <div class="row">
+            <a href="{{url_for('catalog_tv')}}"><button class="header__sign-in" style="position: absolute; right: 10px; width: 200px; color: black;">Tüm Dizileri Göster</button></a>
+          </div>
+				</div>
+
+        <!-- todo: trends beta begin -->
+				<div class="tab-pane fade" id="tab-4" role="tabpanel" aria-labelledby="4-tab">
+					<div class="row">
+            {%for tv in latest_tv_info%}
+              {%if tv.visibility%}
+						<!-- card -->
+						<div class="col-3 col-sm-12 col-lg-3">
+							<div class="card card--list">
+								<div class="row">
+									<div class="col-12 col-sm-5">
+										<div class="card__cover">
+											<img src="{{tv.imagePoster}}" alt="">
+											<a href="#" class="card__play">
+												<i class="icon ion-ios-play"></i>
+											</a>
+										</div>
+									</div>
+
+									<div class="col-12 col-sm-7">
+										<div class="card__content">
+											<h3 class="card__title"><a href="#">I Dream in Another Language</a></h3>
+											<span class="card__category">
+												<a href="#">Action</a>
+												<a href="#">Triler</a>
+											</span>
+
+											<div class="card__wrap">
+												<span class="card__rate"><i class="icon ion-ios-star"></i>8.4</span>
+
+												<ul class="card__list">
+													<li>HD</li>
+													<li>16+</li>
+												</ul>
+											</div>
+
+											<div class="card__description">
+												<p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- end card -->
+              {%endif%}
+            {%endfor%}
+					</div>
+          <div class="row">
+            <a href="{{url_for('catalog_tv')}}"><button class="header__sign-in" style="position: absolute; right: 10px; width: 200px; color: black;">Tüm Dizileri Göster</button></a>
+          </div>
+				</div>
+        <!-- todo: trends beta begin -->
+
+			</div>
+			<!-- end content tabs -->
+		</div>
+	</section>
+	<!-- end content -->
+
+	<!-- expected premiere -->
+	<section class="section section--bg" data-bg="img/section/section.jpg">
+		<div class="container-fluid">
+			<div class="row">
+				<!-- section title -->
+				<div class="col-12">
+					<h2 class="section__title">Rastgele Diziler & Filmler</h2>
+				</div>
+				<!-- end section title -->
+
+        {%for random in random_info%}
+				<!-- card -->
+				<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
+					<div class="card">
+						<div class="card__cover">
+							<img src="{{random.imagePoster}}" alt="">
+							<a href="{{url_for('content_redirect', title_url=random.titleUrl)}}" class="card__play">
+								<i class="icon ion-ios-play"></i>
+							</a>
+						</div>
+						<div class="card__content">
+							<h3 class="card__title"><a href="{{url_for('content_redirect', title_url=random.titleUrl)}}">{{random.title}}</a></h3>
+							<span class="card__category">
+                {%for genre in get_content_genre(content_id=random.idContent)%}
+							  <a href="#">{{get_genre_list(genre_id=genre.idGenre, content_type=random.type).title}}</a>
+                {%endfor%}
+							</span>
+              <span class="card__rate" style="font-size: 15px;">{%if random.type == 'MOVIE'%}Film{%elif random.type == 'TV'%}Dizi{%endif%}</span>
+              <br>
+							<span class="card__rate"><i class="icon ion-ios-star"></i>{{random.voteAverage}}</span>
+						</div>
+					</div>
+				</div>
+				<!-- end card -->
+				{%endfor%}
+			</div>
+		</div>
+	</section>
+	<!-- end expected premiere -->
+{%endblock%}

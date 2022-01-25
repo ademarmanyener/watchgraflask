@@ -1,0 +1,29 @@
+<!-- modal insertNew -->
+<div id="modal-insertNew" class="zoom-anim-dialog mfp-hide modal">
+	<h6 class="modal__title">Yeni Ülke Ekle</h6>
+
+  <input type="text" class="form__input" placeholder="idISO_3166_1" id="inputInsertNew_idISO_3166_1">
+  <input type="text" class="form__input" placeholder="Ülke Adı" id="inputInsertNew_title">
+  <input type="text" class="form__input" placeholder="Orijinal Ülke Adı" id="inputInsertNew_titleOriginal">
+
+	<div class="modal__btns">
+    <button id="btnInsertNew_insertNew" class="modal__btn modal__btn--apply" type="button">Oluştur</button>
+		<button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+	</div>
+</div>
+<!-- end modal insertNew -->
+
+{%for result in results_info%}
+  <!-- modal drop -->
+  <div id="modal-drop-{{result.idISO_3166_1}}" class="zoom-anim-dialog mfp-hide modal">
+    <h6 class="modal__title">{{result.title}} Adlı Ülkeyi Listeden Sil</h6>
+
+    <p class="modal__text">Bu ülkeyi kalıcı olarak listeden silmek istediğinize emin misiniz?</p>
+
+    <div class="modal__btns">
+      <button onclick="adminpanel_v2_function(tableName='countrylist', functionName='drop', dictionary={'idISO_3166_1': '{{result.idISO_3166_1|safe}}'})" class="modal__btn modal__btn--apply" type="button">Sil</button>
+      <button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+    </div>
+  </div>
+  <!-- end modal drop -->
+{%endfor%}

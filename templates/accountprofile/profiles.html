@@ -1,0 +1,39 @@
+{%extends 'layouts/default.html'%}
+{%block container%}
+<style media="screen">
+  .tab-content > .tab-pane {
+    display: unset;
+  }
+  .price .price__item img {
+		border-radius: 100%;
+	}
+</style>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<div class="container">
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane" id="tab-1" role="tabpanel" aria-labelledby="1-tab">
+      <div class="row">
+        {%for profile in profiles_info%}
+         <!-- profile -->
+         <div class="col-12 col-md-12 col-lg-12">
+           <div class="price price--profile">
+             <div class="price__item price__item--first">
+               <div style="min-width: 100px; min-height: 100px; background-image: url('{{get_profile_db(profile_id=profile.idProfile).imageAvatar}}'); background-size: cover; background-position: center; border-radius: 50%; margin-right: 20px; float: left;"></div>
+               <span><a href="{{url_for('accountprofile', account_username=account_info.username, profile_username=profile.username)}}" target="_blank" style="color: white;">{{profile.username}}</a></span><span></span>
+             </div>
+           </div>
+         </div>
+         <!-- end profile -->
+         {%endfor%}
+       </div>
+     </div>
+   </div>
+</div>
+
+{%endblock%}

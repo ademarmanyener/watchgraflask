@@ -1,0 +1,138 @@
+﻿{%extends 'layouts/default.html'%}
+{%block container%}
+<style>
+  .ion-ios-arrow-back::before {
+    line-height: 50px;
+  }
+  .ion-ios-arrow-forward::before {
+    line-height: 50px;
+  }
+  .paginator__item--active a:hover {
+    color: rgb(90, 90, 90);
+  }
+  .filter__item-menu {
+    max-height: 500px;
+  }
+</style>
+
+	<!-- page title -->
+	<section class="section section--first section--bg" data-bg="img/section/section.jpg">
+		<div class="container">
+			<div class="row">
+				<div class="col-12">
+					<div class="section__wrap">
+						<!-- section title -->
+						<h2 class="section__title">Keşfet <span style="font-size: 17px;">Diğer kullanıcılar tarafından oluşturulmuş koleksiyonları keşfet.</span></h2>
+						<!-- end section title -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- end page title -->
+
+	<!-- filter -->
+	<div class="filter">
+		<div class="container">
+			<div class="row">
+				<div class="col-12">
+					<div class="filter__content">
+						<div class="filter__items">
+
+		<!-- header search -->
+		<form action="{{url_for('discover')}}" method="POST" class="header__search">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-12">
+						<div class="header__search-content">
+							{{discoversearchform.query()}}
+							{{discoversearchform.search(style='width: 50px;')}}
+						</div>
+					</div>
+				</div>
+			</div>
+			{{discoversearchform.csrf_token}}
+		</form>
+		<!-- end header search -->
+					
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+  </div>
+	<!-- end filter -->
+
+	<!-- catalog -->
+	<div class="catalog">
+		<div class="container-fluid">
+			<div class="row">
+        {%for collection in all_discover_contents_info%}
+        {%if collection.private == False%}
+				<!-- card -->
+				<div class="col-6 col-sm-12 col-lg-3">
+					<div class="card card--list">
+						<div class="row">
+							<div class="col-12 col-sm-6">
+								<div class="card__cover">
+                  <div style="width: 100%; height: 200px; background-image: url('{{get_profile_image_avatar(profile_id=collection.idAddProfile)}}'); background-position: center; background-size: cover;">
+ 									  <a href="{{url_for('collection_title', collection_id=collection.idCollection)}}" target="_blank" class="card__play">
+										  <i class="icon ion-ios-albums"></i>
+									  </a>
+                  </div>
+								</div>
+							</div>
+
+							<div class="col-12 col-sm-6">
+								<div class="card__content">
+									<h3 class="card__title"><a href="{{url_for('collection_title', collection_id=collection.idCollection)}}" target="_blank">{{collection.title}}</a></h3>
+
+									<div class="card__wrap">
+										<ul class="card__list" style="margin-left: 0px;">
+											<a href="#" style="margin-right: 10px;"><li>{{sql_execute('SELECT * FROM collectionItem WHERE idCollection = "' + collection.idCollection + '"').fetchall()|length}} içerik</li></a>
+                      {%for tag in sql_execute('SELECT * FROM collectionTag WHERE idCollection = "'+collection.idCollection+'"').fetchall()%}
+											<a href="#" style="margin-right: 10px;"><li>{{tag.title}}</li></a>
+                      {%endfor%}
+										</ul>
+									</div>
+
+									<div class="card__description">
+										<p>{{collection.overview}}</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- end card -->
+        {%endif%}
+        {%endfor%}
+
+				<!-- paginator -->
+				<div class="col-12">
+					<ul class="paginator paginator--list">
+            {%if request.args.get('p')|int - 1 > 0%}
+						<li class="paginator__item paginator__item--prev">
+							<a href="{{request.path}}?q={{request.args.get('q')}}&p={{request.args.get('p')|int - 1}}"><i class="icon ion-ios-arrow-back"></i></a>
+						</li>
+            {%endif%}
+					  {%if request.args.get('p')|int - 4 > 0%}<li class="paginator__item"><a href="{{request.path}}?q={{request.args.get('q')}}&p={{request.args.get('p')|int - 4}}">{{request.args.get('p')|int - 4}}</a></li>{%endif%}
+					  {%if request.args.get('p')|int - 3 > 0%}<li class="paginator__item"><a href="{{request.path}}?q={{request.args.get('q')}}&p={{request.args.get('p')|int - 3}}">{{request.args.get('p')|int - 3}}</a></li>{%endif%}
+					  {%if request.args.get('p')|int - 2 > 0%}<li class="paginator__item"><a href="{{request.path}}?q={{request.args.get('q')}}&p={{request.args.get('p')|int - 2}}">{{request.args.get('p')|int - 2}}</a></li>{%endif%}
+					  {%if request.args.get('p')|int - 1 > 0%}<li class="paginator__item"><a href="{{request.path}}?q={{request.args.get('q')}}&p={{request.args.get('p')|int - 1}}">{{request.args.get('p')|int - 1}}</a></li>{%endif%}
+						{%if request.args.get('p')|int > 0%}<li class="paginator__item paginator__item--active"><a href="#">{{request.args.get('p')}}</a></li>{%endif%}
+					  {%if request.args.get('p')|int + 1 > 0%}<li class="paginator__item"><a href="{{request.path}}?q={{request.args.get('q')}}&p={{request.args.get('p')|int + 1}}">{{request.args.get('p')|int + 1}}</a></li>{%endif%}
+					  {%if request.args.get('p')|int + 2 > 0%}<li class="paginator__item"><a href="{{request.path}}?q={{request.args.get('q')}}&p={{request.args.get('p')|int + 2}}">{{request.args.get('p')|int + 2}}</a></li>{%endif%}
+					  {%if request.args.get('p')|int + 3 > 0%}<li class="paginator__item"><a href="{{request.path}}?q={{request.args.get('q')}}&p={{request.args.get('p')|int + 3}}">{{request.args.get('p')|int + 3}}</a></li>{%endif%}
+					  {%if request.args.get('p')|int + 4 > 0%}<li class="paginator__item"><a href="{{request.path}}?q={{request.args.get('q')}}&p={{request.args.get('p')|int + 4}}">{{request.args.get('p')|int + 4}}</a></li>{%endif%}
+						<li class="paginator__item paginator__item--next">
+							<a href="{{request.path}}?q={{request.args.get('q')}}&p={{request.args.get('p')|int + 1}}"><i class="icon ion-ios-arrow-forward"></i></a>
+						</li>
+					</ul>
+				</div>
+				<!-- end paginator -->
+			</div>
+		</div>
+	</div>
+	<!-- end catalog -->
+{%endblock%}

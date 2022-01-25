@@ -1,0 +1,95 @@
+<!-- custom sidebar for content editing -->
+<!-- sidebar -->
+<div class="sidebar">
+  <!-- sidebar logo -->
+  <a href="{{url_for('home')}}" class="sidebar__logo">
+    <img src="{{url_for('static', filename='img/logo.png')}}" alt="">
+  </a>
+  <!-- end sidebar logo -->
+
+  <!-- sidebar user -->
+  <div class="sidebar__user" style="padding: 0px; height: 60px; margin-top: 20px; display: block;">
+    <div class="row">
+      <div class="col-4">
+        <div style="width: 50px; height: 50px; margin-left: 25px; background-image: url('{{get_profile_db(profile_id=session['PROFILE']['idProfile']).imageAvatar}}'); background-size: cover; background-position: center; background-repeat: no-repeat; border-radius: 100%;"></div>
+      </div>
+      <div class="col-5">
+
+      <div class="sidebar__user-title">
+        <span>Yönetici</span>
+        <p>{{get_profile_db(profile_id=session['PROFILE']['idProfile']).username[:7]}}</p>       
+      </div>
+
+      </div>
+      <div class="col-2">
+        <a href="{{url_for('adminpanel_contents')}}" class="sidebar__user-btn">
+          <i class="icon ion-ios-arrow-dropleft"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+  <!-- end sidebar user -->
+
+  <!-- sidebar nav -->
+  <ul class="sidebar__nav">
+
+    <li class="sidebar__nav-item">
+      <a href="{{url_for('content_redirect', title_url=content_info.titleUrl)}}" target="_blank" class="sidebar__nav-link"><i class="icon ion-ios-play"></i> İçerik Sayfası</a>
+    </li>
+
+    <li class="sidebar__nav-item">
+      <a href="{{url_for('adminpanel_content_edit', title_url=content_info.titleUrl)}}" class="sidebar__nav-link {%if request.endpoint == 'adminpanel_content_edit'%}sidebar__nav-link--active{%endif%}"><i class="icon ion-ios-keypad"></i> İçerik Detayları</a>
+    </li>
+
+      {%if request.endpoint == 'adminpanel_content_edit' and content_info.type == 'MOVIE' or request.endpoint == 'adminpanel_content_players' or request.endpoint == 'adminpanel_content_player_edit'%}
+      <li class="sidebar__nav-item">
+        <a href="{{url_for('adminpanel_content_players', title_url=content_info.titleUrl)}}" style="margin-left: 20px;" class="sidebar__nav-link {%if request.endpoint == 'adminpanel_content_players' or request.endpoint == 'adminpanel_content_player_edit'%}sidebar__nav-link--active{%endif%}"><i class="icon ion-ios-return-right"></i> Oynatıcı Detayları</a>
+      </li>
+      {%endif%}
+
+    {%if content_info.type == 'TV'%}
+    <li class="sidebar__nav-item">
+      <a href="{{url_for('adminpanel_content_seasons', title_url=content_info.titleUrl)}}" class="sidebar__nav-link {%if request.endpoint == 'adminpanel_content_seasons' or request.endpoint == 'adminpanel_content_season_edit'%}sidebar__nav-link--active{%endif%}"><i class="icon ion-ios-list"></i> Sezon Detayları</a>
+    </li>
+
+      {%if request.endpoint == 'adminpanel_content_season_edit' or request.endpoint == 'adminpanel_content_season_episodes' or request.endpoint == 'adminpanel_content_season_episode_edit' or request.endpoint == 'adminpanel_content_season_episode_players' or request.endpoint == 'adminpanel_content_season_episode_player_edit'%}
+      <li class="sidebar__nav-item">
+        <a href="{{url_for('adminpanel_content_season_episodes', title_url=content_info.titleUrl, season_number=season_info.seasonNumber)}}" style="margin-left: 10px;" class="sidebar__nav-link {%if request.endpoint == 'adminpanel_content_season_episodes' or request.endpoint == 'adminpanel_content_season_episode_edit'%}sidebar__nav-link--active{%endif%}"><i class="icon ion-ios-return-right"></i> Bölüm Detayları</a>
+      </li>
+
+        {%if request.endpoint == 'adminpanel_content_season_episode_edit' or request.endpoint == 'adminpanel_content_season_episode_players' or request.endpoint == 'adminpanel_content_season_episode_player_edit'%}
+        <li class="sidebar__nav-item">
+          <a href="{{url_for('adminpanel_content_season_episode_players', title_url=content_info.titleUrl, season_number=season_info.seasonNumber, episode_number=episode_info.episodeNumber)}}" style="margin-left: 20px;" class="sidebar__nav-link {%if request.endpoint == 'adminpanel_content_season_episode_players' or request.endpoint == 'adminpanel_content_season_episode_player_edit'%}sidebar__nav-link--active{%endif%}"><i class="icon ion-ios-return-right"></i> Oynatıcı Detayları</a>
+        </li>
+        {%endif%}
+      {%endif%}
+
+    {%endif%}
+
+    <li class="sidebar__nav-item">
+      <a href="#" class="sidebar__nav-link"><i class="icon ion-ios-filing"></i> Kategori Detayları</a>
+    </li>
+
+    <li class="sidebar__nav-item">
+      <a href="#" class="sidebar__nav-link"><i class="icon ion-ios-chatbubbles"></i> Yorum Detayları</a>
+    </li>
+
+    <li class="sidebar__nav-item">
+      <a href="#" class="sidebar__nav-link"><i class="icon ion-ios-globe"></i> Ülke Detayları</a>
+    </li>
+
+    <li class="sidebar__nav-item">
+      <a href="#" class="sidebar__nav-link"><i class="icon ion-ios-megaphone"></i> Dil Detayları</a>
+    </li>
+
+    <li class="sidebar__nav-item">
+      <a href="#" class="sidebar__nav-link"><i class="icon ion-ios-pricetag"></i> Etiket Detayları</a>
+    </li>
+
+    <li class="sidebar__nav-item">
+      <a href="#" class="sidebar__nav-link"><i class="icon ion-ios-contacts"></i> Oyuncu Detayları</a>
+    </li>
+  </ul>
+  <!-- end sidebar nav -->
+</div>
+<!-- end sidebar -->

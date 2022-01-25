@@ -1,0 +1,627 @@
+{%extends 'layouts/default.html'%}
+{%block container%}
+<style>
+  .owl-carousel .owl-stage-outer {
+    overflow: visible;
+  }
+  #comment__like__selected {
+    color: rgb(0, 255, 85);
+    opacity: 1;
+  }
+  #comment__dislike__selected {
+    color: red;
+    opacity: 1;
+  }
+</style>
+
+<!-- home -->
+<section class="home">
+  <br> 
+  <!-- home bg -->
+  <div class="owl-carousel home__bg" style="background-image: url(''); background-position: center; background-size: cover; filter: blur(12px);">
+    <div class="item home__cover" data-bg="https://wallpapercave.com/wp/wp4077236.jpg"></div>
+  </div>
+  <!-- end home bg -->
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div style="width: 250px; height: 350px; background-image: url('{{cast_info.imagePoster}}'); background-position: center; background-size: cover; border-radius: 5px; margin-bottom: 25px;"></div>
+        <h1 class="home__title">
+          <b>{{cast_info.name}}</b>
+          <div class="section__wrap" style="display: inline-flex"><i class="icon ion-ios-{%if cast_info.gender == 1%}woman{%elif cast_info.gender == 2%}man{%endif%}" style="font-size: 35px; color: white; margin-right: 5px;"></i></div>
+          <span style="font-size: 12px;">{{cast_info.birthPlace}}</span>
+        </h1>
+        <h4 class="home__title" style="font-size: 15px; text-transform: unset;">
+          <div class="card__content">
+            <div class="card__wrap">
+              <div class="card__description card__description--details">
+                {{cast_info.biography}}
+              </div>
+            </div>
+          </div>
+        </h4>
+      </div>
+    </div>
+  </div>
+  <br>
+  <br>
+  <br> 
+</section>
+<!-- end home -->
+
+<br><br>
+
+<!-- home -->
+
+<section class="home" style="margin: 0px; padding: 0px;">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h1 class="home__title"><b>{{cast_info.name}}</b>'in İçinde Bulunduğu İçerikler</h1>
+
+        {%if cast_contents_info|length|int >= 8%}
+        <button class="home__nav home__nav--prev" type="button">
+          <i class="icon ion-ios-arrow-round-back"></i>
+        </button>
+        <button class="home__nav home__nav--next" type="button">
+          <i class="icon ion-ios-arrow-round-forward"></i>
+        </button>
+      </div>
+
+      <div class="col-12">
+        <div class="owl-carousel home__carousel">
+          {%for content in cast_contents_info%}
+          <div class="item">
+            <!-- card -->
+            <div class="card card--big">
+              <div class="card__cover">
+                <img src="{{get_content_db(content_id=content.idContent).imagePoster}}" alt="">
+                <a href="{{url_for('content_redirect', title_url=get_content_db(content_id=content.idContent).titleUrl)}}" class="card__play">
+                  <i class="icon ion-ios-play"></i>
+                </a>
+              </div>
+              <div class="card__content">
+                <h3 class="card__title"><a href="{{url_for('content_redirect', title_url=get_content_db(content_id=content.idContent).titleUrl)}}">{{get_content_db(content_id=content.idContent).title}}</a></h3>
+                <span class="card__rate" style="font-size: 15px;">{%if get_content_db(content_id=content.idContent).type == 'MOVIE'%}Film{%elif get_content_db(content_id=content.idContent).type == 'TV'%}Dizi{%endif%}</span>
+                <span class="card__category">
+                  <!-- genre list -->
+                  {%for genre in get_content_genre(content_id=content.idContent)%}
+                  <a href="#">{{get_genre_list(genre_id=genre.idGenre, content_type=get_content_db(content_id=content.idContent).type).title}}</a>
+                  {%endfor%}
+                  <!-- end genre list -->
+                </span>
+                <span class="card__rate"><i class="icon ion-ios-star"></i>{{get_content_db(content_id=content.idContent).voteAverage}}</span>
+              </div>
+            </div>
+            <!-- end card -->
+          </div>
+          {%endfor%}
+        </div>
+      </div>
+        {%else%}
+
+        <section class="content">
+          <div class="container">
+            <br>
+            <!-- content tabs -->
+            <div class="" id="">
+              <div class="" id="" role="" aria-labelledby="">
+                <div class="row">
+                  {%for content in cast_contents_info%}
+                  <!-- card -->
+                  <div class="col-6 col-sm-4 col-lg-3 col-xl-2">
+                    <div class="card">
+                      <div class="card__cover">
+                        <img src="{{get_content_db(content.idContent).imagePoster}}" alt="">
+                        <a href="{{url_for('content_redirect', title_url=get_content_db(content_id=content.idContent).titleUrl)}}" class="card__play">
+                          <i class="icon ion-ios-play"></i>
+                        </a>
+                      </div>
+                      <div class="card__content">
+                        <h3 class="card__title"><a href="{{url_for('content_redirect', title_url=get_content_db(content_id=content.idContent).titleUrl)}}">{{get_content_db(content_id=content.idContent).title}}</a></h3>
+                        <span class="card__rate" style="font-size: 13px;">{%if get_content_db(content_id=content.idContent).type == 'MOVIE'%}Film{%elif get_content_db(content_id=content.idContent).type == 'TV'%}Dizi{%endif%}</span>
+                        <span class="card__category">
+                          {%for genre in get_content_genre(content_id=content.idContent)%}
+                          <a href="#">{{get_genre_list(genre_id=genre.idGenre, content_type=content.type).title}}</a>
+                          {%endfor%}
+                        </span>
+                        <span class="card__rate"><i class="icon ion-ios-star"></i>{{get_content_db(content_id=content.idContent).voteAverage}}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end card -->
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      {%endif%}
+    </div>
+  </div>
+</section>
+<!-- end home -->
+
+<br><br><br><br>
+
+<div class="container-fluid">
+  <div class="row">
+      <!-- comments -->
+        <!-- sidebar ad content -->
+				<a href="" target="_blank" class="col-7" style="margin-top: 75px; width: 100%; height: 500px; background-image: url({{url_for('static', filename='img/advertorials/join-discord.png')}}); background-repeat: no-repeat; background-position: center; background-size: contain; margin-bottom: 100px;">
+					<div class="card card--details">
+						<div class="row">
+							<span style="color: white; margin-left: 25px; margin-top: 25px; font-size: 25px;"></span>
+						</div>
+					</div>
+				</a>
+        <!-- end sidebar ad content -->
+
+      <div class="col-5">
+        <div class="comments" id="content_start">
+          <ul class="comments__list">
+
+          <!-- comments backend/frontend -->
+          {%for comment in comments_info%}
+            {%if comment.visibility%}
+              {%if comment.replyTo == ''%}
+            <li id="{{comment.idComment}}" class="comments__item {{comment.idComment}}">
+              <div style="min-width: 50px; min-height: 50px; background-image: url('{{get_profile_db(profile_id=comment.idAddProfile).imageAvatar}}'); background-size: cover; background-position: center; border-radius: 50%; margin-right: 20px; float: left;"></div>
+              <div class="comments__autor">
+                <span class="comments__name">{{get_profile_db(profile_id=comment.idAddProfile).username}}</span>
+                <span class="comments__time">{{format_date(comment.addDate, 'full', locale='tr')}} {%if comment.addDate.day|string + comment.addDate.month|string + comment.addDate.year|string + comment.addDate.hour|string + comment.addDate.minute|string != comment.lastEditDate.day|string + comment.lastEditDate.month|string + comment.lastEditDate.year|string + comment.lastEditDate.hour|string + comment.lastEditDate.minute|string%}(düzenlendi){%endif%}</span>
+              </div>
+              <p class="comments__text">{{comment.text}}</p>
+              <div class="comments__actions">
+                <div class="comments__rate">
+                  <button type="button" id="{{comment.idComment}}_comment__like" {%if check_profile() == True%}onclick="likeComment('{{comment.idComment}}');"{%endif%}><i {%if check_profile() == True and get_castcomment_rate(comment_id=comment.idComment, profile_id=session["PROFILE"]["idProfile"], rate_type='LIKE')%}id="comment__like__selected"{%endif%} class="icon ion-md-thumbs-up"></i><p id="{{comment.idComment}}_comment__like_count" style="display: contents;">{{get_castcomment_rates(cast_id=cast_info.idCast, comment_id=comment.idComment, rate_type='LIKE')|length}}</p></button>
+
+                  <button type="button" id="{{comment.idComment}}_comment__dislike" {%if check_profile() == True%}onclick="dislikeComment('{{comment.idComment}}');"{%endif%}><p id="{{comment.idComment}}_comment__dislike_count" style="display: contents;">{{get_castcomment_rates(cast_id=cast_info.idCast, comment_id=comment.idComment, rate_type='DISLIKE')|length}}</p><i {%if check_profile() == True and get_castcomment_rate(comment_id=comment.idComment, profile_id=session["PROFILE"]["idProfile"], rate_type='DISLIKE')%}id="comment__dislike__selected"{%endif%} class="icon ion-md-thumbs-down"></i></button>
+                </div>
+
+                {%if check_profile() == True%}
+                <button type="button" onclick="showReplyComment('{{comment.idComment}}');"><i class="icon ion-ios-share-alt"></i>Yanıtla</button>
+                  {%if comment.idAddProfile == session['PROFILE']['idProfile']%}
+                <button type="button" onclick="deleteComment('{{comment.idComment}}');"><i class="icon ion-ios-trash"></i>Sil</button>
+                  {%endif%}
+                {%endif%}
+              </div>
+            </li>
+
+                <!-- COMMENT REPLY FOR CAST -->
+                {%for reply in get_castcomment_replies(comment_id=comment.idComment)%}
+                  <li id="{{reply.idComment}}" class="comments__item comments__item--answer {{comment.idComment}}">
+                    <div style="min-width: 50px; min-height: 50px; background-image: url('{{get_profile_db(profile_id=reply.idAddProfile).imageAvatar}}'); background-size: cover; background-position: center; border-radius: 50%; margin-right: 20px; float: left;"></div>
+                    <div class="comments__autor">
+                      <span class="comments__name">{{get_profile_db(profile_id=reply.idAddProfile).username}}</span>
+                      <span class="comments__time">{{format_date(reply.addDate, 'full', locale='tr')}} {%if reply.addDate.day|string + reply.addDate.month|string + reply.addDate.year|string + reply.addDate.hour|string + reply.addDate.minute|string != reply.lastEditDate.day|string + reply.lastEditDate.month|string + reply.lastEditDate.year|string + reply.lastEditDate.hour|string + reply.lastEditDate.minute|string%}(düzenlendi){%endif%}</span>
+                    </div>
+                    <p class="comments__text">{{reply.text}}</p>
+                    <div class="comments__actions">
+                      <div class="comments__rate">
+
+<button type="button" id="{{reply.idComment}}_comment__like" {%if check_profile() == True%}onclick="likeComment('{{reply.idComment}}');"{%endif%}><i {%if check_profile() == True and get_castcomment_rate(comment_id=reply.idComment, profile_id=session["PROFILE"]["idProfile"], rate_type='LIKE')%}id="comment__like__selected"{%endif%} class="icon ion-md-thumbs-up"></i><p id="{{reply.idComment}}_comment__like_count" style="display: contents;">{{get_castcomment_rates(cast_id=cast_info.idCast, comment_id=reply.idComment, rate_type='LIKE')|length}}</p></button>
+
+<button type="button" id="{{reply.idComment}}_comment__dislike" {%if check_profile() == True%}onclick="dislikeComment('{{reply.idComment}}');"{%endif%}><p id="{{reply.idComment}}_comment__dislike_count" style="display: contents;">{{get_castcomment_rates(cast_id=cast_info.idCast, comment_id=reply.idComment, rate_type='DISLIKE')|length}}</p><i {%if check_profile() == True and get_castcomment_rate(comment_id=reply.idComment, profile_id=session["PROFILE"]["idProfile"], rate_type='DISLIKE')%}id="comment__dislike__selected"{%endif%} class="icon ion-md-thumbs-down"></i></button>
+
+                      </div>
+
+                      {%if check_profile() == True%}
+                        {%if reply.idAddProfile == session['PROFILE']['idProfile']%}
+                      <button type="button" onclick="deleteComment('{{reply.idComment}}');"><i class="icon ion-ios-trash"></i>Sil</button>
+                        {%endif%}
+                      {%endif%}
+                    </div>
+                  </li>
+                {%endfor%}
+                <!-- END COMMENT REPLY FOR CAST -->
+              {%endif%}
+            {%endif%}
+          {%endfor%}
+          <!-- end comments backend/frontend -->
+
+          {%if check_profile() == True%}
+          <!-- comment reply -->
+          <form id="form_reply_comment" action="#" method="#" class="form" style='border-radius: 5px;'>
+            <input type="hidden" id="reply_selected_comment_id" value=""> 
+            <button style="float: right;" type="button" onclick="showSendComment();"><i class="icon ion-md-close" style="color: rgb(255, 74, 74);"></i></button>
+            <div style="width: 100%; min-height: 150px;">
+              <p id="p_reply_comment" style="color: #9a9a9a;">
+              Şuna karşılık yanıtlanıyor: 
+              ""
+              </p>
+            </div>
+            <textarea id="input_reply_text" class="form__textarea" placeholder="Yanıtınızı buraya girin."></textarea>
+            <input type="button" class="form__btn" value="Yanıtla" style="border: 0px; cursor: pointer;" onclick="sendReply();">
+          </form>
+          <!-- end comment reply -->
+
+          <!-- comment independent -->
+          <form id="form_send_comment" action="#" method="#" class="form" style='border-radius: 5px;'>
+            <textarea id="input_comment_text" class="form__textarea" placeholder="Yorumunuzu buraya girin."></textarea>
+            <input type="button" class="form__btn" value="Gönder" style="border: 0px; cursor: pointer;" onclick="sendComment();">
+          </form>
+          <!-- end comment independent -->
+          {%endif%}
+        </div>
+      </div>
+      <!-- end comments -->
+
+  </div>
+</div>
+{%endblock%}
+
+{%block script%}
+<script>
+/*
+  
+JAVASCRIPT GLOBAL FOR CURRENT PAGE BEGIN
+
+*/
+/*
+  
+JAVASCRIPT GLOBAL FOR CURRENT PAGE END 
+
+*/
+</script>
+
+{%if check_profile() == True%}
+  <script>
+  /*
+    
+  LOGIN CAST BEGIN
+
+  */
+  $(document).ready(function(){
+    showSendComment();
+  });
+
+  function showSendComment(){$('#form_send_comment').show();$('#form_reply_comment').hide()};
+
+  function likeComment(comment_id){
+    var get_like_count = parseInt($(`#${comment_id}_comment__like_count`).text());
+    var get_dislike_count = parseInt($(`#${comment_id}_comment__dislike_count`).text());
+    $.ajax({
+      url: '{{url_for("cast_title_func_proc", function="like_comment")}}',
+      data: JSON.stringify({
+        'idCast': '{{cast_info.idCast}}',
+        'idComment': comment_id,
+      }),
+      dataType: 'json',
+      type: 'POST',
+      contentType: 'application/json; charset=utf-8',
+      processData: false,
+      headers: {
+        'X-CSRFToken': '{{csrf_token()}}',
+      },
+      success: function(response){
+        if (response.ret_url){
+          window.location = response.ret_url
+        }
+        if (response.gave_like){
+          $(`#${comment_id}_comment__like i`).attr('id', 'comment__like__selected');
+          $(`#${comment_id}_comment__like_count`).text(get_like_count + 1);
+        }
+        if (response.took_like){
+          $(`#${comment_id}_comment__like i`).attr('id', '');
+          $(`#${comment_id}_comment__like_count`).text(get_like_count - 1);
+        }
+        if (response.gave_dislike){
+          $(`#${comment_id}_comment__dislike i`).attr('id', 'comment__dislike__selected');
+          $(`#${comment_id}_comment__dislike_count`).text(get_dislike_count + 1);
+        }
+        if (response.took_dislike){
+          $(`#${comment_id}_comment__dislike i`).attr('id', '');
+          $(`#${comment_id}_comment__dislike_count`).text(get_dislike_count - 1);
+        }
+        else if (response.err_msg){
+          $('.alertMainDiv').show();
+          $('.alertMainText').text(response.err_msg);
+          setTimeout(() => {
+            $('.alertMainDiv').hide();
+          }, 2500);
+        }
+      },
+      error: function(error){
+        console.log(error);
+      }
+    });
+  };
+
+  function dislikeComment(comment_id){
+    var get_dislike_count = parseInt($(`#${comment_id}_comment__dislike_count`).text());
+    var get_like_count = parseInt($(`#${comment_id}_comment__like_count`).text());
+    $.ajax({
+      url: '{{url_for("cast_title_func_proc", function="dislike_comment")}}',
+      data: JSON.stringify({
+        'idCast': '{{cast_info.idCast}}',
+        'idComment': comment_id,
+      }),
+      dataType: 'json',
+      type: 'POST',
+      contentType: 'application/json; charset=utf-8',
+      processData: false,
+      headers: {
+        'X-CSRFToken': '{{csrf_token()}}',
+      },
+      success: function(response){
+        if (response.ret_url){
+          window.location = response.ret_url
+        }
+        if (response.gave_dislike){
+          $(`#${comment_id}_comment__dislike i`).attr('id', 'comment__dislike__selected');
+          $(`#${comment_id}_comment__dislike_count`).text(get_dislike_count + 1);
+        }
+        if (response.took_dislike){
+          $(`#${comment_id}_comment__dislike i`).attr('id', '');
+          $(`#${comment_id}_comment__dislike_count`).text(get_dislike_count - 1);
+        }
+        if (response.gave_like){
+          $(`#${comment_id}_comment__like i`).attr('id', 'comment__like__selected');
+          $(`#${comment_id}_comment__like_count`).text(get_like_count + 1);
+        }
+        if (response.took_like){
+          $(`#${comment_id}_comment__like i`).attr('id', '');
+          $(`#${comment_id}_comment__like_count`).text(get_like_count - 1);
+        }
+        else if (response.err_msg){
+          $('.alertMainDiv').show();
+          $('.alertMainText').text(response.err_msg);
+          setTimeout(() => {
+            $('.alertMainDiv').hide();
+          }, 2500);
+        }
+      },
+      error: function(error){
+        console.log(error);
+      }
+    });
+  };
+
+  function showReplyComment(selected_comment_id){
+    $('#form_send_comment').hide();
+    $('#form_reply_comment').show();
+    $('#input_reply_text').val('');
+    window.location.hash = '#form_reply_comment';
+    $.ajax({
+      url: '{{url_for("cast_title_func_proc", function="select_comment")}}',
+      data: JSON.stringify({
+        'idCast': '{{cast_info.idCast}}',
+        'idComment': selected_comment_id,
+      }),
+      dataType: 'json',
+      type: 'POST',
+      contentType: 'application/json; charset=utf-8',
+      processData: false,
+      headers: {
+        'X-CSRFToken': '{{csrf_token()}}',
+      },
+      success: function(response){
+        if (response.ret_url){
+          window.location = response.ret_url
+        }
+        else if (response.succ_msg){
+          $('#p_reply_comment').text('Bu için yanıtlanıyor: "' + response.selected_comment_text + '"');
+          $('#reply_selected_comment_id').val(selected_comment_id);
+        }
+        else if (response.err_msg){
+          $('.alertMainDiv').show();
+          $('.alertMainText').text(response.err_msg);
+          setTimeout(() => {
+            $('.alertMainDiv').hide();
+          }, 2500);
+        }
+      },
+      error: function(error){
+        console.log(error);
+      }
+    });
+  };
+
+  function sendReply(){
+    get_selected_comment_id = $('#reply_selected_comment_id').val();
+    get_reply = $('#input_reply_text').val();
+    if (get_selected_comment_id && get_reply){
+      $.ajax({
+        url: '{{url_for("cast_title_func_proc", function="send_reply")}}',
+        data: JSON.stringify({
+          'idCast': '{{cast_info.idCast}}',
+          'reply': get_reply,
+          'replyTo': get_selected_comment_id,
+        }),
+        dataType: 'json',
+        type: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        processData: false,
+        headers: {
+          'X-CSRFToken': '{{csrf_token()}}',
+        },
+        success: function(response){
+          if (response.ret_url){
+            window.location = response.ret_url
+          }
+          else if (response.succ_msg){
+            $('.alertMainDiv').show();
+            $('.alertMainText').text(response.succ_msg);
+            setTimeout(() => {
+              $('.alertMainDiv').hide();
+            }, 2500);
+            $('#' + get_selected_comment_id).after(`
+
+              <li id="${response.latest_reply_id}" class="comments__item comments__item--answer ${response.latest_reply_replyto}">
+                <div style="min-width: 50px; min-height: 50px; background-image: url('{{get_profile_db(profile_id=session['PROFILE']['idProfile']).imageAvatar}}'); background-size: cover; background-position: center; border-radius: 50%; margin-right: 20px; float: left;"></div>
+                <div class="comments__autor">
+                  <span class="comments__name">{{get_profile_db(profile_id=session['PROFILE']['idProfile']).username}}</span>
+                  <span class="comments__time">şimdi</span>
+                </div>
+                <p class="comments__text">${response.latest_reply_text}</p>
+                <div class="comments__actions">
+                  <div class="comments__rate">
+                    <button type="button" id="${response.latest_reply_id}_comment__like" onclick="likeComment('${response.latest_reply_id}');"><i class="icon ion-md-thumbs-up"></i><p id="${response.latest_reply_id}_comment__like_count" style="display: contents;">0</p></button>
+
+                    <button type="button" id="${response.latest_reply_id}_comment__dislike" onclick="dislikeComment('${response.latest_reply_id}');"><p id="${response.latest_reply_id}_comment__dislike_count" style="display: contents;">0</p><i class="icon ion-md-thumbs-down"></i></button>
+                  </div>
+                  <button type="button" onclick="deleteComment('${response.latest_reply_id}');"><i class="icon ion-ios-trash"></i>Sil</button>
+                </div>
+              </li>
+
+            `);
+            $('#input_reply_text').val('');
+            window.location.hash = '#' + get_selected_comment_id;
+            $('#form_reply_comment .form__textarea').prop('disabled', true);
+            $('#form_reply_comment .form__btn').prop('disabled', true);
+            setTimeout(() => {
+              $('#form_reply_comment .form__textarea').prop('disabled', false);
+              $('#form_reply_comment .form__btn').prop('disabled', false);
+            }, 5000);
+          }
+          else if (response.err_msg){
+            $('.alertMainDiv').show();
+            $('.alertMainText').text(response.err_msg);
+            setTimeout(() => {
+              $('.alertMainDiv').hide();
+            }, 2500);
+          }
+        },
+        error: function(error){
+          console.log(error);
+        }
+      });
+    } else {
+      $('.alertMainDiv').show();
+      $('.alertMainText').text('Boş yanıt gönderilemez.');
+      setTimeout(() => {
+        $('.alertMainDiv').hide();
+      }, 2500);
+    }
+  };
+
+  function sendComment(){
+    get_text = $('#input_comment_text').val();
+    if (get_text){
+      $.ajax({
+        url: '{{url_for("cast_title_func_proc", function="send_comment")}}',
+        data: JSON.stringify({
+          'idCast': '{{cast_info.idCast}}',
+          'text': get_text,
+        }),
+        dataType: 'json',
+        type: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        processData: false,
+        headers: {
+          'X-CSRFToken': '{{csrf_token()}}',
+        },
+        success: function(response){
+          if (response.ret_url){
+            window.location = response.ret_url
+          }
+          else if (response.succ_msg){
+            $('.alertMainDiv').show();
+            $('.alertMainText').text(response.succ_msg);
+            setTimeout(() => {
+              $('.alertMainDiv').hide();
+            }, 2500);
+            $('.comments__list').prepend(`
+
+              <li id="${response.latest_comment_id}" class="comments__item ${response.latest_comment_id}">
+                <div style="min-width: 50px; min-height: 50px; background-image: url('{{get_profile_db(profile_id=session['PROFILE']['idProfile']).imageAvatar}}'); background-size: cover; background-position: center; border-radius: 50%; margin-right: 20px; float: left;"></div>
+                <div class="comments__autor">
+                  <span class="comments__name">{{get_profile_db(profile_id=session['PROFILE']['idProfile']).username}}</span>
+                  <span class="comments__time">şimdi</span>
+                </div>
+                <p class="comments__text">${response.latest_comment_text}</p>
+                <div class="comments__actions">
+                  <div class="comments__rate">
+                    <button type="button" id="${response.latest_comment_id}_comment__like" onclick="likeComment('${response.latest_comment_id}');"><i class="icon ion-md-thumbs-up"></i><p id="${response.latest_comment_id}_comment__like_count" style="display: contents;">0</p></button>
+
+                    <button type="button" id="${response.latest_comment_id}_comment__dislike" onclick="dislikeComment('${response.latest_comment_id}');"><p id="${response.latest_comment_id}_comment__dislike_count" style="display: contents;">0</p><i class="icon ion-md-thumbs-down"></i></button>
+                  </div>
+
+                  <button type="button" onclick="showReplyComment('${response.latest_comment_id}');"><i class="icon ion-ios-share-alt"></i>Yanıtla</button>
+                  <button type="button" onclick="deleteComment('${response.latest_comment_id}');"><i class="icon ion-ios-trash"></i>Sil</button>
+
+                </div>
+              </li>
+
+            `);
+            $('#input_comment_text').val('');
+            window.location.hash = '#content_start';
+            $('#form_send_comment .form__textarea').prop('disabled', true);
+            $('#form_send_comment .form__btn').prop('disabled', true);
+            setTimeout(() => {
+              $('#form_send_comment .form__textarea').prop('disabled', false);
+              $('#form_send_comment .form__btn').prop('disabled', false);
+            }, 5000);
+          }
+          else if (response.err_msg){
+            $('.alertMainDiv').show();
+            $('.alertMainText').text(response.err_msg);
+            setTimeout(() => {
+              $('.alertMainDiv').hide();
+            }, 2500);
+          }
+        },
+        error: function(error){
+          console.log(error);
+        }
+      });
+    } else {
+      $('.alertMainDiv').show();
+      $('.alertMainText').text('Boş mesaj gönderilemez.');
+      setTimeout(() => {
+        $('.alertMainDiv').hide();
+      }, 2500);
+    }
+  };
+
+  function deleteComment(comment_id){
+    $.ajax({
+      url: '{{url_for("cast_title_func_proc", function="delete_comment")}}',
+      data: JSON.stringify({
+        'idCast': '{{cast_info.idCast}}',
+        'idComment': comment_id,
+      }),
+      dataType: 'json',
+      type: 'POST',
+      contentType: 'application/json; charset=utf-8',
+      processData: false,
+      headers: {
+        'X-CSRFToken': '{{csrf_token()}}',
+      },
+      success: function(response){
+        if (response.ret_url){
+          window.location = response.ret_url
+        }
+        else if (response.succ_msg){
+          $('.alertMainDiv').show();
+          $('.alertMainText').text(response.succ_msg);
+          setTimeout(() => {
+            $('.alertMainDiv').hide();
+          }, 2500);
+          $('#' + response.deleted_comment_id).remove();
+          $('.' + response.deleted_comment_id).remove();
+        }
+        else if (response.err_msg){
+          $('.alertMainDiv').show();
+          $('.alertMainText').text(response.err_msg);
+          setTimeout(() => {
+            $('.alertMainDiv').hide();
+          }, 2500);
+        }
+      },
+      error: function(error){
+        console.log(error);
+      }
+    });
+  };
+  /*
+    
+  LOGIN CAST END 
+
+  */
+  </script>
+{%endif%}
+
+{%endblock%}

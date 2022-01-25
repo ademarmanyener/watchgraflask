@@ -1,0 +1,171 @@
+{%extends 'layouts/adminpanel/default.html'%}
+{%block container%}
+<style>
+  .ion-ios-arrow-back::before {
+    line-height: 40px;
+  }
+  .ion-ios-arrow-forward::before {
+    line-height: 40px;
+  }
+  .paginator {
+    background-color: transparent;
+  }
+  .paginator__item--active a:hover {
+    color: rgb(90, 90, 90);
+  }
+</style>
+
+<!-- main content -->
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- main title -->
+      <div class="col-12">
+        <div class="main__title">
+          <h2>Tüm Hesaplar</h2>
+
+          <span class="main__title-stat">Mevcut sayfa {{list_results_info|length}} hesap sergileniyor.</span>
+
+          <div class="main__title-wrap">
+
+            <a href="#modal-contents-addMenu" class="main__title-link open-modal" style="margin-right: 25px; min-width: 200px;">Yeni Ekle</a>
+
+            <!-- filter sort -->
+            <div class="filter" id="filter__sort">
+              <span class="filter__item-label">Sırala:</span>
+
+              <div class="filter__item-btn dropdown-toggle" role="navigation" id="filter-sort" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <input type="button" value="Eklenme Tarihi">
+                <span></span>
+              </div>
+
+              <ul class="filter__item-menu dropdown-menu scrollbar-dropdown" aria-labelledby="filter-sort">
+                <a href="{{request.path}}?query={{_ARG['query']}}&page=1&sort=a-to-z&list_count={{_ARG['list_count']}}"><li>A'dan Z'ye</li></a>
+                <a href="{{request.path}}?query={{_ARG['query']}}&page=1&sort=z-to-a&list_count={{_ARG['list_count']}}"><li>Z'den A'ya</li></a>
+                <a href="{{request.path}}?query={{_ARG['query']}}&page=1&sort=newest&list_count={{_ARG['list_count']}}"><li>Yeniden Eskiye</li></a>
+                <a href="{{request.path}}?query={{_ARG['query']}}&page=1&sort=oldest&list_count={{_ARG['list_count']}}"><li>Eskiden Yeniye</li></a>
+              </ul>
+            </div>
+            <!-- end filter sort -->
+
+            <!-- search -->
+            <form action="#" class="main__title-form">
+              <input id="search_input" type="text" placeholder="Hesap ara..">
+              <button id="search_button" type="button">
+                <i class="icon ion-ios-search"></i>
+              </button>
+            </form>
+            <!-- end search -->
+          </div>
+        </div>
+      </div>
+      <!-- end main title -->
+
+      <!-- users -->
+      <div class="col-12">
+        <div class="main__table-wrap">
+          <table class="main__table">
+            <thead>
+              <tr>
+                <th>HESAP</th>
+                <th>E-POSTA ADRESİ</th>
+                <th>YETKİ</th>
+                <th>EKLENME / SON DÜZENLEME TARİHİ</th>
+                <th>FONKSİYONLAR</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {%for account in list_results_info%}
+              <tr id="main__table--tr-{{account.idAccount}}">
+                <td>
+                  <div class="main__table-text">{{account.username}}</div>
+                </td>
+                <td>
+                  <div class="main__table-text">{{account.emailAddress}}</div>
+                </td>
+                <td>
+                  <div class="main__table-text">{{account.permission}}</div>
+                </td>
+                <td>
+                  <div class="main__table-text">{{format_date(account.signupDate, 'full', locale='tr')}}</div>
+                  <div class="main__table-text main__table-text--green">{{format_date(account.lastEditDate, 'full', locale='tr')}}</div>
+                </td>
+                <td>
+                  <div class="main__table-btns">
+                    <a href="{{url_for('adminpanel_account_edit', username=account.username)}}" class="main__table-btn main__table-btn--edit">
+                      <i class="icon ion-ios-create"></i>
+                    </a>
+                    {%if not account.permission == 'SYSTEM'%}
+                    <a href="#modal-drop-{{account.idAccount}}" class="main__table-btn main__table-btn--delete open-modal">
+                      <i class="icon ion-ios-trash"></i>
+                    </a>
+                    {%endif%}
+                  </div>
+                </td>
+              </tr>
+              {%endfor%}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- end users -->
+
+      <!-- paginator -->
+      <div class="col-12">
+        <ul class="paginator paginator--list" style="background-color: transparent; box-shadow: unset; float: right; margin-right: 150px; margin-top: 25px;">
+          {%if not _ARG['page'] == 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page=1&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">1</a></li>{%endif%}
+          {%if _ARG['page'] - 1 >= 1%}
+          <li class="paginator__item paginator__item--prev">
+            <a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] - 1}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}"><i class="icon ion-ios-arrow-back"></i></a>
+          </li>
+          {%endif%}
+          {%if _ARG['page'] - 4 >= 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] - 4}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] - 4}}</a></li>{%endif%}
+          {%if _ARG['page'] - 3 >= 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] - 3}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] - 3}}</a></li>{%endif%}
+          {%if _ARG['page'] - 2 >= 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] - 2}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] - 2}}</a></li>{%endif%}
+          {%if _ARG['page'] - 1 >= 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] - 1}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] - 1}}</a></li>{%endif%}
+          <li class="paginator__item paginator__item--active"><a href="#">{{_ARG['page']}}</a></li>
+          {%if _ARG['page'] + 1 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] + 1}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] + 1}}</a></li>{%endif%}
+          {%if _ARG['page'] + 2 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] + 2}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] + 2}}</a></li>{%endif%}
+          {%if _ARG['page'] + 3 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] + 3}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] + 3}}</a></li>{%endif%}
+          {%if _ARG['page'] + 4 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] + 4}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] + 4}}</a></li>{%endif%}
+          {%if _ARG['page'] + 1 <= _ARG['page_max']%}
+          <li class="paginator__item paginator__item--next">
+            <a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] + 1}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}"><i class="icon ion-ios-arrow-forward"></i></a>
+          </li>
+          {%endif%}
+          {%if not _ARG['page'] == _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page_max']}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page_max']}}</a></li>{%endif%}
+        </ul>
+      </div>
+      <!-- end paginator -->
+
+    </div>
+  </div>
+</main>
+<!-- end main content -->
+
+  {%for account in list_results_info%}
+    <!-- modal delete -->
+    <div id="modal-drop-{{account.idAccount}}" class="zoom-anim-dialog mfp-hide modal">
+      <h6 class="modal__title">Hesabı Sil</h6>
+      <p class="modal__text">{{account.username}} isimli hesabı silmek istediğinize emin misiniz? Bu işlem geri alınamaz!</p>
+      <div class="modal__btns">
+        <button onclick="adminproc_accounts_drop(account_id='{{account.idAccount}}');" class="modal__btn modal__btn--apply" type="button">Sil</button>
+        <button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+      </div>
+    </div>
+    <!-- end modal delete -->
+  {%endfor%}
+{%endblock%}
+
+{%block script%}
+<script>
+  $('#search_button').click(() => {
+    if ($('#search_input').val()){
+      window.location.href = window.location.pathname + '?query=' + $('#search_input').val() + '&page=1&sort={{_ARG["sort"]}}&list_count={{_ARG["list_count"]}}';
+    } else {
+      window.location.href = window.location.pathname + '?query=*&page=1&sort={{_ARG["sort"]}}&list_count={{_ARG["list_count"]}}';
+    }
+  });
+</script>
+{%endblock%}

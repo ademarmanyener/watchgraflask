@@ -1,0 +1,333 @@
+﻿{%extends 'layouts/adminpanel/default.html'%}
+{%block container%}
+<style>
+  .ion-ios-arrow-back::before {
+    line-height: 40px;
+  }
+  .ion-ios-arrow-forward::before {
+    line-height: 40px;
+  }
+  .paginator {
+    background-color: transparent;
+  }
+  .paginator__item--active a:hover {
+    color: rgb(90, 90, 90);
+  }
+</style>
+
+<!-- main content -->
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- main title -->
+      <div class="col-12">
+        <div class="main__title">
+          <h2>Tüm İçerikler</h2>
+
+          <span class="main__title-stat">Mevcut sayfa {{list_results_info|length}} içerik sergileniyor.</span>
+
+          <div class="main__title-wrap">
+
+            <a href="#modal-contents-addMenu" class="main__title-link open-modal" style="margin-right: 25px; min-width: 200px;">Yeni Ekle</a>
+
+            <!-- filter sort -->
+            <div class="filter" id="filter__sort">
+              <span class="filter__item-label">Sırala:</span>
+
+              <div class="filter__item-btn dropdown-toggle" role="navigation" id="filter-sort" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <input type="button" value="İçerik Türü">
+                <span></span>
+              </div>
+
+              <ul class="filter__item-menu dropdown-menu scrollbar-dropdown" aria-labelledby="filter-sort">
+                <a href="{{request.path}}?query={{_ARG['query']}}&page=1&type=*&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}"><li>Tümü</li></a>
+                <a href="{{request.path}}?query={{_ARG['query']}}&page=1&type=movie&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}"><li>Film</li></a>
+                <a href="{{request.path}}?query={{_ARG['query']}}&page=1&type=tv&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}"><li>Dizi</li></a>
+              </ul>
+            </div>
+            <!-- end filter sort -->
+
+            <!-- filter sort -->
+            <div class="filter" id="filter__sort">
+              <span class="filter__item-label">Sırala:</span>
+
+              <div class="filter__item-btn dropdown-toggle" role="navigation" id="filter-sort" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <input type="button" value="Eklenme Tarihi">
+                <span></span>
+              </div>
+
+              <ul class="filter__item-menu dropdown-menu scrollbar-dropdown" aria-labelledby="filter-sort">
+                <a href="{{request.path}}?query={{_ARG['query']}}&page=1&type={{_ARG['type']}}&sort=a-to-z&list_count={{_ARG['list_count']}}"><li>A'dan Z'ye</li></a>
+                <a href="{{request.path}}?query={{_ARG['query']}}&page=1&type={{_ARG['type']}}&sort=z-to-a&list_count={{_ARG['list_count']}}"><li>Z'den A'ya</li></a>
+                <a href="{{request.path}}?query={{_ARG['query']}}&page=1&type={{_ARG['type']}}&sort=newest&list_count={{_ARG['list_count']}}"><li>Yeniden Eskiye</li></a>
+                <a href="{{request.path}}?query={{_ARG['query']}}&page=1&type={{_ARG['type']}}&sort=oldest&list_count={{_ARG['list_count']}}"><li>Eskiden Yeniye</li></a>
+              </ul>
+            </div>
+            <!-- end filter sort -->
+
+            <!-- search -->
+            <form action="#" class="main__title-form">
+              <input id="search_input" type="text" placeholder="İçerik ara..">
+              <button id="search_button" type="button">
+                <i class="icon ion-ios-search"></i>
+              </button>
+            </form>
+            <!-- end search -->
+          </div>
+        </div>
+      </div>
+      <!-- end main title -->
+
+      <!-- users -->
+      <div class="col-12">
+        <div class="main__table-wrap">
+          <table class="main__table">
+            <thead>
+              <tr>
+                <th>İÇERİK</th>
+                <th>AÇIKLAMA</th>
+                <th>ORTALAMA OY</th>
+                <th>EKLEYEN PROFİL</th>
+                <th>EKLENME / SON DÜZENLEME TARİHİ</th>
+                <th>FONKSİYONLAR</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {%for content in list_results_info%}
+              <tr id="main__table--tr-{{content.idContent}}">
+                <td>
+                  <div class="main__user">
+                    <div class="main__avatar" style="min-width: 75px; height: 100px; border-radius: 5px; -webkit-border-radius: 5px;">
+                      <div style="width: 100%; height: 100%; background-image: url('{{content.imagePoster}}'); background-size: cover; background-position: center;"></div>
+                    </div>
+                    <div class="main__meta">
+                      <span style="font-size: 12px; color: white;">{%if content.type == 'MOVIE'%}Film{%elif content.type == 'TV'%}Dizi{%endif%}</span>
+                      <h3>{{content.title}}</h3>
+                      <span>{{content.titleOriginal}}</span>
+                      {%if content.adult == 1%}<span style="font-size: 12px; font-weight: bold; color: rgb(173, 45, 45);">Yetişkin İçerik</span>{%endif%}
+                      {%if content.visibility == 0%}<span style="font-size: 12px; font-weight: bold; color: rgb(189, 189, 189);">Gizli</span>{%endif%}
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="main__table-text">{{content.overview[:60]}}...</div>
+                </td>
+                <td>
+                  <div class="main__table-text main__table-text--rate"><i class="icon ion-ios-star"></i> {{content.voteAverage}}</div>
+                </td>
+                <td>
+                  <div class="main__table-text">{{get_profile_db(profile_id=content.idAddProfile).username}}</div>
+                </td>
+                <td>
+                  <div class="main__table-text">{{format_date(content.addDate, 'full', locale='tr')}}</div>
+                  <div class="main__table-text main__table-text--green">{{format_date(content.lastEditDate, 'full', locale='tr')}}</div>
+                </td>
+
+                <td>
+                  <div class="main__table-btns">
+                    <a href="{{url_for('content_redirect', title_url=content.titleUrl)}}" target="_blank" class="main__table-btn main__table-btn--banned">
+											<i class="icon ion-ios-play"></i>
+										</a>
+                    {%if not get_highlightcontent_db_by_contentid(content_id=content.idContent)%}
+                    <div onclick="adminproc_highlights_addOrDrop(content_id='{{content.idContent}}');" style="cursor: pointer;" class="main__table-btn main__table-btn--banned">
+                      <i class="icon ion-ios-star"></i>
+                    </div>
+                    {%endif%}
+                    <a href="#modal-visibilitySwitch-{{content.idContent}}" class="main__table-btn main__table-btn--banned open-modal">
+                      <i class="icon ion-ios-lock"></i>
+                    </a>
+                    <a href="{{url_for('adminpanel_content_edit', title_url=content.titleUrl)}}" class="main__table-btn main__table-btn--edit">
+                      <i class="icon ion-ios-create"></i>
+                    </a>
+                    <a href="#modal-drop-{{content.idContent}}" class="main__table-btn main__table-btn--delete open-modal">
+                      <i class="icon ion-ios-trash"></i>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+              {%endfor%}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- end users -->
+
+      <!-- paginator -->
+      <div class="col-12">
+        <ul class="paginator paginator--list" style="background-color: transparent; box-shadow: unset; float: right; margin-right: 150px; margin-top: 25px;">
+          {%if not _ARG['page'] == 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page=1&type={{_ARG['type']}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">1</a></li>{%endif%}
+          {%if _ARG['page'] - 1 >= 1%}
+          <li class="paginator__item paginator__item--prev">
+            <a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] - 1}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}"><i class="icon ion-ios-arrow-back"></i></a>
+          </li>
+          {%endif%}
+          {%if _ARG['page'] - 4 >= 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] - 4}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] - 4}}</a></li>{%endif%}
+          {%if _ARG['page'] - 3 >= 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] - 3}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] - 3}}</a></li>{%endif%}
+          {%if _ARG['page'] - 2 >= 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] - 2}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] - 2}}</a></li>{%endif%}
+          {%if _ARG['page'] - 1 >= 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] - 1}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] - 1}}</a></li>{%endif%}
+          <li class="paginator__item paginator__item--active"><a href="#">{{_ARG['page']}}</a></li>
+          {%if _ARG['page'] + 1 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] + 1}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] + 1}}</a></li>{%endif%}
+          {%if _ARG['page'] + 2 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] + 2}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] + 2}}</a></li>{%endif%}
+          {%if _ARG['page'] + 3 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] + 3}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] + 3}}</a></li>{%endif%}
+          {%if _ARG['page'] + 4 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] + 4}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] + 4}}</a></li>{%endif%}
+          {%if _ARG['page'] + 1 <= _ARG['page_max']%}
+          <li class="paginator__item paginator__item--next">
+            <a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] + 1}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}"><i class="icon ion-ios-arrow-forward"></i></a>
+          </li>
+          {%endif%}
+          {%if not _ARG['page'] == _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page_max']}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page_max']}}</a></li>{%endif%}
+        </ul>
+      </div>
+      <!-- end paginator -->
+
+    </div>
+  </div>
+</main>
+<!-- end main content -->
+
+<!-- 
+********************************************************
+test modals begin
+********************************************************
+-->
+
+<!-- modal add menu begin -->
+<div id="modal-contents-addMenu" class="zoom-anim-dialog modal mfp-hide">
+		<h6 class="modal__title">Yeni Ekle</h6>
+		<p class="modal__text"><a href="#modal-contents-addMenu_Movie" class="modal__btn modal__btn--apply open-modal" style="width: calc(100%);">Film</a></p>
+		<p class="modal__text"><a href="#modal-contents-addMenu_TV" class="modal__btn modal__btn--apply open-modal" style="width: calc(100%);">Dizi</a></p>
+		<div class="modal__btns">
+			<button class="modal__btn modal__btn--dismiss" style="width: calc(100%);" type="button">Kapat</button>
+		</div>
+</div>
+<!-- modal add menu end -->
+
+<!-- 
+
+addMenu->Movie begin
+
+-->
+
+<!-- modal addMenu->Movie begin -->
+<div id="modal-contents-addMenu_Movie" class="zoom-anim-dialog modal mfp-hide">
+		<h6 class="modal__title">Yeni Ekle > Film</h6>
+		<p class="modal__text"><a href="#modal-contents-addMenu_Movie_TMDB" class="modal__btn modal__btn--apply open-modal" style="width: calc(100%);">TMDB</a></p>
+		<p class="modal__text"><a onclick="adminproc_contents_createNatural(type='MOVIE');" class="modal__btn modal__btn--apply" style="width: calc(100%); cursor: pointer;">Natural</a></p>
+		<div class="modal__btns">
+			<button class="modal__btn modal__btn--dismiss" style="width: calc(100%);" type="button">Kapat</button>
+		</div>
+</div>
+<!-- modal addMenu->Movie end -->
+
+<!-- modal addMenu->Movie->TMDB begin -->
+<div id="modal-contents-addMenu_Movie_TMDB" class="zoom-anim-dialog mfp-hide modal">
+  <h6 class="modal__title">Yeni Ekle > Film > TMDB</h6>
+  <p class="modal__text">Filmin TMDB ID'si</p>
+  <br />
+  <input id="input___modal-contents-addMenu_Movie_TMDB" type="text" class="form__input">
+  <div class="modal__btns">
+    <button id="button___modal-contents-addMenu_Movie_TMDB" type="button" class="modal__btn modal__btn--apply" style="border: 0px;">Ekle</button>
+    <button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+  </div>
+  <br />
+  <p class="modal__text">İçeriğin yüklenmesi biraz uzun sürebilir.</p>
+</div>
+<!-- modal addMenu->Movie->TMDB end -->
+
+<!-- 
+
+addMenu->Movie end 
+
+-->
+
+<!-- 
+
+addMenu->TV begin 
+
+-->
+
+<!-- modal addMenu->TV begin -->
+<div id="modal-contents-addMenu_TV" class="zoom-anim-dialog modal mfp-hide">
+		<h6 class="modal__title">Yeni Ekle > Dizi</h6>
+		<p class="modal__text"><a href="#modal-contents-addMenu_TV_TMDB" class="modal__btn modal__btn--apply open-modal" style="width: calc(100%);">TMDB</a></p>
+		<p class="modal__text"><a onclick="adminproc_contents_createNatural(type='TV');" class="modal__btn modal__btn--apply" style="width: calc(100%); cursor: pointer;">Natural</a></p>
+		<div class="modal__btns">
+			<button class="modal__btn modal__btn--dismiss" style="width: calc(100%);" type="button">Kapat</button>
+		</div>
+</div>
+<!-- modal addMenu->TV end -->
+
+<!-- modal addMenu->TV->TMDB begin -->
+<div id="modal-contents-addMenu_TV_TMDB" class="zoom-anim-dialog mfp-hide modal">
+  <h6 class="modal__title">Yeni Ekle > Dizi > TMDB</h6>
+  <p class="modal__text">Dizinin TMDB ID'si</p>
+  <br />
+  <input id="input___modal-contents-addMenu_TV_TMDB" type="text" class="form__input">
+  <div class="modal__btns">
+    <button id="button___modal-contents-addMenu_TV_TMDB" type="button" class="modal__btn modal__btn--apply" style="border: 0px;">Ekle</button>
+    <button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+  </div>
+  <br />
+  <p class="modal__text">İçeriğin yüklenmesi biraz uzun sürebilir.</p>
+</div>
+<!-- modal addMenu->TV->TMDB end -->
+
+<!-- 
+
+addMenu->TV end 
+
+-->
+
+  {%for movie in list_results_info%}
+    <!-- modal status -->
+    <div id="modal-visibilitySwitch-{{movie.idContent}}" class="zoom-anim-dialog mfp-hide modal">
+      <h6 class="modal__title">Filmin Görünülürlüğünü Değiştir</h6>
+      <p class="modal__text">{{movie.title}} isimli filmin görünülürlüğünü değiştirmek istediğinize emin misiniz?</p>
+      <div class="modal__btns">
+        <button onclick="adminproc_contents_visibilitySwitch(content_id='{{movie.idContent}}');" class="modal__btn modal__btn--apply" type="button">Değiştir</button>
+        <button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+      </div>
+    </div>
+    <!-- end modal status -->
+  {%endfor%}
+
+  {%for movie in list_results_info%}
+    <!-- modal delete -->
+    <div id="modal-drop-{{movie.idContent}}" class="zoom-anim-dialog mfp-hide modal">
+      <h6 class="modal__title">Filmi Sil</h6>
+      <p class="modal__text">{{movie.title}} isimli filmi silmek istediğinize emin misiniz? Bu işlem geri alınamaz!</p>
+      <div class="modal__btns">
+        <button onclick="adminproc_contents_drop(content_id='{{movie.idContent}}');" class="modal__btn modal__btn--apply" type="button">Sil</button>
+        <button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+      </div>
+    </div>
+    <!-- end modal delete -->
+  {%endfor%}
+{%endblock%}
+
+{%block script%}
+<script>
+  $('#search_button').click(() => {
+    if ($('#search_input').val()){
+      window.location.href = window.location.pathname + '?query=' + $('#search_input').val() + '&page=1&type={{_ARG["type"]}}&sort={{_ARG["sort"]}}&list_count={{_ARG["list_count"]}}';
+    } else {
+      window.location.href = window.location.pathname + '?query=*&page=1&type={{_ARG["type"]}}&sort={{_ARG["sort"]}}&list_count={{_ARG["list_count"]}}';
+    }
+  });
+
+  $('#button___modal-contents-addMenu_Movie_TMDB').click(() => {
+    get_tmdb_id = $('#input___modal-contents-addMenu_Movie_TMDB').val();
+    if (get_tmdb_id){
+      adminproc_contents_tmdbImport(tmdb_id=get_tmdb_id, type='MOVIE');
+    }
+  });
+
+  $('#button___modal-contents-addMenu_TV_TMDB').click(() => {
+    get_tmdb_id = $('#input___modal-contents-addMenu_TV_TMDB').val();
+    if (get_tmdb_id){
+      adminproc_contents_tmdbImport(tmdb_id=get_tmdb_id, type='TV');
+    }
+  });
+</script>
+{%endblock%}

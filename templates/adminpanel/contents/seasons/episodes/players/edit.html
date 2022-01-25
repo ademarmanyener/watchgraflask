@@ -1,0 +1,220 @@
+﻿{%extends 'layouts/adminpanel/default.html'%}
+{%block container%}
+
+<style>
+  .form__input, .form__textarea {
+    /*background-color: #646464;*/
+    background-color: #a58080;
+  }
+  .select2-container--default .select2-selection--single {
+    background-color: unset;
+  }
+  .select2-dropdown {
+    background-color: #030303;
+  }
+  .form__textarea {
+    height: 287px;
+  }
+  .form__img, .form__img label {
+    background-color: unset;
+  }
+  .form__img {
+    height: 134px;
+    background-position: center;
+    background-size: cover;
+    background-image: url('{{episode_info.imagePoster}}');
+  }
+	.form__btn { display: inline-flex; margin-right: 25px; }
+	input[type=checkbox], input[type=radio] {
+		transition: border 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+	}
+	input[type=checkbox], input[type=radio]:checked {
+		border: 2px solid white;
+	}
+</style>
+
+{%include 'adminpanel/contents/includes/sidebar.html'%}
+
+<!-- main content -->
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- main title -->
+      <div class="col-12">
+        <div class="main__title">
+          <h2>{{content_info.title}} <span style="font-size: 16px;">{{season_info.seasonNumber}}. Sezon {{episode_info.episodeNumber}}. Bölüm</span></h2>
+        </div>
+      </div>
+      <!-- end main title -->
+
+      <!-- form -->
+      <div class="col-12">
+        <form action="{{url_for('adminpanel_content_season_episode_player_edit', title_url=content_info.titleUrl, season_number=season_info.seasonNumber, episode_number=episode_info.episodeNumber, view_key=player_info.viewKey)}}" method="POST" class="form" enctype="multipart/form-data" accept-charset="utf-8">
+          <div class="row">
+            <div class="col-12 col-md-5 form__cover">
+              <!-- IMAGE UPLOAD BEGIN -->
+              <div class="row">
+                <div class="col-12 col-sm-6 col-md-12">
+                  <div class="form__img">
+                    <label for="form__img-upload">Oynatıcı Yükle</label>
+                    <input id="form__img-upload" name="form__img-upload" type="file" accept=".mp4, .mp3, .flv">
+                    <img id="form__img" src="#" alt=" ">
+                  </div>
+                </div>
+              </div>
+              <!-- IMAGE UPLOAD END -->
+            </div>
+            
+            <div class="col-12 col-md-7 form__content">
+              <div class="row">
+                <div class="col-6">
+                  <label class="profile__label" for="input___title">Başlık</label>
+                  <input id="input___title" name="input___title" type="text" class="form__input" placeholder="Başlık">
+                </div>
+
+                <div class="col-6">
+                  <label class="profile__label" for="input___viewKey">Anahtar</label>
+                  <input id="input___viewKey" name="input___viewKey" type="text" class="form__input" placeholder="Anahtar" disabled="">
+                </div>
+
+                <div class="col-9">
+                  <label class="profile__label" for="input___source">Kaynak</label>
+                  <textarea id="input___source" name="input___source" class="form__textarea" placeholder="Kaynak"></textarea>
+                </div>
+
+                <div class="col-3">
+                  <a href="#modal-listPlayers" id="button___listPlayers" class="form__btn open-modal" style="border: 0px; cursor: pointer; float: left; width: 100%; margin-top: 30px;">Yüklenenlerden Seç</a>
+                </div>
+
+                <div class="col-4">
+                  <label class="profile__label" for="input___order">Sıralama</label>
+                  <input id="input___order" name="input___order" type="text" class="form__input" placeholder="Sıralama">
+                </div>
+                
+                <div class="col-4">
+                  <label class="profile__label" for="input___seasonNumber">Sezon Numarası</label>
+                  <input id="input___seasonNumber" name="input___seasonNumber" type="text" class="form__input" placeholder="Sezon Numarası" disabled="">
+                </div>
+
+                <div class="col-4">
+                  <label class="profile__label" for="input___episodeNumber">Bölüm Numarası</label>
+                  <input id="input___episodeNumber" name="input___episodeNumber" type="text" class="form__input" placeholder="Bölüm Numarası" disabled="">
+                </div>
+
+                <div class="col-2">
+                  <div class="profile__group">
+                    <label class="profile__label" for="select2___visibility">Görünürlük</label>
+                    <select class="js-example-basic-single" id="select2___visibility" name="select2___visibility">
+                      <option value="1">Herkese Açık</option>
+                      <option value="0">Gizli</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-2">
+                  <div class="profile__group">
+                    <label class="profile__label" for="select2___type">Tür</label>
+                    <select class="js-example-basic-single" id="select2___type" name="select2___type">
+                      <option value="IFRAME">iFrame</option>
+                      <option value="VIDEOJS">VideoJS</option>
+                      <option value="PLYR">PLYR</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-2">
+                  <div class="profile__group">
+                    <label class="profile__label" for="select2___language">Dil</label>
+                    <select class="js-example-basic-single" id="select2___language" name="select2___language">
+                      <option value="ORIGINAL">Orjinal Dil</option>
+                      <option value="SUBBED">Altyazı</option>
+                      <option value="DUBBED">Dublaj</option>
+                    </select>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="row">
+
+                <div class="col-12">
+                  <input type="submit" id="button___save" name="button___save" value="Kaydet" class="form__btn" style="border: 0px; cursor: pointer; float: right;">
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+<div id="modal-listPlayers" class="zoom-anim-dialog modal mfp-hide">
+    <h6 class="modal__title">Oynatıcı Seç</h6>
+    <p class="modal__text">Bunlardan birini oynatıcı olarak seçin.</p>
+    <br/>
+    <p class="modal__text">
+      {%for player in players_list_info%}
+      <input type="radio" id="{{player}}" name="player" value="{{player}}" style="width: 75px; height: 75px;
+                                                                                  margin-top: 5px; margin-left: 5px; margin-right: 5px; margin-bottom: 5px; background-image: url({{url_for('storage', filename='content/' + content_info.idContent + '/season/' + season_info.idTvSeason + '/episode/' + episode_info.idTvEpisode + '/player/' + player)}}); background-size: cover; background-position: center; background-repeat: no-repeat; cursor: pointer;">
+      {%endfor%}
+    </p>
+    <div class="modal__btns">
+      <button class="modal__btn modal__btn--dismiss" type="button">Seç</button>
+    </div>
+</div>
+
+        </form>
+      </div>
+      <!-- end form -->
+    </div>
+  </div>
+</main>
+<!-- end main content -->
+{%endblock%}
+
+{%block script%}
+<script>
+  $(document).ready(() => {
+    $('.js-example-basic-single').select2();
+    // inputs
+    $('#input___title').val(`{{player_info.title|safe}}`);
+    $('#input___viewKey').val(`{{player_info.viewKey|safe}}`);
+    $('#input___source').val(`{{player_info.source|safe}}`);
+    $('#input___order').val(`{{player_info.order|safe}}`);
+    $('#input___seasonNumber').val(`{{player_info.seasonNumber|safe}}`);
+    $('#input___episodeNumber').val(`{{player_info.episodeNumber|safe}}`);
+    // select2
+    if ('{{player_info.visibility}}' == 0){
+      $('#select2-select2___visibility-container').text('Gizli');
+      $('#select2___visibility').val('0');
+    } else if ('{{player_info.visibility}}' == 1){
+      $('#select2-select2___visibility-container').text('Herkese Açık');
+      $('#select2___visibility').val('1');
+    }
+
+    if ('{{player_info.type}}' == 'IFRAME'){
+      $('#select2-select2___type-container').text('iFrame');
+      $('#select2___type').val('IFRAME');
+    } else if ('{{player_info.type}}' == 'VIDEOJS'){
+      $('#select2-select2___type-container').text('VideoJS');
+      $('#select2___type').val('VIDEOJS');
+    } else if ('{{player_info.type}}' == 'PLYR'){
+      $('#select2-select2___type-container').text('PLYR');
+      $('#select2___type').val('PLYR');
+    }
+
+    if ('{{player_info.language}}' == 'ORIGINAL'){
+      $('#select2-select2___language-container').text('Orjinal Dil');
+      $('#select2___language').val('ORIGINAL');
+    } else if ('{{player_info.language}}' == 'SUBBED'){
+      $('#select2-select2___language-container').text('Altyazı');
+      $('#select2___language').val('SUBBED');
+    } else if ('{{player_info.language}}' == 'DUBBED'){
+      $('#select2-select2___language-container').text('Dublaj');
+      $('#select2___language').val('DUBBED');
+    }
+  });
+</script>
+{%endblock%}

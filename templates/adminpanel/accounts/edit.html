@@ -1,0 +1,131 @@
+﻿{%extends 'layouts/adminpanel/default.html'%}
+{%block container%}
+
+<style>
+  .form__input, .form__textarea {
+    /*background-color: #646464;*/
+    background-color: #a58080;
+  }
+  .select2-container--default .select2-selection--single {
+    background-color: unset;
+  }
+  .select2-dropdown {
+    background-color: #030303;
+  }
+  .form__textarea {
+    height: 287px;
+  }
+	.form__btn { display: inline-flex; margin-right: 25px; }
+	input[type=checkbox], input[type=radio] {
+		transition: border 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+	}
+	input[type=checkbox], input[type=radio]:checked {
+		border: 2px solid white;
+	}
+</style>
+
+{%if 2 == 1%}
+{%include 'adminpanel/contents/includes/sidebar.html'%}
+{%endif%}
+
+<!-- main content -->
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- main title -->
+      <div class="col-12">
+        <div class="main__title">
+          <h2>{{account_info.username}}</h2>
+        </div>
+      </div>
+      <!-- end main title -->
+
+      <!-- form -->
+      <div class="col-12">
+        <form action="{{url_for('adminpanel_account_edit', username=account_info.username)}}" method="POST" class="form" enctype="multipart/form-data" accept-charset="utf-8">
+          <div class="row">
+            
+            <div class="col-12 col-md-7 form__content">
+              <div class="row">
+                <div class="col-6">
+                  <label class="profile__label" for="input___username">Kullanıcı Adı</label>
+                  <input id="input___username" name="input___username" type="text" class="form__input" placeholder="Kullanıcı Adı">
+                </div>
+
+                <div class="col-6">
+                  <label class="profile__label" for="input___emailAddress">E-Posta Adresi</label>
+                  <input id="input___emailAddress" name="input___emailAddress" type="text" class="form__input" placeholder="E-Posta Adresi">
+                </div>
+
+                <div class="col-6">
+                  <label class="profile__label" for="input___password">Parola</label>
+                  <input id="input___password" name="input___password" type="text" class="form__input" placeholder="Parola">
+                </div>
+
+                <div class="col-6">
+                  <label class="profile__label" for="input___securityPassword">Güvenlik Parolası</label>
+                  <input id="input___securityPassword" name="input___securityPassword" type="text" class="form__input" placeholder="Güvenlik Parolası">
+                </div>
+
+                <div class="col-2">
+                  <div class="profile__group">
+                    <label class="profile__label" for="select2___permission">Yetki</label>
+                    <select class="js-example-basic-single" id="select2___permission" name="select2___permission">
+                      <option value="USER">Kullanıcı</option>
+                      <option value="SYSTEM">Sistem</option>
+                    </select>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="row">
+
+                <div class="col-12">
+                  <input type="submit" id="button___save" name="button___save" value="Kaydet" class="form__btn" style="border: 0px; cursor: pointer; float: right;">
+                  <input type="button" id="button___listProfiles" name="button___listProfiles" value="Profiller" class="form__btn" style="border: 0px; cursor: pointer; float: right;">
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+        </form>
+      </div>
+      <!-- end form -->
+    </div>
+  </div>
+</main>
+<!-- end main content -->
+{%endblock%}
+
+{%block script%}
+<script>
+  $(document).ready(() => {
+    $('.js-example-basic-single').select2();
+    // inputs
+    $('#input___username').val(`{{account_info.username|safe}}`);
+    $('#input___emailAddress').val(`{{account_info.emailAddress|safe}}`);
+    $('#input___password').prop('placeholder', `{{account_info.password|safe}}`);
+    $('#input___securityPassword').prop('placeholder', `{{account_info.securityPassword|safe}}`);
+    // select2
+    if ('{{account_info.permission}}' == 'USER'){
+      $('#select2-select2___permission-container').text('Kullanıcı');
+      $('#select2___permission').val('USER');
+    } else if ('{{account_info.permission}}' == 'SYSTEM'){
+      $('#select2-select2___permission-container').text('Sistem');
+      $('#select2___permission').val('SYSTEM');
+    }
+  });
+
+  // ! working on it !
+  $('#button___listProfiles').click(() => {
+    window.location.href = `{{url_for('adminpanel_profiles')}}?query=*&page=1&account={{account_info.username}}&sort=newest&list_count=10`;
+  });
+</script>
+{%endblock%}

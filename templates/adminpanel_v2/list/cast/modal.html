@@ -1,0 +1,65 @@
+<!-- modal importFromTmdb -->
+<div id="modal-importFromTmdb" class="zoom-anim-dialog mfp-hide modal">
+	<h6 class="modal__title">TMDB'den Aktar</h6>
+
+  <option><input type="text" class="form__input" placeholder="Oyuncu Adı" id="inputImportFromTmdb_queryName"></option>
+
+  <table>
+    <tbody id="queryTBody"></tbody>
+  </table>
+
+	<div class="modal__btns">
+		<button class="modal__btn modal__btn--dismiss" style="width: 100%;" type="button">İptal Et</button>
+	</div>
+</div>
+<!-- end modal importFromTmdb -->
+
+<!-- modal insertNew -->
+<div id="modal-insertNew" class="zoom-anim-dialog mfp-hide modal">
+	<h6 class="modal__title">Yeni Oyuncu Ekle</h6>
+
+  <select class="js-example-basic-single" id="selectInsertNew_gender">
+    <option value="0">Cinsiyet Belirtme</option>
+    <option value="1">Kadın</option>
+    <option value="2">Erkek</option>
+    <option value="3">Non-Binary</option>
+  </select>
+
+  <input type="text" class="form__input" placeholder="Adı" id="inputInsertNew_name">
+  <input type="text" class="form__input" placeholder="Ad URL'i" id="inputInsertNew_nameUrl">
+  <textarea name="text" class="form__textarea" placeholder="Biyografi" id="inputInsertNew_biography"></textarea>
+  <input type="text" class="form__input" placeholder="TMDB ID'si" id="inputInsertNew_idTmdb">
+  <input type="text" class="form__input" placeholder="IMDB ID'si" id="inputInsertNew_idImdb">
+  <input type="text" class="form__input" placeholder="Twitter Kullanıcı Adı" id="inputInsertNew_idTwitter">
+  <input type="text" class="form__input" placeholder="Instagram Kullanıcı Adı" id="inputInsertNew_idInstagram">
+
+  <select class="js-example-basic-single" id="selectInsertNew_adult">
+    <option value="0">Herkese Uygun İçeriklere Sahip</option>
+    <option value="1">Yetişkin İçeriklere Sahip</option>
+  </select>
+
+  <input type="text" class="form__input" placeholder="Doğum Yeri" id="inputInsertNew_birthPlace">
+  <input type="text" class="form__input" placeholder="Doğum Tarihi" id="inputInsertNew_birthDate">
+  <input type="text" class="form__input" placeholder="Ölüm Tarihi" id="inputInsertNew_deathDate">
+
+	<div class="modal__btns">
+    <button id="btnInsertNew_insertNew" class="modal__btn modal__btn--apply" type="button">Oluştur</button>
+		<button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+	</div>
+</div>
+<!-- end modal insertNew -->
+
+{%for result in results_info%}
+  <!-- modal drop -->
+  <div id="modal-drop-{{result.idCast}}" class="zoom-anim-dialog mfp-hide modal">
+    <h6 class="modal__title">{{result.name}} Adlı Oyuncuyu Sil</h6>
+
+    <p class="modal__text">Bu oyuncuyu kalıcı olarak silmek istediğinize emin misiniz?</p>
+
+    <div class="modal__btns">
+      <button onclick="adminpanel_v2_function(tableName='cast', functionName='drop', dictionary={'idCast': '{{result.idCast|safe}}'})" class="modal__btn modal__btn--apply" type="button">Sil</button>
+      <button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+    </div>
+  </div>
+  <!-- end modal drop -->
+{%endfor%}

@@ -1,0 +1,66 @@
+{%if not _ARG['idTvSeason'] == '*'%}
+  {%if tvSeasonContent.query.filter_by(idTvSeason=_ARG['idTvSeason']).first().idTmdb%}
+    <!-- modal importFromTmdb -->
+    <div id="modal-importFromTmdb" class="zoom-anim-dialog mfp-hide modal">
+      <h6 class="modal__title">TMDB'den Aktar</h6>
+
+      <table>
+        <tbody id="queryTBody">
+          {%for episode in tmdb.TV_Seasons(tvSeasonContent.query.filter_by(idTvSeason=_ARG['idTvSeason']).first().idTmdb, tvSeasonContent.query.filter_by(idTvSeason=_ARG['idTvSeason']).first().seasonNumber).info()['episodes']%}
+          <tr onclick="adminpanel_v2_function(tableName='tvepisodecontent', functionName='importFromTmdb', dictionary={'idTmdb': `{{tvSeasonContent.query.filter_by(idTvSeason=_ARG['idTvSeason']).first().idTmdb}}`, 'seasonNumber': `{{tvSeasonContent.query.filter_by(idTvSeason=_ARG['idTvSeason']).first().seasonNumber}}`, 'episodeNumber': `{{episode['episode_number']}}`});">
+              <td>
+                <div class="main__user" style="margin-bottom: 10px;">
+                  <div class="main__avatar" style="min-width: 75px; height: 50px; border-radius: 5px; -webkit-border-radius: 5px;">
+                    <div style="width: 100%; height: 100%; background-image: url('https://www.themoviedb.org/t/p/w500{{episode['still_path']}}'); background-size: cover; background-position: center;"></div>
+                  </div>
+                  <div class="main__meta">
+                    <h3>{{episode['name']}}</h3>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          {%endfor%}
+        </tbody>
+      </table>
+
+      <div class="modal__btns">
+        <button class="modal__btn modal__btn--dismiss" style="width: 100%;" type="button">İptal Et</button>
+      </div>
+    </div>
+    <!-- end modal importFromTmdb -->
+  {%endif%}
+{%endif%}
+
+<!-- modal insertNew -->
+<div id="modal-insertNew" class="zoom-anim-dialog mfp-hide modal">
+	<h6 class="modal__title">Yeni Bölüm Ekle</h6>
+
+  <input type="text" class="form__input" placeholder="Başlık" id="inputInsertNew_title">
+  <textarea name="text" class="form__textarea" placeholder="Açıklama" id="inputInsertNew_overview"></textarea>
+  <input type="text" class="form__input" placeholder="TMDB ID'si" value="{{tvSeasonContent.query.filter_by(idTvSeason=_ARG['idTvSeason']).first().idTmdb}}" id="inputInsertNew_idTmdb">
+  <input type="text" class="form__input" placeholder="IMDB ID'si" id="inputInsertNew_idImdb">
+  <input type="text" class="form__input" placeholder="Sezon Numarası" value="{{tvSeasonContent.query.filter_by(idTvSeason=_ARG['idTvSeason']).first().seasonNumber}}" disabled="" id="inputInsertNew_seasonNumber">
+  <input type="text" class="form__input" placeholder="Bölüm Numarası" id="inputInsertNew_episodeNumber">
+  <input type="text" class="form__input" placeholder="Yayınlanma Tarihi" id="inputInsertNew_airDate">
+
+	<div class="modal__btns">
+    <button id="btnInsertNew_insertNew" class="modal__btn modal__btn--apply" type="button">Oluştur</button>
+		<button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+	</div>
+</div>
+<!-- end modal insertNew -->
+
+{%for result in results_info%}
+  <!-- modal drop -->
+  <div id="modal-drop-{{result.idTvEpisode}}" class="zoom-anim-dialog mfp-hide modal">
+    <h6 class="modal__title">{{result.title}} Adlı Bölümü Sil</h6>
+
+    <p class="modal__text">Bu bölümü kalıcı olarak silmek istediğinize emin misiniz?</p>
+
+    <div class="modal__btns">
+      <button onclick="adminpanel_v2_function(tableName='tvepisodecontent', functionName='drop', dictionary={'idTvEpisode': '{{result.idTvEpisode|safe}}'})" class="modal__btn modal__btn--apply" type="button">Sil</button>
+      <button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+    </div>
+  </div>
+  <!-- end modal drop -->
+{%endfor%}

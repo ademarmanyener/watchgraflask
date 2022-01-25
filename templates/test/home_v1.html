@@ -1,0 +1,13 @@
+{%for _content in content.query.limit(1000).all()%}
+<img src="{{_content.imagePoster}}" height="200px" alt="">
+<b>{{_content.title}}</b>
+  {%if _content.type == 'MOVIE'%}
+    {%for _genre in movieContentGenre.query.filter_by(idContent=_content.idContent).all()%}
+    <p>{{movieGenreList.query.filter_by(idGenre=_genre.idGenre).first().titleOriginal}}</p>
+    {%endfor%}
+  {%elif _content.type == 'TV'%}
+    {%for _genre in tvContentGenre.query.filter_by(idContent=_content.idContent).all()%}
+    <p>{{tvGenreList.query.filter_by(idGenre=_genre.idGenre).first().titleOriginal}}</p>
+    {%endfor%}
+  {%endif%}
+{%endfor%}

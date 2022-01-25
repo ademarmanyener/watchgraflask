@@ -1,0 +1,61 @@
+{%extends 'layouts/default.html'%}
+{%block container%}
+
+<style>
+  body {
+    background-color: darkred;
+  }
+</style>
+
+{%for i in range(5)%}<br />{%endfor%}
+
+<input type="text" class="form__input" placeholder="İçerik Ara..." id="inputSearchContent">
+
+<table style="border: 2px solid red; color: white; font-size: 25px;">
+  <tbody id="dbSc">
+  </tbody>
+</table>
+
+{%endblock%}
+
+{%block script%}
+  <script>
+    $('#inputSearchContent').on('input', () => {
+     //$("#dbSc").empty();
+      test_jq_live_function(dictionary={'query': $('#inputSearchContent').val()});
+    });
+
+    function test_jq_live_function(dictionary={}){
+      $.ajax($.extend(true, DEF_AJAX_CONFIG, {
+        url: Flask.url_for('test_jq_live_function'),
+        data: JSON.stringify({
+          'dictionary': dictionary,
+        }),
+        success: function(response){
+          if (response.err_msg){
+            console.log(response.err_msg);
+          }
+          else if (response.succ_msg){
+            try {
+              $("#dbSc").empty();
+              for (let i=0; i<response.resultsID.length; i++){
+                $("#dbSc").append(`
+                  <tr onclick="alert('===> ${response.resultsID[i]}');">
+                    <td>
+                      <div class="main__avatar" style="min-width: 175px; height: 225px; border-radius: 5px; -webkit-border-radius: 5px; margin-left: 10px; margin-bottom: 10px;">
+                        <div style="width: 100%; height: 100%; background-image: url('${response.resultsPoster[i]}'); background-size: cover; background-position: center;"></div>
+                      </div>
+                    </td>
+                    <td>${response.resultsTitle[i]}</td>
+                  </tr>
+                `);
+              }
+            } catch(e){
+              console.log(e);
+            }
+          }
+        },
+      }));
+    };
+  </script>
+{%endblock%}

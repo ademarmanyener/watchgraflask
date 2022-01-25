@@ -1,0 +1,110 @@
+{%extends 'layouts/default.html'%}
+{%block container%}
+
+<br><br><br><br>
+
+{%from 'adminpanel_v2/edit/macros.html' import macro_upload, macro_input, macro_textarea%}
+
+<!-- main content -->
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- main title -->
+      <div class="col-12">
+        <div class="main__title">
+          <!-- ::changeable: title:: -->
+          <h2>{{context['data'].title}} Adındaki Koleksiyon Düzenleniyor</h2>
+          <!-- ::changeable: title:: -->
+        </div>
+      </div>
+      <!-- end main title -->
+
+      <div class="col-10">
+        <form action="{{url_for('collection_edit', title_url=context['data'].titleUrl)}}" method="post" class="form" enctype="multipart/form-data">
+        <!-- ::changeable: form:: -->
+          <div class="row">
+            <div class="col-12 col-md-5 form__cover">
+              <!-- IMAGE UPLOAD BEGIN -->
+              <div class="row">
+                <div class="col-12 col-sm-6 col-md-12">
+                  <div class="form__img" style="height: 270px;">
+                    <label for="form__img-upload">Poster Seç</label>
+                    <input id="form__img-upload" name="form__img-upload" type="file" accept=".png, .jpg, .jpeg">
+                    <img id="form__img" src="#" alt=" " style="width: 100%;">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 col-sm-6 col-md-12">
+                  <div class="form__img" style="height: 200px;">
+                    <label for="form__imgBg-upload">Arkaplan Seç</label>
+                    <input id="form__imgBg-upload" name="form__imgBg-upload" type="file" accept=".png, .jpg, .jpeg">
+                    <img id="form__imgBg" src="#" alt=" " style="width: 100%;">
+                  </div>
+                </div>
+              </div>
+              <!-- IMAGE UPLOAD END -->
+            </div>
+
+            <div class="col-12 col-md-7 form__content">
+              <div class="row">
+                <div class="col-12">
+                  {{macro_input(id='title', title='Başlık')}}
+                </div>
+
+                <div class="col-12">
+                  {{macro_textarea(id='overview', title='Açıklama')}}
+                </div>
+
+                <div class="col-2">
+                  <div class="sign__group sign__group--checkbox">
+                    <input id="privatecollection" name="privatecollection" type="checkbox" {%if context['data'].private == True%}checked=""{%endif%}>
+                    <label for="privatecollection" style="font-size: 15px;">Gizli</label>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="row">
+
+                <div class="col-6">
+                  <a href="{{ url_for('collection_title', title_url=context['data'].titleUrl) }}" class="form__btn" style="cursor: pointer;">Geri Dön</a>
+                </div>
+
+                <div class="col-6">
+                  <input type="submit" id="button___save" name="button___save" value="Kaydet" class="form__btn" style="border: 0px; cursor: pointer; float: right;">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <!-- ::changeable: form:: -->             
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+<!-- end main content -->
+
+{%endblock%}
+
+{%block script%}
+<script type="text/javascript">
+  $(document).ready(() => {
+    $('#form__img').attr("src", `{{context['data'].imagePoster|safe}}`);
+    $('#form__imgBg').attr("src", `{{context['data'].imageBackground|safe}}`);
+    $('#input___title').val(`{{context['data'].title|safe}}`);
+    $('#input___overview').val(`{{context['data'].overview|safe}}`);
+    // select2
+    if (`{{context['data'].private}}` == 0){
+      $('#select2-select2___private-container').text('Herkese Açık');
+      $('#select2___private').val('0');
+    } else if (`{{context['data'].private}}` == 1){
+      $('#select2-select2___private-container').text('Gizli');
+      $('#select2___private').val('1');
+    }
+  });
+</script>
+{%endblock%}

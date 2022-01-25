@@ -1,0 +1,29 @@
+<!-- modal insertNew -->
+<div id="modal-insertNew" class="zoom-anim-dialog mfp-hide modal">
+	<h6 class="modal__title">Yeni Dil Ekle</h6>
+
+  <input type="text" class="form__input" placeholder="idISO_639_1" id="inputInsertNew_idISO_639_1">
+  <input type="text" class="form__input" placeholder="Dil Adı" id="inputInsertNew_title">
+  <input type="text" class="form__input" placeholder="Orijinal Dil Adı" id="inputInsertNew_titleOriginal">
+
+	<div class="modal__btns">
+    <button id="btnInsertNew_insertNew" class="modal__btn modal__btn--apply" type="button">Oluştur</button>
+		<button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+	</div>
+</div>
+<!-- end modal insertNew -->
+
+{%for result in results_info%}
+  <!-- modal drop -->
+  <div id="modal-drop-{{result.idISO_639_1}}" class="zoom-anim-dialog mfp-hide modal">
+    <h6 class="modal__title">{{result.title}} Adlı Dili Listeden Sil</h6>
+
+    <p class="modal__text">Bu dili kalıcı olarak listeden silmek istediğinize emin misiniz?</p>
+
+    <div class="modal__btns">
+      <button onclick="adminpanel_v2_function(tableName='languagelist', functionName='drop', dictionary={'idISO_639_1': '{{result.idISO_639_1|safe}}'})" class="modal__btn modal__btn--apply" type="button">Sil</button>
+      <button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+    </div>
+  </div>
+  <!-- end modal drop -->
+{%endfor%}

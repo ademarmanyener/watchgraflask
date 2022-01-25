@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+	{%include 'includes/adminpanel/head.html'%}
+  {%block inside_head%}{%endblock%}
+  {{JSGlue.include()}}
+</head>
+<body>
+
+  {%include 'includes/alert.html'%}
+
+  {%if sidebar != False%}{%include 'includes/adminpanel/sidebar.html'%}{%endif%}
+	{%block container%}{%endblock%}
+	
+	{%include 'includes/adminpanel/js.html'%}
+
+  <script src="{{url_for('static', filename='js/webApp_functions/app.js')}}"></script>
+  <script>
+    var DEF_AJAX_CONFIG = {
+      dataType: 'json',
+      type: 'POST',
+      contentType: 'application/json; charset=utf-8',
+      processData: false,
+      headers: {
+        'X-CSRFToken': '{{csrf_token()}}',
+      },
+      error: function(error){
+        console.log(` ==> error -> ${error.name}: ${error.message}`);
+      },
+    };
+  </script>
+  <script src="{{url_for('static', filename='js/ajax_functions/main.js')}}"></script>
+  {%if check_profile()%}<script src="{{url_for('static', filename='js/ajax_functions/profile.js')}}"></script>{%endif%}
+  {%if check_admin()%}<script src="{{url_for('static', filename='js/ajax_functions/admin.js')}}"></script>{%endif%}
+
+  <!-- beta for adminpanel_v2 -->
+  <script src="{{url_for('static', filename='js/ajax_functions/adminpanel_v2/main.js')}}"></script>
+
+  {%block script%}{%endblock%}
+</body>
+</html>

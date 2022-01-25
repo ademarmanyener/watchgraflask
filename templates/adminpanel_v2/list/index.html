@@ -1,0 +1,953 @@
+{%extends 'layouts/adminpanel/default.html'%}
+{%block container%}
+
+<!-- main content -->
+<main class="main">
+	<div class="container-fluid">
+
+    {%if 2 == 1%}<h1 style="color: white; font-size: 25px;">DEBUG: {{_ARG}}</h1>{%endif%}
+
+		<div class="row">
+			<!-- main title -->
+			<div class="col-12">
+				<div class="main__title">
+          <!-- ::changeable: title:: -->
+					<h2>
+            {%if _ARG['table'] == 'content'%}
+              İçerikler
+            {%elif _ARG['table'] == 'tvseasoncontent'%}
+              TV Sezon İçerikleri
+            {%elif _ARG['table'] == 'tvepisodecontent'%}
+              TV Bölüm İçerikleri
+            {%elif _ARG['table'] == 'tvplayer'%}
+              TV Oynatıcıları
+            {%elif _ARG['table'] == 'movieplayer'%}
+              Film Oynatıcıları
+            {%elif _ARG['table'] == 'account'%}
+              Hesaplar
+            {%elif _ARG['table'] == 'profile'%}
+              Profiller
+            {%elif _ARG['table'] == 'cast'%}
+              Oyuncular
+            {%elif _ARG['table'] == 'collection'%}
+              Koleksiyonlar
+            {%elif _ARG['table'] == 'moviecomment' or _ARG['table'] == 'tvcomment' or _ARG['table'] == 'tvtitlecomment' or _ARG['table'] == 'castcomment'%}
+              Yorumlar
+            {%elif _ARG['table'] == 'countrylist'%}
+              Ülke Listesi
+            {%elif _ARG['table'] == 'languagelist'%}
+              Dil Listesi 
+            {%elif _ARG['table'] == 'moviegenrelist'%}
+              Film Türü Listesi
+            {%elif _ARG['table'] == 'tvgenrelist'%}
+              Dizi Türü Listesi
+            {%elif _ARG['table'] == 'report'%}
+              Raporlar
+            {%endif%}
+          </h2>
+          <!-- ::changeable: title:: -->
+
+          <!-- ::changeable: insert button:: -->
+          {%if _ARG['table'] == 'content'%}
+            <a href="#modal-insertNew" class="modal__btn modal__btn--apply open-modal" style="margin-left: 25px; width: 175px;">Yeni Ekle</a>
+            <a href="#modal-importFromTmdb" class="modal__btn modal__btn--apply open-modal" style="margin-left: 25px; width: 175px;">TMDB'den Aktar</a>
+            <a href="#modal-fetchThePopulars" class="modal__btn modal__btn--apply open-modal" style="margin-left: 25px; width: 175px;">Popülerleri Aktar</a>
+            <a href="#modal-fetchTheClassics" class="modal__btn modal__btn--apply open-modal" style="margin-left: 25px; width: 175px;">Klasikleri Aktar</a>
+
+          {%elif _ARG['table'] == 'tvseasoncontent'%}
+            <a href="#modal-insertNew" class="modal__btn modal__btn--apply open-modal" style="margin-left: 25px; width: 175px;">Yeni Ekle</a>
+            {%if content.query.filter_by(idContent=_ARG['idContent']).first().idTmdb%}
+              <a href="#modal-importFromTmdb" class="modal__btn modal__btn--apply open-modal" style="margin-left: 25px; width: 175px;">TMDB'den Aktar</a>
+            {%endif%}
+          {%elif _ARG['table'] == 'tvepisodecontent'%}
+            <a href="#modal-insertNew" class="modal__btn modal__btn--apply open-modal" style="margin-left: 25px; width: 175px;">Yeni Ekle</a>
+            {%if tvSeasonContent.query.filter_by(idTvSeason=_ARG['idTvSeason']).first().idTmdb%}
+              <a href="#modal-importFromTmdb" class="modal__btn modal__btn--apply open-modal" style="margin-left: 25px; width: 175px;">TMDB'den Aktar</a>
+            {%endif%}
+          {%elif _ARG['table'] == 'tvplayer'%}
+            <a href="#modal-insertNew" class="modal__btn modal__btn--apply open-modal" style="margin-left: 25px; width: 175px;">Yeni Ekle</a>
+            <a href="#modal-importFromCustom" class="modal__btn modal__btn--apply open-modal" style="margin-left: 25px; width: 175px;">Aktar</a>
+          {%elif _ARG['table'] == 'movieplayer'%}
+            <a href="#modal-insertNew" class="modal__btn modal__btn--apply open-modal" style="margin-left: 25px; width: 175px;">Yeni Ekle</a>
+          {%elif _ARG['table'] == 'account'%}
+            <a href="#modal-insertNew" class="modal__btn modal__btn--apply open-modal" style="margin-left: 25px; width: 175px;">Yeni Ekle</a>
+          {%elif _ARG['table'] == 'profile'%}
+            <a href="#modal-insertNew" class="modal__btn modal__btn--apply open-modal" style="margin-left: 25px; width: 175px;">Yeni Ekle</a>
+          {%elif _ARG['table'] == 'cast'%}
+            <a href="#modal-insertNew" class="modal__btn modal__btn--apply open-modal" style="margin-left: 25px; width: 175px;">Yeni Ekle</a>
+            <a href="#modal-importFromTmdb" class="modal__btn modal__btn--apply open-modal" style="margin-left: 25px; width: 175px;">TMDB'den Aktar</a>
+          {%elif _ARG['table'] == 'collection'%}
+            <a href="#modal-insertNew" class="modal__btn modal__btn--apply open-modal" style="margin-left: 25px; width: 175px;">Yeni Ekle</a>
+          {%elif _ARG['table'] == 'moviecomment' or _ARG['table'] == 'tvcomment' or _ARG['table'] == 'tvtitlecomment' or _ARG['table'] == 'castcomment'%}
+          {%elif _ARG['table'] == 'countrylist'%}
+            <a href="#modal-insertNew" class="modal__btn modal__btn--apply open-modal" style="margin-left: 25px; width: 175px;">Yeni Ekle</a>
+          {%elif _ARG['table'] == 'languagelist'%}
+            <a href="#modal-insertNew" class="modal__btn modal__btn--apply open-modal" style="margin-left: 25px; width: 175px;">Yeni Ekle</a>
+          {%elif _ARG['table'] == 'moviegenrelist'%}
+            <a href="#modal-insertNew" class="modal__btn modal__btn--apply open-modal" style="margin-left: 25px; width: 175px;">Yeni Ekle</a>
+          {%elif _ARG['table'] == 'tvgenrelist'%}
+            <a href="#modal-insertNew" class="modal__btn modal__btn--apply open-modal" style="margin-left: 25px; width: 175px;">Yeni Ekle</a>
+          {%elif _ARG['table'] == 'report'%}
+          {%endif%}
+          <img id="gifLoading" src="{{url_for('static', filename='img/loading.gif')}}" alt="" style="display: none; height: 25px; margin-left: 25px;">
+          <!-- ::changeable: insert button:: -->
+
+          {%if 2 == 1%} <!-- disabled just for now -->
+          <!-- ::changeable: count:: -->
+					<span class="main__title-stat">Toplam: 0</span>
+          <!-- ::changeable: count:: -->
+
+					<div class="main__title-wrap">
+						<!-- filter sort -->
+						<div class="filter" id="filter__sort">
+							<span class="filter__item-label">Sıralama</span>
+
+							<div class="filter__item-btn dropdown-toggle" role="navigation" id="filter-sort" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<input type="button" value="Sıralama">
+								<span></span>
+							</div>
+
+							<ul class="filter__item-menu dropdown-menu scrollbar-dropdown" aria-labelledby="filter-sort">
+                <!-- ::changeable: order:: -->
+                {%if _ARG['table'] == 'content'%}
+                  <a href="#"><li>A'dan Z'ye</li></a>
+                  <a href="#"><li>Z'dan A'ye</li></a>
+                  <a href="#"><li>Yeniden Eskiye</li></a>
+                  <a href="#"><li>Eskiden Yeniye</li></a>
+                {%endif%}
+                <!-- ::changeable: order:: -->
+							</ul>
+						</div>
+						<!-- end filter sort -->
+
+						<!-- search -->
+						<form action="#" class="main__title-form">
+							<input type="text" placeholder="Ara...">
+							<button type="button">
+								<i class="icon ion-ios-search"></i>
+							</button>
+						</form>
+						<!-- end search -->
+					</div>
+          {%endif%}
+				</div>
+			</div>
+			<!-- end main title -->
+
+			<!-- users -->
+			<div class="col-12">
+				<div class="main__table-wrap">
+					<table class="main__table">
+						<thead>
+							<tr>
+                <!-- ::changeable: title:: -->
+                <th>{# FONKSİYONLAR #}</th>
+                {%if _ARG['table'] == 'content'%}
+                  <th>İÇERİK</th>
+                  <th>AÇIKLAMA</th>
+                  <th>ORTALAMA OY</th>
+                  <th>EKLEYEN PROFİL</th>
+                  <th>EKLENME / SON DÜZENLENME TARİHİ</th>
+                {%elif _ARG['table'] == 'tvseasoncontent'%}
+                  <th>SEZON</th>
+                  <th>AÇIKLAMA</th>
+                  <th>SEZON NUMARASI</th>
+                  <th>TOPLAM BÖLÜM SAYISI</th>
+                  <th>EKLEYEN PROFİL</th>
+                  <th>EKLENME / SON DÜZENLENME TARİHİ</th>
+                {%elif _ARG['table'] == 'tvepisodecontent'%}
+                  <th>BÖLÜM</th>
+                  <th>AÇIKLAMA</th>
+                  <th>ORTALAMA OY</th>
+                  <th>SEZON NUMARASI</th>
+                  <th>BÖLÜM NUMARASI</th>
+                  <th>EKLEYEN PROFİL</th>
+                  <th>EKLENME / SON DÜZENLENME TARİHİ</th>
+                {%elif _ARG['table'] == 'tvplayer'%}
+                  <th>OYNATICI</th>
+                  <th>TÜR</th>
+                  <th>DİL</th>
+                  <th>SEZON NUMARASI</th>
+                  <th>BÖLÜM NUMARASI</th>
+                  <th>EKLEYEN PROFİL</th>
+                  <th>EKLENME / SON DÜZENLENME TARİHİ</th>
+                {%elif _ARG['table'] == 'movieplayer'%}
+                  <th>OYNATICI</th>
+                  <th>TÜR</th>
+                  <th>DİL</th>
+                  <th>EKLEYEN PROFİL</th>
+                  <th>EKLENME / SON DÜZENLENME TARİHİ</th>
+                {%elif _ARG['table'] == 'account'%}
+                  <th>HESAP</th>
+                  <th>E-POSTA ADRESİ</th>
+                  <th>YETKİ</th>
+                  <th>EKLENME / SON DÜZENLENME TARİHİ</th>
+                {%elif _ARG['table'] == 'profile'%}
+                  <th>PROFİL</th>
+                  <th>BİYOGRAFİ</th>
+                  <th>YETKİ</th>
+                  <th>EKLENME / SON DÜZENLENME TARİHİ</th>
+                {%elif _ARG['table'] == 'cast'%}
+                  <th>OYUNCU</th>
+                  <th>BİYOGRAFİ</th>
+                  <th>TWITTER / INSTAGRAM</th>
+                  <th>EKLEYEN PROFİL</th>
+                  <th>EKLENME / SON DÜZENLENME TARİHİ</th>
+                {%elif _ARG['table'] == 'collection'%}
+                  <th>KOLEKSİYON</th>
+                  <th>AÇIKLAMA</th>
+                  <th>EKLEYEN PROFİL</th>
+                  <th>EKLENME / SON DÜZENLENME TARİHİ</th>
+                {%elif _ARG['table'] == 'moviecomment' or _ARG['table'] == 'tvcomment' or _ARG['table'] == 'tvtitlecomment' or _ARG['table'] == 'castcomment'%}
+                  <th>İÇERİK</th>
+                  <th>YORUM</th>
+                  <th>EKLEYEN PROFİL</th>
+                  <th>EKLENME / SON DÜZENLEME TARİHİ</th>
+                {%elif _ARG['table'] == 'countrylist'%}
+                  <th>idISO_3166_1</th>
+                  <th>ÜLKE ADI</th>
+                  <th>ORİJİNAL ÜLKE ADI</th>
+                {%elif _ARG['table'] == 'languagelist'%}
+                  <th>idISO_639_1</th>
+                  <th>DİL ADI</th>
+                  <th>ORİJİNAL DİL ADI</th>
+                {%elif _ARG['table'] == 'moviegenrelist'%}
+                  <th>idGenre</th>
+                  <th>TÜR ADI</th>
+                  <th>ORİJİNAL TÜR ADI</th>
+                {%elif _ARG['table'] == 'tvgenrelist'%}
+                  <th>idGenre</th>
+                  <th>TÜR ADI</th>
+                  <th>ORİJİNAL TÜR ADI</th>
+                {%elif _ARG['table'] == 'report'%}
+                  <th>RAPORLAYAN ADI</th>
+                  <th>RAPORLAYAN E-POSTA ADRESİ</th>
+                  <th>RAPOR BAŞLIĞI</th>
+                  <th>RAPOR İÇERİĞİ</th>
+                  <th>RAPOR TARİHİ</th>
+                {%endif%}
+                <!-- ::changeable: title:: -->
+							</tr>
+						</thead>
+
+						<tbody>
+              <!-- ::changeable: results:: -->
+              {%for result in results_info%}
+                {%if _ARG['table'] == 'content'%}
+                  <tr id="tr-{{result.idContent}}">
+                    <td>
+                      <div class="main__table-btns">
+                        <a href="{{url_for('adminpanel_v2_edit')}}?table={{_ARG['table']}}&id={{result.idContent}}" class="main__table-btn main__table-btn--banned">
+                          <i class="icon ion-ios-brush"></i>
+                        </a>
+                        <a href="#modal-drop-{{result.idContent}}" class="main__table-btn main__table-btn--delete open-modal">
+                          <i class="icon ion-ios-trash"></i>
+                        </a>
+                        {%if result.type == 'MOVIE'%}
+                        <a href="{{url_for('adminpanel_v2_list')}}?table=movieplayer&query=*&idContent={{result.idContent}}&page=1&sort=newest&list_count=25" class="main__table-btn main__table-btn--edit">
+                          <i class="icon ion-ios-albums"></i>
+                        </a>
+                        {%elif result.type == 'TV'%}
+                        <a href="{{url_for('adminpanel_v2_list')}}?table=tvseasoncontent&query=*&idContent={{result.idContent}}&page=1&sort=season&list_count=25" class="main__table-btn main__table-btn--edit">
+                          <i class="icon ion-ios-albums"></i>
+                        </a>
+                        {%endif%}
+                      </div>
+                    </td>
+                    <td>
+                      <a href="{{url_for('content_redirect', title_url=result.titleUrl)}}" target="_blank">
+                        <div class="main__user">
+                          <div class="main__avatar" style="min-width: 75px; height: 100px; border-radius: 5px; -webkit-border-radius: 5px;">
+                            <div style="width: 100%; height: 100%; background-image: url('{{result.imagePoster}}'); background-size: cover; background-position: center;"></div>
+                          </div>
+                          <div class="main__meta">
+                            <span style="font-size: 12px; color: white;">{%if result.type == 'MOVIE'%}Film{%elif result.type == 'TV'%}Dizi{%endif%}</span>
+                            <h3>{{result.title}}</h3>
+                            <span>{{result.titleOriginal}}</span>
+                            {%if result.adult == 1%}<span style="font-size: 12px; font-weight: bold; color: rgb(173, 45, 45);">Yetişkin İçerik</span>{%endif%}
+                            {%if result.visibility == 0%}<span style="font-size: 12px; font-weight: bold; color: red;">Gizli</span>{%endif%}
+                          </div>
+                        </div>
+                      </a>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{result.overview[:60]}}...</div>
+                    </td>
+                    <td>
+                      <div class="main__table-text main__table-text--rate"><i class="icon ion-ios-star"></i> {{result.voteAverage}}</div>
+                    </td>
+                    <td>
+                      <a href="{{url_for('accountprofile', account_username=get_account_db(account_id=result.idAddAccount).username, profile_username=get_profile_db(profile_id=result.idAddProfile).username)}}" target="_blank">
+                        <div class="main__user">
+                          <div class="main__avatar" style="min-width: 50px; height: 50px; border-radius: 5px; -webkit-border-radius: 5px;">
+                            <div style="width: 100%; height: 100%; background-image: url('{{get_profile_db(profile_id=result.idAddProfile).imageAvatar}}'); background-size: cover; background-position: center;"></div>
+                          </div>
+                          <div class="main__meta">
+                            <h3>{{get_profile_db(profile_id=result.idAddProfile).username}}</h3>
+                            <span>{{get_account_db(account_id=result.idAddAccount).username}}</span>
+                          </div>
+                        </div>
+                      </a>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{format_date(result.addDate, 'full', locale='tr')}}</div>
+                      <div class="main__table-text main__table-text--green">{{format_date(result.lastEditDate, 'full', locale='tr')}}</div>
+                    </td>
+                  </tr>
+                {%elif _ARG['table'] == 'tvseasoncontent'%}
+                  <tr id="tr-{{result.idTvSeason}}">
+                    <td>
+                      <div class="main__table-btns">
+                        <a href="{{url_for('adminpanel_v2_edit')}}?table={{_ARG['table']}}&id={{result.idTvSeason}}" class="main__table-btn main__table-btn--banned">
+                          <i class="icon ion-ios-brush"></i>
+                        </a>
+                        <a href="#modal-drop-{{result.idTvSeason}}" class="main__table-btn main__table-btn--delete open-modal">
+                          <i class="icon ion-ios-trash"></i>
+                        </a>
+                        <a href="{{url_for('adminpanel_v2_list')}}?table=tvepisodecontent&query=*&idContent={{result.idContent}}&idTvSeason={{result.idTvSeason}}&page=1&sort=episode&list_count=25" class="main__table-btn main__table-btn--edit">
+                          <i class="icon ion-ios-albums"></i>
+                        </a>
+                      </div>
+                    </td>
+                    <td>
+                      <a href="{{url_for('tv_season_title', title_url=content.query.filter_by(idContent=result.idContent).first().titleUrl, season_number=result.seasonNumber)}}" target="_blank">
+                        <div class="main__user">
+                          <div class="main__avatar" style="min-width: 75px; height: 100px; border-radius: 5px; -webkit-border-radius: 5px;">
+                            <div style="width: 100%; height: 100%; background-image: url('{{result.imagePoster}}'); background-size: cover; background-position: center;"></div>
+                          </div>
+                          <div class="main__meta">
+                            <h3>{{result.title}}</h3>
+                            <span>{{result.titleOriginal}}</span>
+                            {%if result.visibility == 0%}<span style="font-size: 12px; font-weight: bold; color: rgb(189, 189, 189);">Gizli</span>{%endif%}
+                          </div>
+                        </div>
+                      </a>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{result.overview[:60]}}...</div>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{result.seasonNumber}}</div>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{tvEpisodeContent.query.filter_by(idTvSeason=result.idTvSeason).all()|length}}</div>
+                    </td>
+                    <td>
+                      <a href="{{url_for('accountprofile', account_username=get_account_db(account_id=result.idAddAccount).username, profile_username=get_profile_db(profile_id=result.idAddProfile).username)}}" target="_blank">
+                        <div class="main__user">
+                          <div class="main__avatar" style="min-width: 50px; height: 50px; border-radius: 5px; -webkit-border-radius: 5px;">
+                            <div style="width: 100%; height: 100%; background-image: url('{{get_profile_db(profile_id=result.idAddProfile).imageAvatar}}'); background-size: cover; background-position: center;"></div>
+                          </div>
+                          <div class="main__meta">
+                            <h3>{{get_profile_db(profile_id=result.idAddProfile).username}}</h3>
+                            <span>{{get_account_db(account_id=result.idAddAccount).username}}</span>
+                          </div>
+                        </div>
+                      </a>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{format_date(result.addDate, 'full', locale='tr')}}</div>
+                      <div class="main__table-text main__table-text--green">{{format_date(result.lastEditDate, 'full', locale='tr')}}</div>
+                    </td>
+                  </tr>
+                {%elif _ARG['table'] == 'tvepisodecontent'%}
+                  <tr id="tr-{{result.idTvEpisode}}">
+                    <td>
+                      <div class="main__table-btns">
+                        <a href="{{url_for('adminpanel_v2_edit')}}?table={{_ARG['table']}}&id={{result.idTvEpisode}}" class="main__table-btn main__table-btn--banned">
+                          <i class="icon ion-ios-brush"></i>
+                        </a>
+                        <a href="#modal-drop-{{result.idTvEpisode}}" class="main__table-btn main__table-btn--delete open-modal">
+                          <i class="icon ion-ios-trash"></i>
+                        </a>
+                        <a href="{{url_for('adminpanel_v2_list')}}?table=tvplayer&query=*&idContent={{result.idContent}}&idTvSeason={{result.idTvSeason}}&idTvEpisode={{result.idTvEpisode}}&page=1&sort=newest&list_count=25" class="main__table-btn main__table-btn--edit">
+                          <i class="icon ion-ios-albums"></i>
+                        </a>
+                      </div>
+                    </td>
+                    <td>
+                      <a href="{{url_for('tv_watch', title_url=content.query.filter_by(idContent=result.idContent).first().titleUrl, season_number=result.seasonNumber, episode_number=result.episodeNumber)}}" target="_blank">
+                        <div class="main__user">
+                          <div class="main__avatar" style="min-width: 100px; height: 60px; border-radius: 5px; -webkit-border-radius: 5px;">
+                            <div style="width: 100%; height: 100%; background-image: url('{{result.imagePoster}}'); background-size: cover; background-position: center;"></div>
+                          </div>
+                          <div class="main__meta">
+                            <h3>{{result.title}}</h3>
+                            <span>{{result.titleOriginal}}</span>
+                            {%if result.visibility == 0%}<span style="font-size: 12px; font-weight: bold; color: rgb(189, 189, 189);">Gizli</span>{%endif%}
+                          </div>
+                        </div>
+                      </a>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{result.overview[:60]}}...</div>
+                    </td>
+                    <td>
+                      <div class="main__table-text main__table-text--rate"><i class="icon ion-ios-star"></i> {{result.voteAverage}}</div>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{result.seasonNumber}}</div>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{result.episodeNumber}}</div>
+                    </td>
+                    <td>
+                      <a href="{{url_for('accountprofile', account_username=get_account_db(account_id=result.idAddAccount).username, profile_username=get_profile_db(profile_id=result.idAddProfile).username)}}" target="_blank">
+                        <div class="main__user">
+                          <div class="main__avatar" style="min-width: 50px; height: 50px; border-radius: 5px; -webkit-border-radius: 5px;">
+                            <div style="width: 100%; height: 100%; background-image: url('{{get_profile_db(profile_id=result.idAddProfile).imageAvatar}}'); background-size: cover; background-position: center;"></div>
+                          </div>
+                          <div class="main__meta">
+                            <h3>{{get_profile_db(profile_id=result.idAddProfile).username}}</h3>
+                            <span>{{get_account_db(account_id=result.idAddAccount).username}}</span>
+                          </div>
+                        </div>
+                      </a>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{format_date(result.addDate, 'full', locale='tr')}}</div>
+                      <div class="main__table-text main__table-text--green">{{format_date(result.lastEditDate, 'full', locale='tr')}}</div>
+                    </td>
+                  </tr>
+                {%elif _ARG['table'] == 'tvplayer'%}
+                  <tr id="tr-{{result.idPlayer}}">
+                    <td>
+                      <div class="main__table-btns">
+                        <a href="{{url_for('adminpanel_v2_edit')}}?table={{_ARG['table']}}&id={{result.idPlayer}}" class="main__table-btn main__table-btn--banned">
+                          <i class="icon ion-ios-brush"></i>
+                        </a>
+                        <a href="#modal-drop-{{result.idPlayer}}" class="main__table-btn main__table-btn--delete open-modal">
+                          <i class="icon ion-ios-trash"></i>
+                        </a>
+                      </div>
+                    </td>
+                    <td>
+                      <a href="{{url_for('tv_watch', title_url=content.query.filter_by(idContent=result.idContent).first().titleUrl, season_number=result.seasonNumber, episode_number=result.episodeNumber)}}?viewkey={{result.viewKey}}" target="_blank">
+                        <div class="main__user">
+                          <div class="main__avatar" style="min-width: 100px; height: 60px; border-radius: 5px; -webkit-border-radius: 5px;">
+                            <div style="width: 100%; height: 100%; background-image: url({{url_for('static', filename='img/logo.png')}}); background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
+                          </div>
+                          <div class="main__meta">
+                            <h3>{{result.title}}</h3>
+                            <span>{{result.viewKey}}</span>
+                            {%if result.visibility == 0%}<span style="font-size: 12px; font-weight: bold; color: rgb(189, 189, 189);">Gizli</span>{%endif%}
+                          </div>
+                        </div>
+                      </a>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{result.type}}</div>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{result.language}}</div>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{result.seasonNumber}}</div>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{result.episodeNumber}}</div>
+                    </td>
+                    <td>
+                      <a href="{{url_for('accountprofile', account_username=get_account_db(account_id=result.idAddAccount).username, profile_username=get_profile_db(profile_id=result.idAddProfile).username)}}" target="_blank">
+                        <div class="main__user">
+                          <div class="main__avatar" style="min-width: 50px; height: 50px; border-radius: 5px; -webkit-border-radius: 5px;">
+                            <div style="width: 100%; height: 100%; background-image: url('{{get_profile_db(profile_id=result.idAddProfile).imageAvatar}}'); background-size: cover; background-position: center;"></div>
+                          </div>
+                          <div class="main__meta">
+                            <h3>{{get_profile_db(profile_id=result.idAddProfile).username}}</h3>
+                            <span>{{get_account_db(account_id=result.idAddAccount).username}}</span>
+                          </div>
+                        </div>
+                      </a>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{format_date(result.addDate, 'full', locale='tr')}}</div>
+                      <div class="main__table-text main__table-text--green">{{format_date(result.lastEditDate, 'full', locale='tr')}}</div>
+                    </td>
+                  </tr>
+                {%elif _ARG['table'] == 'movieplayer'%}
+                  <tr id="tr-{{result.idPlayer}}">
+                    <td>
+                      <div class="main__table-btns">
+                        <a href="{{url_for('adminpanel_v2_edit')}}?table={{_ARG['table']}}&id={{result.idPlayer}}" class="main__table-btn main__table-btn--banned">
+                          <i class="icon ion-ios-brush"></i>
+                        </a>
+                        <a href="#modal-drop-{{result.idPlayer}}" class="main__table-btn main__table-btn--delete open-modal">
+                          <i class="icon ion-ios-trash"></i>
+                        </a>
+                      </div>
+                    </td>
+                    <td>
+                      <a href="{{url_for('movie_watch', title_url=content.query.filter_by(idContent=result.idContent).first().titleUrl)}}?viewkey={{result.viewKey}}" target="_blank">
+                        <div class="main__user">
+                          <div class="main__avatar" style="min-width: 100px; height: 60px; border-radius: 5px; -webkit-border-radius: 5px;">
+                            <div style="width: 100%; height: 100%; background-image: url({{url_for('static', filename='img/logo.png')}}); background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
+                          </div>
+                          <div class="main__meta">
+                            <h3>{{result.title}}</h3>
+                            <span>{{result.viewKey}}</span>
+                            {%if result.visibility == 0%}<span style="font-size: 12px; font-weight: bold; color: rgb(189, 189, 189);">Gizli</span>{%endif%}
+                          </div>
+                        </div>
+                      </a>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{result.type}}</div>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{result.language}}</div>
+                    </td>
+                    <td>
+                      <a href="{{url_for('accountprofile', account_username=get_account_db(account_id=result.idAddAccount).username, profile_username=get_profile_db(profile_id=result.idAddProfile).username)}}" target="_blank">
+                        <div class="main__user">
+                          <div class="main__avatar" style="min-width: 50px; height: 50px; border-radius: 5px; -webkit-border-radius: 5px;">
+                            <div style="width: 100%; height: 100%; background-image: url('{{get_profile_db(profile_id=result.idAddProfile).imageAvatar}}'); background-size: cover; background-position: center;"></div>
+                          </div>
+                          <div class="main__meta">
+                            <h3>{{get_profile_db(profile_id=result.idAddProfile).username}}</h3>
+                            <span>{{get_account_db(account_id=result.idAddAccount).username}}</span>
+                          </div>
+                        </div>
+                      </a>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{format_date(result.addDate, 'full', locale='tr')}}</div>
+                      <div class="main__table-text main__table-text--green">{{format_date(result.lastEditDate, 'full', locale='tr')}}</div>
+                    </td>
+                  </tr>
+                {%elif _ARG['table'] == 'account'%}
+                  <tr id="tr-{{result.idAccount}}">
+                    <td>
+                      {%if not result.permission == 'SYSTEM'%}
+                      <div class="main__table-btns">
+                        <a href="{{url_for('adminpanel_v2_edit')}}?table={{_ARG['table']}}&id={{result.idAccount}}" class="main__table-btn main__table-btn--banned">
+                          <i class="icon ion-ios-brush"></i>
+                        </a>
+                        <a href="#modal-drop-{{result.idAccount}}" class="main__table-btn main__table-btn--delete open-modal">
+                          <i class="icon ion-ios-trash"></i>
+                        </a>
+                      </div>
+                      {%endif%}
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{result.username}}</div>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{result.emailAddress}}</div>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{result.permission}}</div>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{format_date(result.signupDate, 'full', locale='tr')}}</div>
+                      <div class="main__table-text main__table-text--green">{{format_date(result.lastEditDate, 'full', locale='tr')}}</div>
+                    </td>
+                  </tr>
+                {%elif _ARG['table'] == 'profile'%}
+                  <tr id="tr-{{result.idProfile}}">
+                    <td>
+                      {%if not result.permission == 'DOCKER'%}
+                      <div class="main__table-btns">
+                        <a href="{{url_for('adminpanel_v2_edit')}}?table={{_ARG['table']}}&id={{result.idProfile}}" class="main__table-btn main__table-btn--banned">
+                          <i class="icon ion-ios-brush"></i>
+                        </a>
+                        <a href="#modal-drop-{{result.idProfile}}" class="main__table-btn main__table-btn--delete open-modal">
+                          <i class="icon ion-ios-trash"></i>
+                        </a>
+                      </div>
+                      {%endif%}
+                    </td>
+                    <td>
+                      <a href="{{url_for('accountprofile', account_username=account.query.filter_by(idAccount=result.idAccount).first().username, profile_username=result.username)}}" target="_blank">
+                        <div class="main__user">
+                          <div class="main__avatar" style="min-width: 75px; height: 75px; border-radius: 5px; -webkit-border-radius: 5px;">
+                            <div style="width: 100%; height: 100%; background-image: url('{{result.imageAvatar}}'); background-size: cover; background-position: center;"></div>
+                          </div>
+                          <div class="main__meta">
+                            <h3>{{result.username}}</h3>
+                            <span>{{get_account_db(account_id=result.idAccount).username}}</span>
+                            {%if result.visibility == 0%}<span style="font-size: 12px; font-weight: bold; color: rgb(189, 189, 189);">Gizli</span>{%endif%}
+                          </div>
+                        </div>
+                      </a>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{result.biography[:60]}}...</div>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{result.permission}}</div>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{format_date(result.addDate, 'full', locale='tr')}}</div>
+                      <div class="main__table-text main__table-text--green">{{format_date(result.lastEditDate, 'full', locale='tr')}}</div>
+                    </td>
+                  </tr>
+                {%elif _ARG['table'] == 'cast'%}
+                  <tr id="tr-{{result.idCast}}">
+                    <td>
+                      <div class="main__table-btns">
+                        <a href="{{url_for('adminpanel_v2_edit')}}?table={{_ARG['table']}}&id={{result.idCast}}" class="main__table-btn main__table-btn--banned">
+                          <i class="icon ion-ios-brush"></i>
+                        </a>
+                        <a href="#modal-drop-{{result.idCast}}" class="main__table-btn main__table-btn--delete open-modal">
+                          <i class="icon ion-ios-trash"></i>
+                        </a>
+                      </div>
+                    </td>
+                    <td>
+                      <a href="{{url_for('cast_title', name_url=result.nameUrl)}}" target="_blank">
+                        <div class="main__user">
+                          <div class="main__avatar" style="min-width: 75px; height: 125px; border-radius: 5px; -webkit-border-radius: 5px;">
+                            <div style="width: 100%; height: 100%; background-image: url('{{result.imagePoster}}'); background-size: cover; background-position: center;"></div>
+                          </div>
+                          <div class="main__meta">
+                            <h3>{{result.name}}</h3>
+                            <span>{{result.nameUrl}}</span>
+                            {%if result.visibility == 0%}<span style="font-size: 12px; font-weight: bold; color: rgb(189, 189, 189);">Gizli</span>{%endif%}
+                          </div>
+                        </div>
+                      </a>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{result.biography[:60]}}...</div>
+                    </td>
+                    <td>
+                      <div class="main__table-text main__table-text--rate"><i class="icon ion-logo-twitter"></i> {{result.idTwitter}}</div>
+                      <div class="main__table-text main__table-text--rate"><i class="icon ion-logo-instagram"></i> {{result.idInstagram}}</div>
+                    </td>
+                    <td>
+                      <a href="{{url_for('accountprofile', account_username=get_account_db(account_id=result.idAddAccount).username, profile_username=get_profile_db(profile_id=result.idAddProfile).username)}}" target="_blank">
+                        <div class="main__user">
+                          <div class="main__avatar" style="min-width: 50px; height: 50px; border-radius: 5px; -webkit-border-radius: 5px;">
+                            <div style="width: 100%; height: 100%; background-image: url('{{get_profile_db(profile_id=result.idAddProfile).imageAvatar}}'); background-size: cover; background-position: center;"></div>
+                          </div>
+                          <div class="main__meta">
+                            <h3>{{get_profile_db(profile_id=result.idAddProfile).username}}</h3>
+                            <span>{{get_account_db(account_id=result.idAddAccount).username}}</span>
+                          </div>
+                        </div>
+                      </a>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{format_date(result.addDate, 'full', locale='tr')}}</div>
+                      <div class="main__table-text main__table-text--green">{{format_date(result.lastEditDate, 'full', locale='tr')}}</div>
+                    </td>
+                  </tr>
+                {%elif _ARG['table'] == 'collection'%}
+                  <tr id="tr-{{result.idCollection}}">
+                    <td>
+                      <div class="main__table-btns">
+                        <a href="{{url_for('adminpanel_v2_edit')}}?table={{_ARG['table']}}&id={{result.idCollection}}" class="main__table-btn main__table-btn--banned">
+                          <i class="icon ion-ios-brush"></i>
+                        </a>
+                        <a href="#modal-drop-{{result.idCollection}}" class="main__table-btn main__table-btn--delete open-modal">
+                          <i class="icon ion-ios-trash"></i>
+                        </a>
+                      </div>
+                    </td>
+                    <td>
+                      <a href="{{url_for('collection_title', title_url=result.titleUrl)}}" target="_blank">
+                        <div class="main__user">
+                          <div class="main__avatar" style="min-width: 75px; height: 75px; border-radius: 5px; -webkit-border-radius: 5px;">
+                            <div style="width: 100%; height: 100%; background-image: url('{{result.imagePoster}}'); background-size: cover; background-position: center;"></div>
+                          </div>
+                          <div class="main__meta">
+                            <h3>{{result.title}}</h3>
+                            <span>{{result.titleUrl}}</span>
+                            {%if result.private%}<span style="font-size: 12px; font-weight: bold; color: rgb(189, 189, 189);">Gizli</span>{%endif%}
+                          </div>
+                        </div>
+                      </a>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{result.overview[:60]}}...</div>
+                    </td>
+                    <td>
+                      <a href="{{url_for('accountprofile', account_username=get_account_db(account_id=result.idAddAccount).username, profile_username=get_profile_db(profile_id=result.idAddProfile).username)}}" target="_blank">
+                        <div class="main__user">
+                          <div class="main__avatar" style="min-width: 50px; height: 50px; border-radius: 5px; -webkit-border-radius: 5px;">
+                            <div style="width: 100%; height: 100%; background-image: url('{{get_profile_db(profile_id=result.idAddProfile).imageAvatar}}'); background-size: cover; background-position: center;"></div>
+                          </div>
+                          <div class="main__meta">
+                            <h3>{{get_profile_db(profile_id=result.idAddProfile).username}}</h3>
+                            <span>{{get_account_db(account_id=result.idAddAccount).username}}</span>
+                          </div>
+                        </div>
+                      </a>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{format_date(result.addDate, 'full', locale='tr')}}</div>
+                      <div class="main__table-text main__table-text--green">{{format_date(result.lastEditDate, 'full', locale='tr')}}</div>
+                    </td>
+                  </tr>
+                {%elif _ARG['table'] == 'moviecomment' or _ARG['table'] == 'tvcomment' or _ARG['table'] == 'tvtitlecomment' or _ARG['table'] == 'castcomment'%}
+                  <tr id="tr-{{result.idComment}}">
+                    <td>
+                      <div class="main__table-btns">
+                        <span onclick="updateRecord(idComment=`{{result.idComment}}`);" class="main__table-btn main__table-btn--banned">
+                          <i class="icon ion-ios-save"></i>
+                        </span>
+                        <a href="#modal-drop-{{result.idComment}}" class="main__table-btn main__table-btn--delete open-modal">
+                          <i class="icon ion-ios-trash"></i>
+                        </a>
+                      </div>
+                    </td>
+                    <td>
+                      <a href="
+                        {%if _ARG['table'] == 'moviecomment'%}
+                          {{url_for('movie_watch', title_url=content.query.filter_by(idContent=result.idContent).first().titleUrl)}}
+                        {%elif _ARG['table'] == 'tvcomment'%}
+                          {{url_for('tv_watch', title_url=content.query.filter_by(idContent=result.idContent).first().titleUrl, season_number=tvSeasonContent.query.filter_by(idTvSeason=result.idTvSeason).first().seasonNumber, episode_number=tvEpisodeContent.query.filter_by(idTvEpisode=result.idTvEpisode).first().episodeNumber)}}
+                        {%elif _ARG['table'] == 'tvtitlecomment'%}
+                          {{url_for('tv_season_title', title_url=content.query.filter_by(idContent=result.idContent).first().titleUrl, season_number=tvSeasonContent.query.filter_by(idTvSeason=result.idTvSeason).first().seasonNumber)}}
+                        {%elif _ARG['table'] == 'castcomment'%}
+                          {{url_for('cast_title', name_url=cast.query.filter_by(idCast=result.idCast).first().nameUrl)}}
+                        {%endif%}
+                      " target="_blank">
+                        <div class="main__user">
+                          <div class="main__avatar" style="min-width: 75px; height: 100px; border-radius: 5px; -webkit-border-radius: 5px;">
+                            {%if _ARG['table'] == 'moviecomment'%}
+                            <div style="width: 100%; height: 100%; background-image: url('{{content.query.filter_by(idContent=result.idContent).first().imagePoster}}'); background-size: cover; background-position: center;"></div>
+                            {%elif _ARG['table'] == 'tvcomment'%}
+                            <div style="width: 100%; height: 100%; background-image: url('{{content.query.filter_by(idContent=result.idContent).first().imagePoster}}'); background-size: cover; background-position: center;"></div>
+                            {%elif _ARG['table'] == 'tvtitlecomment'%}
+                            <div style="width: 100%; height: 100%; background-image: url('{{content.query.filter_by(idContent=result.idContent).first().imagePoster}}'); background-size: cover; background-position: center;"></div>
+                            {%elif _ARG['table'] == 'castcomment'%}
+                            <div style="width: 100%; height: 100%; background-image: url('{{cast.query.filter_by(idCast=result.idCast).first().imagePoster}}'); background-size: cover; background-position: center;"></div>
+                            {%endif%}
+                          </div>
+                          <div class="main__meta">
+                            {%if _ARG['table'] == 'moviecomment'%}
+                              <h3>{{content.query.filter_by(idContent=result.idContent).first().title}}</h3>
+                            {%elif _ARG['table'] == 'tvcomment'%}
+                              <h3>{{content.query.filter_by(idContent=result.idContent).first().title}}</h3>
+                            {%elif _ARG['table'] == 'tvtitlecomment'%}
+                              <h3>{{content.query.filter_by(idContent=result.idContent).first().title}}</h3>
+                            {%elif _ARG['table'] == 'castcomment'%}
+                              <h3>{{cast.query.filter_by(idCast=result.idCast).first().name}}</h3>
+                            {%endif%}
+                          </div>
+                        </div>
+                      </a>
+                    </td>
+                    <td>
+                      <textarea id="inputText-{{result.idComment}}" class="form__textarea" cols="30" rows="10">{{result.text}}</textarea>
+                    </td>
+                    <td>
+                      <a href="{{url_for('accountprofile', account_username=get_account_db(account_id=result.idAddAccount).username, profile_username=get_profile_db(profile_id=result.idAddProfile).username)}}" target="_blank">
+                        <div class="main__user">
+                          <div class="main__avatar" style="min-width: 50px; height: 50px; border-radius: 5px; -webkit-border-radius: 5px;">
+                            <div style="width: 100%; height: 100%; background-image: url('{{get_profile_db(profile_id=result.idAddProfile).imageAvatar}}'); background-size: cover; background-position: center;"></div>
+                          </div>
+                          <div class="main__meta">
+                            <h3>{{get_profile_db(profile_id=result.idAddProfile).username}}</h3>
+                            <span>{{get_account_db(account_id=result.idAddAccount).username}}</span>
+                          </div>
+                        </div>
+                      </a>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{format_date(result.addDate, 'full', locale='tr')}}</div>
+                      <div class="main__table-text main__table-text--green">{{format_date(result.lastEditDate, 'full', locale='tr')}}</div>
+                    </td>
+                  </tr>
+                {%elif _ARG['table'] == 'countrylist'%}
+                  <tr id="tr-{{result.idISO_3166_1}}">
+                    <td>
+                      <div class="main__table-btns">
+                        <span onclick="updateRecord(idISO_3166_1='{{result.idISO_3166_1|safe}}');" class="main__table-btn main__table-btn--banned">
+                          <i class="icon ion-ios-save"></i>
+                        </span>
+                        <a href="#modal-drop-{{result.idISO_3166_1}}" class="main__table-btn main__table-btn--delete open-modal">
+                          <i class="icon ion-ios-trash"></i>
+                        </a>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{result.idISO_3166_1}}</div>
+                    </td>
+                    <td>
+                      <input type="text" class="form__input" value="{{result.title}}" id="inputTitle-{{result.idISO_3166_1}}">
+                    </td>
+                    <td>
+                      <input type="text" class="form__input" value="{{result.titleOriginal}}" id="inputTitleOriginal-{{result.idISO_3166_1}}">
+                    </td>
+                  </tr>
+                {%elif _ARG['table'] == 'languagelist'%}
+                  <tr id="tr-{{result.idISO_639_1}}">
+                    <td>
+                      <div class="main__table-btns">
+                        <span onclick="updateRecord(idISO_639_1='{{result.idISO_639_1|safe}}');" class="main__table-btn main__table-btn--banned">
+                          <i class="icon ion-ios-save"></i>
+                        </span>
+                        <a href="#modal-drop-{{result.idISO_639_1}}" class="main__table-btn main__table-btn--delete open-modal">
+                          <i class="icon ion-ios-trash"></i>
+                        </a>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{result.idISO_639_1}}</div>
+                    </td>
+                    <td>
+                      <input type="text" class="form__input" value="{{result.title}}" id="inputTitle-{{result.idISO_639_1}}">
+                    </td>
+                    <td>
+                      <input type="text" class="form__input" value="{{result.titleOriginal}}" id="inputTitleOriginal-{{result.idISO_639_1}}">
+                    </td>
+                  </tr>
+                {%elif _ARG['table'] == 'moviegenrelist'%}
+                  <tr id="tr-{{result.idGenre}}">
+                    <td>
+                      <div class="main__table-btns">
+                        <span onclick="updateRecord(idGenre='{{result.idGenre|safe}}');" class="main__table-btn main__table-btn--banned">
+                          <i class="icon ion-ios-save"></i>
+                        </span>
+                        <a href="#modal-drop-{{result.idGenre}}" class="main__table-btn main__table-btn--delete open-modal">
+                          <i class="icon ion-ios-trash"></i>
+                        </a>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{result.idGenre}}</div>
+                    </td>
+                    <td>
+                      <input type="text" class="form__input" value="{{result.title}}" id="inputTitle-{{result.idGenre}}">
+                    </td>
+                    <td>
+                      <input type="text" class="form__input" value="{{result.titleOriginal}}" id="inputTitleOriginal-{{result.idGenre}}">
+                    </td>
+                  </tr>
+                {%elif _ARG['table'] == 'tvgenrelist'%}
+                  <tr id="tr-{{result.idGenre}}">
+                    <td>
+                      <div class="main__table-btns">
+                        <span onclick="updateRecord(idGenre='{{result.idGenre|safe}}');" class="main__table-btn main__table-btn--banned">
+                          <i class="icon ion-ios-save"></i>
+                        </span>
+                        <a href="#modal-drop-{{result.idGenre}}" class="main__table-btn main__table-btn--delete open-modal">
+                          <i class="icon ion-ios-trash"></i>
+                        </a>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{result.idGenre}}</div>
+                    </td>
+                    <td>
+                      <input type="text" class="form__input" value="{{result.title}}" id="inputTitle-{{result.idGenre}}">
+                    </td>
+                    <td>
+                      <input type="text" class="form__input" value="{{result.titleOriginal}}" id="inputTitleOriginal-{{result.idGenre}}">
+                    </td>
+                  </tr>
+                {%elif _ARG['table'] == 'report'%}
+                  <tr id="tr-{{result.idReport}}">
+                    <td>
+                      <div class="main__table-btns">
+                        <span onclick="updateRecord(idReport='{{result.idReport|safe}}');" class="main__table-btn main__table-btn--banned">
+                          <i class="icon ion-ios-save"></i>
+                        </span>
+                        <a href="#modal-drop-{{result.idReport}}" class="main__table-btn main__table-btn--delete open-modal">
+                          <i class="icon ion-ios-trash"></i>
+                        </a>
+                      </div>
+                    </td>
+                    {% if 2 == 1 %}
+                    <td>
+                      <div class="main__table-text">{{result.idReport}}</div>
+                    </td>
+                    {% endif %}
+                    <td>
+                      <input type="text" class="form__input" value="{{result.name}}" id="inputName-{{result.idReport}}" disabled="">
+                    </td>
+                    <td>
+                      <input type="text" class="form__input" value="{{result.emailAddress}}" id="inputEmailAddress-{{result.idReport}}" disabled="">
+                    </td>
+                    <td>
+                      <input type="text" class="form__input" value="{{result.title}}" id="inputTitle-{{result.idReport}}">
+                    </td>
+                    <td>
+                      <input type="text" class="form__input" value="{{result.message}}" id="inputMessage-{{result.idReport}}">
+                    </td>
+                    <td>
+                      <input type="text" class="form__input" value="{{result.addDate}}" id="inputAddDate-{{result.idReport}}" disabled="">
+                    </td>
+                  </tr>
+                {%endif%}
+              {%endfor%}
+              <!-- ::changeable: results:: -->
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<!-- end users -->
+
+      <!-- ::changeable: paginators:: -->
+      {%if _ARG['table'] == 'content'%}{%include 'adminpanel_v2/list/content/paginator.html' ignore missing%}{%endif%}
+      {%if _ARG['table'] == 'tvseasoncontent'%}{%include 'adminpanel_v2/list/tvseasoncontent/paginator.html' ignore missing%}{%endif%}
+      {%if _ARG['table'] == 'tvepisodecontent'%}{%include 'adminpanel_v2/list/tvepisodecontent/paginator.html' ignore missing%}{%endif%}
+      {%if _ARG['table'] == 'tvplayer'%}{%include 'adminpanel_v2/list/tvplayer/paginator.html' ignore missing%}{%endif%}
+      {%if _ARG['table'] == 'movieplayer'%}{%include 'adminpanel_v2/list/movieplayer/paginator.html' ignore missing%}{%endif%}
+      {%if _ARG['table'] == 'account'%}{%include 'adminpanel_v2/list/account/paginator.html' ignore missing%}{%endif%}
+      {%if _ARG['table'] == 'profile'%}{%include 'adminpanel_v2/list/profile/paginator.html' ignore missing%}{%endif%}
+      {%if _ARG['table'] == 'cast'%}{%include 'adminpanel_v2/list/cast/paginator.html' ignore missing%}{%endif%}
+      {%if _ARG['table'] == 'collection'%}{%include 'adminpanel_v2/list/collection/paginator.html' ignore missing%}{%endif%}
+      {%if _ARG['table'] == 'moviecomment' or _ARG['table'] == 'tvcomment' or _ARG['table'] == 'tvtitlecomment' or _ARG['table'] == 'castcomment'%}
+        {%include 'adminpanel_v2/list/comments/paginator.html' ignore missing%}
+      {%endif%}
+      {%if _ARG['table'] == 'countrylist'%}{%include 'adminpanel_v2/list/countrylist/paginator.html' ignore missing%}{%endif%}
+      {%if _ARG['table'] == 'languagelist'%}{%include 'adminpanel_v2/list/languagelist/paginator.html' ignore missing%}{%endif%}
+      {%if _ARG['table'] == 'moviegenrelist'%}{%include 'adminpanel_v2/list/moviegenrelist/paginator.html' ignore missing%}{%endif%}
+      {%if _ARG['table'] == 'tvgenrelist'%}{%include 'adminpanel_v2/list/tvgenrelist/paginator.html' ignore missing%}{%endif%}
+      {%if _ARG['table'] == 'report'%}{%include 'adminpanel_v2/list/report/paginator.html' ignore missing%}{%endif%}
+      <!-- ::changeable: paginators:: -->
+
+		</div>
+	</div>
+</main>
+<!-- end main content -->
+
+<!-- ::changeable: modals:: -->
+{%if _ARG['table'] == 'content'%}{%include 'adminpanel_v2/list/content/modal.html' ignore missing%}{%endif%}
+{%if _ARG['table'] == 'tvseasoncontent'%}{%include 'adminpanel_v2/list/tvseasoncontent/modal.html' ignore missing%}{%endif%}
+{%if _ARG['table'] == 'tvepisodecontent'%}{%include 'adminpanel_v2/list/tvepisodecontent/modal.html' ignore missing%}{%endif%}
+{%if _ARG['table'] == 'tvplayer'%}{%include 'adminpanel_v2/list/tvplayer/modal.html' ignore missing%}{%endif%}
+{%if _ARG['table'] == 'movieplayer'%}{%include 'adminpanel_v2/list/movieplayer/modal.html' ignore missing%}{%endif%}
+{%if _ARG['table'] == 'account'%}{%include 'adminpanel_v2/list/account/modal.html' ignore missing%}{%endif%}
+{%if _ARG['table'] == 'profile'%}{%include 'adminpanel_v2/list/profile/modal.html' ignore missing%}{%endif%}
+{%if _ARG['table'] == 'cast'%}{%include 'adminpanel_v2/list/cast/modal.html' ignore missing%}{%endif%}
+{%if _ARG['table'] == 'collection'%}{%include 'adminpanel_v2/list/collection/modal.html' ignore missing%}{%endif%}
+{%if _ARG['table'] == 'moviecomment' or _ARG['table'] == 'tvcomment' or _ARG['table'] == 'tvtitlecomment' or _ARG['table'] == 'castcomment'%}
+  {%include 'adminpanel_v2/list/comments/modal.html' ignore missing%}
+{%endif%}
+{%if _ARG['table'] == 'countrylist'%}{%include 'adminpanel_v2/list/countrylist/modal.html' ignore missing%}{%endif%}
+{%if _ARG['table'] == 'languagelist'%}{%include 'adminpanel_v2/list/languagelist/modal.html' ignore missing%}{%endif%}
+{%if _ARG['table'] == 'moviegenrelist'%}{%include 'adminpanel_v2/list/moviegenrelist/modal.html' ignore missing%}{%endif%}
+{%if _ARG['table'] == 'tvgenrelist'%}{%include 'adminpanel_v2/list/tvgenrelist/modal.html' ignore missing%}{%endif%}
+{%if _ARG['table'] == 'report'%}{%include 'adminpanel_v2/list/report/modal.html' ignore missing%}{%endif%}
+<!-- ::changeable: modals:: -->
+
+{%endblock%}
+
+{%block script%}
+  <script>
+    <!-- ::changeable: scripts:: -->
+    {%if _ARG['table'] == 'content'%}{%include 'adminpanel_v2/list/content/script.js' ignore missing%}{%endif%}
+    {%if _ARG['table'] == 'tvseasoncontent'%}{%include 'adminpanel_v2/list/tvseasoncontent/script.js' ignore missing%}{%endif%}
+    {%if _ARG['table'] == 'tvepisodecontent'%}{%include 'adminpanel_v2/list/tvepisodecontent/script.js' ignore missing%}{%endif%}
+    {%if _ARG['table'] == 'tvplayer'%}{%include 'adminpanel_v2/list/tvplayer/script.js' ignore missing%}{%endif%}
+    {%if _ARG['table'] == 'movieplayer'%}{%include 'adminpanel_v2/list/movieplayer/script.js' ignore missing%}{%endif%}
+    {%if _ARG['table'] == 'account'%}{%include 'adminpanel_v2/list/account/script.js' ignore missing%}{%endif%}
+    {%if _ARG['table'] == 'profile'%}{%include 'adminpanel_v2/list/profile/script.js' ignore missing%}{%endif%}
+    {%if _ARG['table'] == 'cast'%}{%include 'adminpanel_v2/list/cast/script.js' ignore missing%}{%endif%}
+    {%if _ARG['table'] == 'collection'%}{%include 'adminpanel_v2/list/collection/script.js' ignore missing%}{%endif%}
+    {%if _ARG['table'] == 'moviecomment' or _ARG['table'] == 'tvcomment' or _ARG['table'] == 'tvtitlecomment' or _ARG['table'] == 'castcomment'%}
+      {%include 'adminpanel_v2/list/comments/script.js' ignore missing%}
+    {%endif%}
+    {%if _ARG['table'] == 'countrylist'%}{%include 'adminpanel_v2/list/countrylist/script.js' ignore missing%}{%endif%}
+    {%if _ARG['table'] == 'languagelist'%}{%include 'adminpanel_v2/list/languagelist/script.js' ignore missing%}{%endif%}
+    {%if _ARG['table'] == 'moviegenrelist'%}{%include 'adminpanel_v2/list/moviegenrelist/script.js' ignore missing%}{%endif%}
+    {%if _ARG['table'] == 'tvgenrelist'%}{%include 'adminpanel_v2/list/tvgenrelist/script.js' ignore missing%}{%endif%}
+    {%if _ARG['table'] == 'report'%}{%include 'adminpanel_v2/list/report/script.js' ignore missing%}{%endif%}
+    <!-- ::changeable: scripts:: -->
+  </script>
+{%endblock%}

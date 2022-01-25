@@ -1,0 +1,45 @@
+<!-- modal insertNew -->
+<div id="modal-insertNew" class="zoom-anim-dialog mfp-hide modal">
+	<h6 class="modal__title">Yeni Koleksiyon Ekle</h6>
+
+  <input type="text" class="form__input" placeholder="Profil Adı / ID " id="inputInsertNew_queryProfile">
+
+  <table>
+    <tbody id="queryTBody"></tbody>
+  </table>
+
+  <input type="text" class="form__input" placeholder="Başlık" id="inputInsertNew_title">
+  <input type="text" class="form__input" placeholder="Başlık URL'si" id="inputInsertNew_titleUrl">
+  <textarea name="text" class="form__textarea" placeholder="Açıklama" id="inputInsertNew_overview"></textarea>
+
+  <select class="js-example-basic-single" id="selectInsertNew_private">
+    <option value="0">Herkese Açık</option>
+    <option value="1">Gizli</option>
+  </select>
+
+  <select class="js-example-basic-single" id="selectInsertNew_recommended">
+    <option value="0">Sıradan</option>
+    <option value="1">Öne Çıkarılmış</option>
+  </select>
+
+	<div class="modal__btns">
+    <button id="btnInsertNew_insertNew" class="modal__btn modal__btn--apply" type="button">Oluştur</button>
+		<button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+	</div>
+</div>
+<!-- end modal insertNew -->
+
+{%for result in results_info%}
+  <!-- modal drop -->
+  <div id="modal-drop-{{result.idCollection}}" class="zoom-anim-dialog mfp-hide modal">
+    <h6 class="modal__title">{{result.title}} Adlı Koleksiyonu Sil</h6>
+
+    <p class="modal__text">Bu koleksiyonu kalıcı olarak silmek istediğinize emin misiniz?</p>
+
+    <div class="modal__btns">
+      <button onclick="adminpanel_v2_function(tableName='collection', functionName='drop', dictionary={'idCollection': '{{result.idCollection|safe}}'})" class="modal__btn modal__btn--apply" type="button">Sil</button>
+      <button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+    </div>
+  </div>
+  <!-- end modal drop -->
+{%endfor%}

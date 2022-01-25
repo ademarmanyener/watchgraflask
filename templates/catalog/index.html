@@ -1,0 +1,85 @@
+{%extends 'layouts/default.html'%}
+{% from "macros/cards.html" import card_long_detailed %}
+{%block container%}
+<style>
+  .paginator {
+    background-color: transparent;
+    box-shadow: unset;
+  }
+  .ion-ios-arrow-back::before {
+    line-height: 50px;
+  }
+  .ion-ios-arrow-forward::before {
+    line-height: 50px;
+  }
+  .paginator__item--active a:hover {
+    color: rgb(90, 90, 90);
+  }
+  .filter__item-menu {
+    max-height: 500px;
+  }
+</style>
+
+<br>
+<br>
+<br>
+
+<!-- filter -->
+<div class="filter">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="filter__content">
+          <div class="filter__items">
+            <!-- filter item -->
+            <div class="filter__item" id="filter__genre">
+              <span class="filter__item-label">{%if request.endpoint == 'catalog_movie'%}FİLM{%elif request.endpoint == 'catalog_tv'%}DİZİ{%endif%} TÜRÜ</span>
+
+              <div class="filter__item-btn dropdown-toggle" role="navigation" id="filter-genre" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <input type="button" value="Kategori">
+                <span></span>
+              </div>
+
+              <ul class="filter__item-menu dropdown-menu scrollbar-dropdown" aria-labelledby="filter-genre">
+                <a href="{{request.path}}?query={{_ARG['query']}}&page=1&genre=*"><li>Tümü</li></a>
+                {%for genre in sql_execute('SELECT * FROM '+request.endpoint.split('_')[1].lower()+'genrelist ORDER BY title ASC').fetchall()%}
+                <a href="{{request.path}}?query={{_ARG['query']}}&page=1&genre={{genre.idGenre}}"><li>{{genre.title}}</li></a>
+                {%endfor%}
+              </ul>
+            </div>
+            <!-- end filter item -->
+            {%if request.args.get('g')%}
+            <h2 style="color: white; font-size: 20px;">{{sql_execute('SELECT * FROM '+request.endpoint.split('_')[1].lower()+'genrelist WHERE idGenre = ' + request.args.get('g')|string).fetchone().title}}</h2>
+            {%endif%}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end filter -->
+
+
+<!-- catalog -->
+<div class="catalog">
+  <div class="container-fluid">
+    <div class="row">
+
+      {%for content in list_results_info%}
+        {%if content.visibility%}
+          <div class="col-6 col-sm-12 col-lg-4">
+
+            {{ card_long_detailed(content=content) }}
+
+          </div>
+        {%endif%}
+      {%endfor%}
+
+      <!-- paginator -->
+      {%include 'catalog/paginator.html'%}
+      <!-- end paginator -->
+    </div>
+  </div>
+</div>
+<!-- end catalog -->
+{%endblock%}

@@ -1,0 +1,51 @@
+<h1>{{_ARG}}</h1>
+<br><br><br>
+
+<a href="{{request.path}}?query={{_ARG['query']}}&page=1&type=*&sort={{_ARG['sort']}}">TÜMÜ</a>
+<a href="{{request.path}}?query={{_ARG['query']}}&page=1&type=movie&sort={{_ARG['sort']}}">FİLM</a>
+<a href="{{request.path}}?query={{_ARG['query']}}&page=1&type=tv&sort={{_ARG['sort']}}">TV</a>
+
+<table style="width: 100%; font-size: 25px;" border="2">
+  <tr>
+    {%if not _ARG['page'] == 1%}
+    <td><a href="{{request.path}}?query={{_ARG['query']}}&page=1&type={{_ARG['type']}}&sort={{_ARG['sort']}}"> 1 </a></td>
+    {%endif%}
+    {%if _ARG['page'] - 1 >= 1%}
+    <td><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] - 1}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}"> <- </a></td>
+    <td><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] - 1}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}">{{_ARG['page'] - 1}}</a></td>
+    {%endif%}
+    <td><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page']}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}">{{_ARG['page']}}</a></td>
+    {%if _ARG['page'] + 1 <= _ARG['page_max']%}
+    <td><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] + 1}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}">{{_ARG['page'] + 1}}</a></td>
+    <td><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] + 1}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}"> -> </a></td>
+    {%endif%}
+    {%if not _ARG['page'] == _ARG['page_max']%}
+    <td><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page_max']}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}"> {{_ARG['page_max']}} </a></td>
+    {%endif%}
+  </tr>
+</table>
+
+<br><br><br><br><br>
+
+<table style="border: 2px solid red;">
+  <tr>
+    <td><a href="?page={{_ARG['page'] - 1}}"> GERİ </a></td>
+    <td><a href=""> İLERİ </a></td>
+  </tr>
+</table>
+
+<br><br><br><br><br>
+
+
+
+
+<table border="2">
+  <tr>
+{%for _res in results_info%}
+    <td style="width: 250px; height: 250px;">
+      <img src="{{_res.imagePoster}}" alt="asgas">
+      <h4>{{_res.title}}</h4>
+    </td>
+{%endfor%}
+  </tr>
+</table>

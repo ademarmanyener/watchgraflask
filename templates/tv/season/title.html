@@ -1,0 +1,893 @@
+{%extends 'layouts/default.html'%}
+{%block container%}
+<style>
+  .episode__select__link--disabled {
+    color: red;
+  }
+  .header__sign-in {
+		background-image: linear-gradient(180deg, #95FF7E 0%, #51CC85 100%);
+  }
+	.header__sign-in--selected_season {
+		/*background-image: linear-gradient(90deg, #121212 0%, #090909 100%);*/
+		background-image: linear-gradient(0deg, #95FF7E 0%, #51CC85 100%);
+    /*border: 1px solid white;*/
+	}
+  .accordion__card .card-header button[aria-expanded="true"]::before {
+    display: none;
+  }
+  #comment__like__selected {
+    color: rgb(0, 255, 85);
+    opacity: 1;
+  }
+  #comment__dislike__selected {
+    color: red;
+    opacity: 1;
+  }
+</style>
+
+{%if request.args.get('debug') == 'true'%}
+<br>
+<br>
+<br>
+<br>
+
+<h3 style="color: white; font-size: 25px;">idContent: {{content_info.idContent}}</h3>
+<h3 style="color: white; font-size: 25px;">idTmdb: {{content_info.idTmdb}}</h3>
+<h3 style="color: white; font-size: 25px;">idAddAccount: {{get_account_db(account_id=content_info.idAddAccount).username}}</h3>
+<h3 style="color: white; font-size: 25px;">idAddProfile: {{get_profile_db(profile_id=content_info.idAddProfile).username}}</h3>
+{%endif%}
+
+	<!-- details -->
+	<section class="section details">
+		<!-- details background -->
+		<div class="details__bg" data-bg="{{content_info.imageBackground}}"></div>
+		<!-- end details background -->
+
+		<!-- details content -->
+		<div class="container">
+			<div class="row">
+				<!-- title -->
+				<div class="col-12">
+					<h1 class="details__title">{{content_info.title}}</h1>
+				</div>
+				<!-- end title -->
+
+				<!-- content -->
+				<div class="col-12">
+					<div class="card card--details card--series">
+						<div class="row">
+							<!-- card cover -->
+							<div class="col-12 col-sm-4 col-md-4 col-lg-3 col-xl-3">
+								<div class="card__cover">
+									<img style="border-radius: 5px;" src="{{season_info.imagePoster}}" alt="">
+								</div>
+							</div>
+							<!-- end card cover -->
+
+							<!-- card content -->
+							<div class="col-12 col-sm-8 col-md-8 col-lg-7 col-xl-7">
+								<div class="card__content">
+									<div class="card__wrap">
+										<span class="card__rate"><i class="icon ion-ios-star"></i>{{content_info.voteAverage}}</span>
+
+										<ul class="card__list">
+											<li>HD</li>
+                      {%if content_info.adult%}
+											<li>Yetişkin İçerik</li>
+                      {%endif%}
+										</ul>
+									</div>
+
+									<ul class="card__meta">
+										<li><span>Kategoriler:</span>
+                      {%for genre in get_content_genre(content_id=content_info.idContent)%}
+										  <a href="#">{{get_genre_list(genre_id=genre.idGenre, content_type=content_info.type).title}}</a>
+                      {%endfor%}
+										<li><span>Çıkış Yılı:</span> <a href="#">{{content_info.releaseDate[:4]}}</a></li>
+										<li><span>Ülke:</span>
+                      {%for country in get_content_country(content_id=content_info.idContent)%}
+                      <a href="#">{{get_country_list(country_idiso_3166_1=country.idISO_3166_1).title}}</a>
+                      {%endfor%}
+                    </li>
+										<li><span>Diller:</span>
+                      {%for language in get_content_language(content_id=content_info.idContent)%}
+                      <a href="#">{{get_language_list(language_idiso_639_1=language.idISO_639_1).title}}</a>
+                      {%endfor%}
+                    </li>
+									</ul>
+
+									<div class="card__description card__description--details">
+                    {{content_info.overview}}
+									</div>
+								</div>
+							</div>
+							<!-- end card content -->
+
+							<!-- card cover -->
+							<div class="col-12 col-sm-4 col-md-4 col-lg-2 col-xl-2">
+								<div class="card__cover">
+									<img style="border-radius: 5px;" src="{{content_info.imagePoster}}" alt="">
+								</div>
+							</div>
+							<!-- end card cover -->
+
+						</div>
+					</div>
+				</div>
+				<!-- end content -->
+
+        <!-- content tags -->
+				<div class="col-12" style="margin-top: 25px;">
+          {%for tag in tags_info%}
+          <p style="max-width: 250px; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.65); line-break: anywhere; padding: 5px; float: left; margin-right: 10px; cursor: pointer;">{{tag.title}}</p>
+          {%endfor%}
+        </div>
+        <!-- end content tags -->
+
+        <!-- shuffle -->
+        <div class="col-12">
+          <p style="max-width: 250px; border: 1px solid rgba(0, 255, 64, 0.863); border-radius: 4px; font-size: 10px; font-weight: 400; color: rgba(15, 224, 43, 0.65); line-break: anywhere; padding: 5px; float: left; margin-right: 10px; cursor: default;">YENİ!</p>
+
+          {%if 2 == 1%} {# DEPRECATED #}
+          <p onclick="mainproc_content_seasons_selectRandomEpisode(content_id='{{content_info.idContent}}');" style="max-width: 350px; border: 1px solid rgb(85, 164, 78); border-radius: 4px; font-size: 16px; font-weight: 400; color: white; line-break: anywhere; padding: 5px; float: left; margin-right: 10px; cursor: pointer; padding: 5px 15px; float: left;">
+            <i class="icon ion-ios-shuffle" style="color: white; margin-right: 5px;"></i>
+            Rastgele Bir Bölüm Aç
+          </p>
+          {%endif%}
+
+          <a href="{{url_for('tv_random_episode', title_url=content_info.titleUrl)}}" style="max-width: 350px; border: 1px solid rgb(85, 164, 78); border-radius: 4px; font-size: 16px; font-weight: 400; color: white; line-break: anywhere; padding: 5px; float: left; margin-right: 10px; cursor: pointer; padding: 5px 15px; float: left;">
+            <i class="icon ion-ios-shuffle" style="color: white; margin-right: 5px;"></i>
+            Rastgele Bir Bölüm Aç
+          </a>
+
+        </div>
+        <!-- end shuffle -->
+
+        <!-- list seasons -->
+        <div class="col-12" style="margin-bottom: 25px;">
+          {%for season in get_tv_seasonlist(content_id=content_info.idContent)%}
+            {%if season.visibility%}
+          <a href="{{url_for('tv_season_title', title_url=content_info.titleUrl, season_number=season.seasonNumber)}}"><button class="header__sign-in{%if season.seasonNumber|string == season_info.seasonNumber|string%} header__sign-in--selected_season{%endif%}" style="color: #0d0d0d; float: left; min-width: 150px; margin: 0px; margin-right: 5px; margin-bottom: 5px;">{{season.seasonNumber}}. Sezon</button></a>
+            {%endif%}
+          {%endfor%}
+        </div>
+        <!-- end list seasons -->
+        
+				<!-- list selected season's episodes accordion -->
+				<div class="col-12 col-xl-12">
+					<div class="" id="" style="min-height: 500px;">
+
+						<div class="accordion__card" style="background-color: transparent;">
+							<div class="card-header" id="heading2555">
+								<button type="button" data-toggle="collapse" data-target="#collapse25555" aria-expanded="true" aria-controls="collapse2555">
+									<span>{{season_info.title}}</span> 
+                  <span>{{season_info.overview}}</span>
+								</button>
+							</div>
+
+							<div id="collapse2555" class="collapse show" aria-labelledby="heading2555" data-parent="#accordion">
+								<div class="card-body">
+									<table class="accordion__list">
+										<thead>
+											<tr>
+                        <th></th>
+												<th>#</th>
+												<th>Başlık</th>
+												<th>Açıklama</th>
+												<th>Ortalama Oy</th>
+											</tr>
+										</thead>
+
+										<tbody>
+                      {%for episode in episodes_info%}
+                        {%if episode.visibility%}
+                          <tr onclick="mainproc_content_seasons_selectFirstPlayer(content_id='{{content_info.idContent}}', tv_season_id='{{season_info.idTvSeason}}', tv_episode_id='{{episode.idTvEpisode}}');">
+                            <th style="float: left;"><div style="width: 100px; height: 60px; background-image: url('{{episode.imagePoster}}'); background-size: cover; background-repeat: no-repeat; background-position: center; border-radius: 5px;"></div></th>
+                            <th><a>{{episode.episodeNumber}}</a></th>
+                            <td><a>{{episode.title}}</a></td>
+                            <td><a>{{episode.overview}}</a></td>
+                            <td><div class="main__table-text main__table-text--rate"><i class="icon ion-ios-star"></i> {{episode.voteAverage}}</div></td>
+                          </tr>
+                        {%endif%}
+                      {%endfor%}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+				<!-- end list selected season's episodes accordion -->
+
+        {%if 2 == 1%}
+				<div class="col-12">
+					<div class="details__wrap">
+						<!-- availables -->
+						<div class="details__devices">
+							<span class="details__devices-title">Available on devices:</span>
+							<ul class="details__devices-list">
+								<li><i class="icon ion-logo-apple"></i><span>IOS</span></li>
+								<li><i class="icon ion-logo-android"></i><span>Android</span></li>
+								<li><i class="icon ion-logo-windows"></i><span>Windows</span></li>
+								<li><i class="icon ion-md-tv"></i><span>Smart TV</span></li>
+							</ul>
+						</div>
+						<!-- end availables -->
+
+						<!-- share -->
+						<div class="details__share">
+							<span class="details__share-title">Share with friends:</span>
+
+							<ul class="details__share-list">
+								<li class="facebook"><a href="#"><i class="icon ion-logo-facebook"></i></a></li>
+								<li class="instagram"><a href="#"><i class="icon ion-logo-instagram"></i></a></li>
+								<li class="twitter"><a href="#"><i class="icon ion-logo-twitter"></i></a></li>
+								<li class="vk"><a href="#"><i class="icon ion-logo-vk"></i></a></li>
+							</ul>
+						</div>
+						<!-- end share -->
+					</div>
+				</div>
+        {%endif%}
+			</div>
+		</div>
+		<!-- end details content -->
+	</section>
+	<!-- end details -->
+
+  <section class="content">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <p class="content__title" style="font-size: 16px; color: rgba(255, 255, 255, 0.5);">Bu sayfa {{season_info.visitCount}} kez görüntülendi.</p>
+        </div>
+      </div> 
+    </div>
+  </section>
+
+	<!-- content -->
+	<section class="content" id="content_start">
+		<div class="content__head">
+			<div class="container">
+				<div class="row">
+					<div class="col-12">
+						<!-- content title -->
+						<h2 class="content__title">{{content_info.title}}</h2>
+						<!-- end content title -->
+
+						<!-- content tabs nav -->
+						<ul class="nav nav-tabs content__tabs" id="content__tabs" role="tablist">
+							<li class="nav-item">
+								<a class="nav-link active" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Yorumlar ({{comments_info|length}})</a>
+							</li>
+
+							<li class="nav-item">
+								<a class="nav-link" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Görseller</a>
+							</li>
+
+							<li class="nav-item">
+								<a class="nav-link" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">Oyuncular</a>
+							</li>
+
+              {%if check_profile() == True%}
+							<li class="nav-item">
+								<a class="nav-link open-modal" data-toggle="" href="#modal-add-to-my-collection" target="_blank" role="" aria-controls="" aria-selected="false">Koleksiyonuma Ekle</a>
+							</li>
+
+<div id="modal-add-to-my-collection" class="zoom-anim-dialog modal mfp-hide" style="max-width: 400px;">
+		<h6 class="modal__title">Koleksiyonuma Ekle</h6>
+    {%for collection in g.PROFILE_COLLECTIONS_LIST%}
+		<p onclick="profileproc_collection_addcontent('{{collection.idCollection}}', '{{content_info.idContent}}');" class="modal__text"><a class="modal__btn modal__btn--apply" style="margin-top: 25px; width: calc(100%); background-image: unset; color: white; cursor: pointer;">{{collection.title}}</a></p>
+    {%endfor%}
+    <h5 id="collection_h5_succ" style="color:rgb(0, 255, 85);"></h5>
+    <h5 id="collection_h5_err" style="color:rgb(255, 74, 74);"></h5>
+		<div class="modal__btns">
+			<button class="modal__btn modal__btn--dismiss" style="margin-top: 5px; width: calc(100%);" type="button">Kapat</button>
+		</div>
+</div>
+              {%endif%}
+
+							<li class="nav-item">
+								<a class="nav-link" data-toggle="" href="{{url_for('contact')}}" target="_blank" role="" aria-controls="" aria-selected="false">Hata Bildir</a>
+							</li>
+						</ul>
+						<!-- end content tabs nav -->
+
+						<!-- content mobile tabs nav -->
+						<div class="content__mobile-tabs" id="content__mobile-tabs">
+							<div class="content__mobile-tabs-btn dropdown-toggle" role="navigation" id="mobile-tabs" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<input type="button" value="Yorumlar ({{comments_info|length}})">
+								<span></span>
+							</div>
+
+							<div class="content__mobile-tabs-menu dropdown-menu" aria-labelledby="mobile-tabs">
+								<ul class="nav nav-tabs" role="tablist">
+									<li class="nav-item"><a class="nav-link active" id="1-tab" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Yorumlar ({{comments_info|length}})</a></li>
+
+									<li class="nav-item"><a class="nav-link" id="2-tab" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-3" aria-selected="false">Görseller</a></li>
+
+									<li class="nav-item"><a class="nav-link" id="3-tab" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">Oyuncular</a></li>
+
+                  {%if check_profile() == True%}
+									<li class="nav-item"><a class="nav-link open-modal" id="2-tab" data-toggle="" href="#modal-add-to-my-collection" target="_blank" role="" aria-controls="" aria-selected="false">Koleksiyonuma Ekle</a></li>
+                  {%endif%}
+
+									<li class="nav-item"><a class="nav-link" id="" data-toggle="" href="{{url_for('contact')}}" target="_blank" role="" aria-controls="" aria-selected="false">Hata Bildir</a></li>
+								</ul>
+							</div>
+						</div>
+						<!-- end content mobile tabs nav -->
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container">
+			<div class="row">
+				<div class="col-12 col-lg-7 col-xl-7">
+					<!-- content tabs -->
+					<div class="tab-content" id="myTabContent">
+						<div class="tab-pane fade show active" id="tab-1" role="tabpanel" aria-labelledby="1-tab">
+              <div class="row" style="background-color: #030303; margin-bottom: 25px; border-radius: 5px; height: 75px;">
+
+              <!-- spoiler box -->
+							<div class="sign__group sign__group--checkbox" style="margin: 25px;">
+								<input type="checkbox" id="spoiler_box" name="spoiler_box">
+								<label for="spoiler_box">Spoiler İçeren Yorumları Göster</label>
+							</div>
+              <!-- end spoiler box -->
+
+              </div>
+							<div class="row">
+								<!-- comments -->
+								<div class="col-12">
+									<div class="comments">
+										<ul class="comments__list">
+
+                    <!-- comments backend/frontend -->
+                    {%for comment in comments_info%}
+                      {%if comment.visibility%}
+                        {%if comment.replyTo == ''%}
+                      <li id="{{comment.idComment}}" class="comments__item{%if comment.spoiler%} comments__item--spoiler{%endif%} {{comment.idComment}}">
+                        <div style="min-width: 50px; min-height: 50px; background-image: url('{{get_profile_db(profile_id=comment.idAddProfile).imageAvatar}}'); background-size: cover; background-position: center; border-radius: 50%; margin-right: 20px; float: left;"></div>
+                        <div class="comments__autor">
+                          <span class="comments__name">{{get_profile_db(profile_id=comment.idAddProfile).username}}</span>
+                          <span class="comments__time">{{format_date(comment.addDate, 'full', locale='tr')}} {%if comment.addDate.day|string + comment.addDate.month|string + comment.addDate.year|string + comment.addDate.hour|string + comment.addDate.minute|string != comment.lastEditDate.day|string + comment.lastEditDate.month|string + comment.lastEditDate.year|string + comment.lastEditDate.hour|string + comment.lastEditDate.minute|string%}(düzenlendi){%endif%}</span>
+                        </div>
+                        <p class="comments__text">{{comment.text}}</p>
+                        {%if comment.spoiler%}
+                        <p class="comments__text" style="padding-top: 0px; color: rgb(255, 74, 74); font-weight: bold; text-align: right;">S P O I L E R !</p>
+                        {%endif%}
+                        <div class="comments__actions">
+                          <div class="comments__rate">
+                            <button type="button" id="{{comment.idComment}}_comment__like" {%if check_profile() == True%}onclick="likeComment('{{comment.idComment}}');"{%endif%}><i {%if check_profile() == True and get_tvtitlecomment_rate(comment_id=comment.idComment, profile_id=session["PROFILE"]["idProfile"], rate_type='LIKE')%}id="comment__like__selected"{%endif%} class="icon ion-md-thumbs-up"></i><p id="{{comment.idComment}}_comment__like_count" style="display: contents;">{{get_tvtitlecomment_rates(content_id=content_info.idContent, tv_season_id=season_info.idTvSeason, comment_id=comment.idComment, rate_type='LIKE')|length}}</p></button>
+
+                            <button type="button" id="{{comment.idComment}}_comment__dislike" {%if check_profile() == True%}onclick="dislikeComment('{{comment.idComment}}');"{%endif%}><p id="{{comment.idComment}}_comment__dislike_count" style="display: contents;">{{get_tvtitlecomment_rates(content_id=content_info.idContent, tv_season_id=season_info.idTvSeason, comment_id=comment.idComment, rate_type='DISLIKE')|length}}</p><i {%if check_profile() == True and get_tvtitlecomment_rate(comment_id=comment.idComment, profile_id=session["PROFILE"]["idProfile"], rate_type='DISLIKE')%}id="comment__dislike__selected"{%endif%} class="icon ion-md-thumbs-down"></i></button>
+                          </div>
+
+                          {%if check_profile() == True%}
+                          <button type="button" onclick="showReplyComment('{{comment.idComment}}');"><i class="icon ion-ios-share-alt"></i>Yanıtla</button>
+                            {%if comment.idAddProfile == session['PROFILE']['idProfile']%}
+                          <button type="button" onclick="deleteComment('{{comment.idComment}}');"><i class="icon ion-ios-trash"></i>Sil</button>
+                            {%endif%}
+                          {%endif%}
+                        </div>
+                      </li>
+
+                        {%for reply in get_tvtitlecomment_replies(comment_id=comment.idComment)%}
+                      <li id="{{reply.idComment}}" class="comments__item comments__item--answer{%if comment.spoiler%} comments__item--spoiler{%endif%} {{comment.idComment}}">
+                        <div style="min-width: 50px; min-height: 50px; background-image: url('{{get_profile_db(profile_id=reply.idAddProfile).imageAvatar}}'); background-size: cover; background-position: center; border-radius: 50%; margin-right: 20px; float: left;"></div>
+                        <div class="comments__autor">
+                          <span class="comments__name">{{get_profile_db(profile_id=reply.idAddProfile).username}}</span>
+                          <span class="comments__time">{{format_date(reply.addDate, 'full', locale='tr')}} {%if reply.addDate.day|string + reply.addDate.month|string + reply.addDate.year|string + reply.addDate.hour|string + reply.addDate.minute|string != reply.lastEditDate.day|string + reply.lastEditDate.month|string + reply.lastEditDate.year|string + reply.lastEditDate.hour|string + reply.lastEditDate.minute|string%}(düzenlendi){%endif%}</span>
+                        </div>
+                        <p class="comments__text">{{reply.text}}</p>
+                        <div class="comments__actions">
+                          <div class="comments__rate">
+                            <button type="button" id="{{reply.idComment}}_comment__like" {%if check_profile() == True%}onclick="likeComment('{{reply.idComment}}');"{%endif%}><i {%if check_profile() == True and get_tvtitlecomment_rate(comment_id=reply.idComment, profile_id=session["PROFILE"]["idProfile"], rate_type='LIKE')%}id="comment__like__selected"{%endif%} class="icon ion-md-thumbs-up"></i><p id="{{reply.idComment}}_comment__like_count" style="display: contents;">{{get_tvtitlecomment_rates(content_id=content_info.idContent, tv_season_id=season_info.idTvSeason, comment_id=reply.idComment, rate_type='LIKE')|length}}</p></button>
+
+                            <button type="button" id="{{reply.idComment}}_comment__dislike" {%if check_profile() == True%}onclick="dislikeComment('{{reply.idComment}}');"{%endif%}><p id="{{reply.idComment}}_comment__dislike_count" style="display: contents;">{{get_tvtitlecomment_rates(content_id=content_info.idContent, tv_season_id=season_info.idTvSeason, comment_id=reply.idComment, rate_type='DISLIKE')|length}}</p><i {%if check_profile() == True and get_tvtitlecomment_rate(comment_id=reply.idComment, profile_id=session["PROFILE"]["idProfile"], rate_type='DISLIKE')%}id="comment__dislike__selected"{%endif%} class="icon ion-md-thumbs-down"></i></button>
+                          </div>
+
+                          {%if check_profile() == True%}
+                            {%if reply.idAddProfile == session['PROFILE']['idProfile']%}
+                          <button type="button" onclick="deleteComment('{{reply.idComment}}');"><i class="icon ion-ios-trash"></i>Sil</button>
+                            {%endif%}
+                          {%endif%}
+                        </div>
+                      </li>
+                        {%endfor%}
+                        {%endif%}
+                      {%endif%}
+                    {%endfor%}
+                    <!-- end comments backend/frontend -->
+
+                    {%if check_profile() == True%}
+                    <!-- comment reply -->
+										<form id="form_reply_comment" action="#" method="#" class="form" style='border-radius: 5px;'>
+                      <input type="hidden" id="reply_selected_comment_id" value=""> 
+                      <button style="float: right;" type="button" onclick="showSendComment();"><i class="icon ion-md-close" style="color: rgb(255, 74, 74);"></i></button>
+                      <div style="width: 100%; min-height: 150px;">
+                        <p id="p_reply_comment" style="color: #9a9a9a;">
+                        Şuna karşılık yanıtlanıyor: 
+                        ""
+                        </p>
+                      </div>
+                      <textarea id="input_reply_text" class="form__textarea" placeholder="Yanıtınızı buraya girin."></textarea>
+                      <input type="button" class="form__btn" value="Yanıtla" style="border: 0px; cursor: pointer;" onclick="sendReply();">
+										</form>
+                    <!-- end comment reply -->
+
+                    <!-- comment independent -->
+										<form id="form_send_comment" action="#" method="#" class="form" style='border-radius: 5px;'>
+                      <textarea id="input_comment_text" class="form__textarea" placeholder="Yorumunuzu buraya girin."></textarea>
+                      <input type="button" class="form__btn" value="Gönder" style="border: 0px; cursor: pointer;" onclick="sendComment();">
+                      <!-- containts spoiler box -->
+                      <div class="sign__group sign__group--checkbox" style="margin: 25px;">
+                        <input type="checkbox" id="contains_spoiler_box" name="contains_spoiler_box">
+                        <label for="contains_spoiler_box">Yorumum Spoiler İçeriyor</label>
+                      </div>
+                      <!-- end containts spoiler box -->
+										</form>
+                    <!-- end comment independent -->
+                    {%endif%}
+									</div>
+								</div>
+								<!-- end comments -->
+							</div>
+						</div>
+
+						<div class="tab-pane fade" id="tab-2" role="tabpanel" aria-labelledby="2-tab">
+							<!-- project gallery -->
+							<div class="gallery" itemscope="">
+								<div class="row">
+									<!-- gallery item -->
+									<figure class="col-12 col-sm-6 col-xl-4" itemprop="associatedMedia" itemscope="">
+										<a href="{{content_info.imagePoster}}" itemprop="contentUrl" data-size="1920x1280">
+											<img src="{{content_info.imagePoster}}" itemprop="thumbnail" alt="Image description">
+										</a>
+										<figcaption itemprop="caption description">Some image caption 1</figcaption>
+									</figure>
+									<!-- end gallery item -->
+
+									<!-- gallery item -->
+									<figure class="col-12 col-sm-6 col-xl-4" itemprop="associatedMedia" itemscope="">
+										<a href="{{content_info.imageBackground}}" itemprop="contentUrl" data-size="1920x1280">
+											<img src="{{content_info.imageBackground}}" itemprop="thumbnail" alt="Image description">
+										</a>
+										<figcaption itemprop="caption description">Some image caption 1</figcaption>
+									</figure>
+									<!-- end gallery item -->
+								</div>
+							</div>
+							<!-- end project gallery -->
+						</div>
+
+						<div class="tab-pane fade" id="tab-3" role="tabpanel" aria-labelledby="3-tab">
+							<!-- project gallery -->
+              <div class="container">
+                <div class="row">
+
+                  {%for cast in casts_info%}
+			          	<!-- card -->
+                  <a href="{{url_for('cast_title', name_url=get_cast_db(cast_id=cast.idCast).nameUrl)}}" class="col-12 col-sm-6 col-md-4 col-xl-3" style="color: rgb(0, 0, 0); text-decoration: none; width: 250px; padding-left: 10px; padding-bottom: 20px;">
+                    <div class="col-12" style="width: 100%; height: 225px; background-image: url('{{get_cast_db(cast_id=cast.idCast).imagePoster}}'); background-size: cover; background-repeat: no-repeat; background-position: center; border-top-left-radius: 5px; border-top-right-radius: 5px;"></div>
+                    <div class="col-12" style="width: 100%; min-height: 35px; background-color: #51CC85; color: #0D0D0D; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;"><p style="font-size: 13px; text-align: center; line-height: 30px; line-break: anywhere;"><b>{{get_cast_db(cast_id=cast.idCast).name}}</b><br>{{cast.character}}</p></div>
+                  </a>
+				          <!-- end card -->
+                  {%endfor%}
+
+                </div>
+              </div>
+							<!-- end project gallery -->
+						</div>
+
+					</div>
+					<!-- end content tabs -->
+				</div>
+
+        <!-- sidebar ad content -->
+				<a href="" target="_blank" class="col-12 col-lg-5 col-xl-5" style="margin-top: 75px; width: 100%; height: 300px; background-image: url({{url_for('static', filename='img/advertorials/join-discord.png')}}); background-repeat: no-repeat; background-position: center; background-size: contain;">
+					<div class="card card--details">
+						<div class="row">
+							<span style="color: white; margin-left: 25px; margin-top: 25px; font-size: 25px;"></span>
+						</div>
+					</div>
+				</a>
+        <!-- end sidebar ad content -->
+
+			</div>
+		</div>
+	</section>
+	<!-- end content -->
+{%endblock%}
+
+{%block script%}
+{%if check_profile() == True%}
+<script>
+$(document).ready(function(){
+  showSendComment();
+});
+
+function showSendComment(){$('#form_send_comment').show();$('#form_reply_comment').hide()};
+
+function likeComment(comment_id){
+  var get_like_count = parseInt($(`#${comment_id}_comment__like_count`).text());
+  var get_dislike_count = parseInt($(`#${comment_id}_comment__dislike_count`).text());
+  $.ajax({
+    url: '{{url_for("tv_title_func_proc", function="like_comment")}}',
+    data: JSON.stringify({
+      'idContent': '{{content_info.idContent}}',
+      'idTvSeason': '{{season_info.idTvSeason}}',
+      'idComment': comment_id,
+    }),
+    dataType: 'json',
+    type: 'POST',
+    contentType: 'application/json; charset=utf-8',
+    processData: false,
+    headers: {
+      'X-CSRFToken': '{{csrf_token()}}',
+    },
+    success: function(response){
+      if (response.ret_url){
+        window.location = response.ret_url
+      }
+      if (response.gave_like){
+        $(`#${comment_id}_comment__like i`).attr('id', 'comment__like__selected');
+        $(`#${comment_id}_comment__like_count`).text(get_like_count + 1);
+      }
+      if (response.took_like){
+        $(`#${comment_id}_comment__like i`).attr('id', '');
+        $(`#${comment_id}_comment__like_count`).text(get_like_count - 1);
+      }
+      if (response.gave_dislike){
+        $(`#${comment_id}_comment__dislike i`).attr('id', 'comment__dislike__selected');
+        $(`#${comment_id}_comment__dislike_count`).text(get_dislike_count + 1);
+      }
+      if (response.took_dislike){
+        $(`#${comment_id}_comment__dislike i`).attr('id', '');
+        $(`#${comment_id}_comment__dislike_count`).text(get_dislike_count - 1);
+      }
+      else if (response.err_msg){
+        $('.alertMainDiv').show();
+        $('.alertMainText').text(response.err_msg);
+        setTimeout(() => {
+          $('.alertMainDiv').hide();
+        }, 2500);
+      }
+    },
+    error: function(error){
+      console.log(error);
+    }
+  });
+};
+
+function dislikeComment(comment_id){
+  var get_dislike_count = parseInt($(`#${comment_id}_comment__dislike_count`).text());
+  var get_like_count = parseInt($(`#${comment_id}_comment__like_count`).text());
+  $.ajax({
+    url: '{{url_for("tv_title_func_proc", function="dislike_comment")}}',
+    data: JSON.stringify({
+      'idContent': '{{content_info.idContent}}',
+      'idTvSeason': '{{season_info.idTvSeason}}',
+      'idComment': comment_id,
+    }),
+    dataType: 'json',
+    type: 'POST',
+    contentType: 'application/json; charset=utf-8',
+    processData: false,
+    headers: {
+      'X-CSRFToken': '{{csrf_token()}}',
+    },
+    success: function(response){
+      if (response.ret_url){
+        window.location = response.ret_url
+      }
+      if (response.gave_dislike){
+        $(`#${comment_id}_comment__dislike i`).attr('id', 'comment__dislike__selected');
+        $(`#${comment_id}_comment__dislike_count`).text(get_dislike_count + 1);
+      }
+      if (response.took_dislike){
+        $(`#${comment_id}_comment__dislike i`).attr('id', '');
+        $(`#${comment_id}_comment__dislike_count`).text(get_dislike_count - 1);
+      }
+      if (response.gave_like){
+        $(`#${comment_id}_comment__like i`).attr('id', 'comment__like__selected');
+        $(`#${comment_id}_comment__like_count`).text(get_like_count + 1);
+      }
+      if (response.took_like){
+        $(`#${comment_id}_comment__like i`).attr('id', '');
+        $(`#${comment_id}_comment__like_count`).text(get_like_count - 1);
+      }
+      else if (response.err_msg){
+        $('.alertMainDiv').show();
+        $('.alertMainText').text(response.err_msg);
+        setTimeout(() => {
+          $('.alertMainDiv').hide();
+        }, 2500);
+      }
+    },
+    error: function(error){
+      console.log(error);
+    }
+  });
+};
+
+function showReplyComment(selected_comment_id){
+  $('#form_send_comment').hide();
+  $('#form_reply_comment').show();
+  $('#input_reply_text').val('');
+  window.location.hash = '#form_reply_comment';
+  $.ajax({
+    url: '{{url_for("tv_title_func_proc", function="select_comment")}}',
+    data: JSON.stringify({
+      'idContent': '{{content_info.idContent}}',
+      'idTvSeason': '{{season_info.idTvSeason}}',
+      'idComment': selected_comment_id,
+    }),
+    dataType: 'json',
+    type: 'POST',
+    contentType: 'application/json; charset=utf-8',
+    processData: false,
+    headers: {
+      'X-CSRFToken': '{{csrf_token()}}',
+    },
+    success: function(response){
+      if (response.ret_url){
+        window.location = response.ret_url
+      }
+      else if (response.succ_msg){
+        $('#p_reply_comment').text('Bu için yanıtlanıyor: "' + response.selected_comment_text + '"');
+        $('#reply_selected_comment_id').val(selected_comment_id);
+      }
+      else if (response.err_msg){
+        $('.alertMainDiv').show();
+        $('.alertMainText').text(response.err_msg);
+        setTimeout(() => {
+          $('.alertMainDiv').hide();
+        }, 2500);
+      }
+    },
+    error: function(error){
+      console.log(error);
+    }
+  });
+};
+
+function sendReply(){
+  get_selected_comment_id = $('#reply_selected_comment_id').val();
+  get_reply = $('#input_reply_text').val();
+  if (get_selected_comment_id && get_reply){
+    $.ajax({
+      url: '{{url_for("tv_title_func_proc", function="send_reply")}}',
+      data: JSON.stringify({
+        'idContent': '{{content_info.idContent}}',
+        'idTvSeason': '{{season_info.idTvSeason}}',
+        'reply': get_reply,
+        'replyTo': get_selected_comment_id,
+      }),
+      dataType: 'json',
+      type: 'POST',
+      contentType: 'application/json; charset=utf-8',
+      processData: false,
+      headers: {
+        'X-CSRFToken': '{{csrf_token()}}',
+      },
+      success: function(response){
+        if (response.ret_url){
+          window.location = response.ret_url
+        }
+        else if (response.succ_msg){
+          $('.alertMainDiv').show();
+          $('.alertMainText').text(response.succ_msg);
+          setTimeout(() => {
+            $('.alertMainDiv').hide();
+          }, 2500);
+          $('#' + get_selected_comment_id).after(`
+
+            <li id="${response.latest_reply_id}" class="comments__item comments__item--answer ${response.latest_reply_replyto}">
+              <div style="min-width: 50px; min-height: 50px; background-image: url('{{get_profile_db(profile_id=session['PROFILE']['idProfile']).imageAvatar}}'); background-size: cover; background-position: center; border-radius: 50%; margin-right: 20px; float: left;"></div>
+              <div class="comments__autor">
+                <span class="comments__name">{{get_profile_db(profile_id=session['PROFILE']['idProfile']).username}}</span>
+                <span class="comments__time">şimdi</span>
+              </div>
+              <p class="comments__text">${response.latest_reply_text}</p>
+              <div class="comments__actions">
+                <div class="comments__rate">
+                  <button type="button" id="${response.latest_reply_id}_comment__like" onclick="likeComment('${response.latest_reply_id}');"><i class="icon ion-md-thumbs-up"></i><p id="${response.latest_reply_id}_comment__like_count" style="display: contents;">0</p></button>
+
+                  <button type="button" id="${response.latest_reply_id}_comment__dislike" onclick="dislikeComment('${response.latest_reply_id}');"><p id="${response.latest_reply_id}_comment__dislike_count" style="display: contents;">0</p><i class="icon ion-md-thumbs-down"></i></button>
+                </div>
+								<button type="button" onclick="deleteComment('${response.latest_reply_id}');"><i class="icon ion-ios-trash"></i>Sil</button>
+              </div>
+            </li>
+
+          `);
+          $('#input_reply_text').val('');
+          window.location.hash = '#' + get_selected_comment_id;
+          $('#form_reply_comment .form__textarea').prop('disabled', true);
+          $('#form_reply_comment .form__btn').prop('disabled', true);
+          setTimeout(() => {
+            $('#form_reply_comment .form__textarea').prop('disabled', false);
+            $('#form_reply_comment .form__btn').prop('disabled', false);
+          }, 5000);
+        }
+        else if (response.err_msg){
+          $('.alertMainDiv').show();
+          $('.alertMainText').text(response.err_msg);
+          setTimeout(() => {
+            $('.alertMainDiv').hide();
+          }, 2500);
+        }
+      },
+      error: function(error){
+        console.log(error);
+      }
+    });
+  } else {
+    $('.alertMainDiv').show();
+    $('.alertMainText').text('Boş yanıt gönderilemez.');
+    setTimeout(() => {
+      $('.alertMainDiv').hide();
+    }, 2500);
+  }
+};
+
+function sendComment(){
+  get_text = $('#input_comment_text').val();
+  get_contains_spoiler = document.getElementById('contains_spoiler_box').checked
+  if (get_text){
+    $.ajax({
+      url: '{{url_for("tv_title_func_proc", function="send_comment")}}',
+      data: JSON.stringify({
+        'idContent': '{{content_info.idContent}}',
+        'idTvSeason': '{{season_info.idTvSeason}}',
+        'text': get_text,
+        'contains_spoiler': get_contains_spoiler,
+      }),
+      dataType: 'json',
+      type: 'POST',
+      contentType: 'application/json; charset=utf-8',
+      processData: false,
+      headers: {
+        'X-CSRFToken': '{{csrf_token()}}',
+      },
+      success: function(response){
+        if (response.ret_url){
+          window.location = response.ret_url
+        }
+        else if (response.succ_msg){
+          $('.alertMainDiv').show();
+          $('.alertMainText').text(response.succ_msg);
+          setTimeout(() => {
+            $('.alertMainDiv').hide();
+          }, 2500);
+          $('.comments__list').prepend(`
+
+            <li id="${response.latest_comment_id}" class="comments__item ${response.latest_comment_id}">
+              <div style="min-width: 50px; min-height: 50px; background-image: url('{{get_profile_db(profile_id=session['PROFILE']['idProfile']).imageAvatar}}'); background-size: cover; background-position: center; border-radius: 50%; margin-right: 20px; float: left;"></div>
+              <div class="comments__autor">
+                <span class="comments__name">{{get_profile_db(profile_id=session['PROFILE']['idProfile']).username}}</span>
+                <span class="comments__time">şimdi</span>
+              </div>
+              <p class="comments__text">${response.latest_comment_text}</p>
+              <div class="comments__actions">
+                <div class="comments__rate">
+                  <button type="button" id="${response.latest_comment_id}_comment__like" onclick="likeComment('${response.latest_comment_id}');"><i class="icon ion-md-thumbs-up"></i><p id="${response.latest_comment_id}_comment__like_count" style="display: contents;">0</p></button>
+
+                  <button type="button" id="${response.latest_comment_id}_comment__dislike" onclick="dislikeComment('${response.latest_comment_id}');"><p id="${response.latest_comment_id}_comment__dislike_count" style="display: contents;">0</p><i class="icon ion-md-thumbs-down"></i></button>
+                </div>
+
+								<button type="button" onclick="showReplyComment('${response.latest_comment_id}');"><i class="icon ion-ios-share-alt"></i>Yanıtla</button>
+								<button type="button" onclick="deleteComment('${response.latest_comment_id}');"><i class="icon ion-ios-trash"></i>Sil</button>
+
+              </div>
+            </li>
+
+          `);
+          $('#input_comment_text').val('');
+          window.location.hash = '#content_start';
+          $('#form_send_comment .form__textarea').prop('disabled', true);
+          $('#form_send_comment .form__btn').prop('disabled', true);
+          setTimeout(() => {
+            $('#form_send_comment .form__textarea').prop('disabled', false);
+            $('#form_send_comment .form__btn').prop('disabled', false);
+          }, 5000);
+        }
+        else if (response.err_msg){
+          $('.alertMainDiv').show();
+          $('.alertMainText').text(response.err_msg);
+          setTimeout(() => {
+            $('.alertMainDiv').hide();
+          }, 2500);
+        }
+      },
+      error: function(error){
+        console.log(error);
+      }
+    });
+  } else {
+    $('.alertMainDiv').show();
+    $('.alertMainText').text('Boş mesaj gönderilemez.');
+    setTimeout(() => {
+      $('.alertMainDiv').hide();
+    }, 2500);
+  }
+};
+
+function deleteComment(comment_id){
+  $.ajax({
+    url: '{{url_for("tv_title_func_proc", function="delete_comment")}}',
+    data: JSON.stringify({
+      'idContent': '{{content_info.idContent}}',
+      'idTvSeason': '{{season_info.idTvSeason}}',
+      'idComment': comment_id,
+    }),
+    dataType: 'json',
+    type: 'POST',
+    contentType: 'application/json; charset=utf-8',
+    processData: false,
+    headers: {
+      'X-CSRFToken': '{{csrf_token()}}',
+    },
+    success: function(response){
+      if (response.ret_url){
+        window.location = response.ret_url
+      }
+      else if (response.succ_msg){
+        $('.alertMainDiv').show();
+        $('.alertMainText').text(response.succ_msg);
+        setTimeout(() => {
+          $('.alertMainDiv').hide();
+        }, 2500);
+        $('#' + response.deleted_comment_id).remove();
+        $('.' + response.deleted_comment_id).remove();
+      }
+      else if (response.err_msg){
+        $('.alertMainDiv').show();
+        $('.alertMainText').text(response.err_msg);
+        setTimeout(() => {
+          $('.alertMainDiv').hide();
+        }, 2500);
+      }
+    },
+    error: function(error){
+      console.log(error);
+    }
+  });
+};
+</script>
+{%endif%}
+
+<script>
+$(document).ready(function(){
+  if (document.getElementById('spoiler_box').checked == false){
+    $('.comments__item--spoiler').hide();
+  }
+});
+
+$('#spoiler_box').on('change', function(){
+  if (this.checked){showSpoilerComments();}
+  else {hideSpoilerComments();}
+});
+/* for spoiler including comments in the watch page */
+function showSpoilerComments(){
+  $('.comments__item--spoiler').show();
+  $('.alertMainDiv').show();
+  $('.alertMainText').text('Spoiler Alert!');
+  setTimeout(function(){
+    $('.alertMainDiv').hide();
+  }, 3500);
+};
+function hideSpoilerComments(){
+  $('.comments__item--spoiler').hide();
+  $('.alertMainDiv').show();
+  $('.alertMainText').text('Artık güvendesin!');
+  setTimeout(function(){
+    $('.alertMainDiv').hide();
+  }, 3500);
+};
+/* end for spoiler including comments in the watch page */
+</script>
+{%endblock%}

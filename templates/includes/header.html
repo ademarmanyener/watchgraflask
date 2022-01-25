@@ -1,0 +1,198 @@
+<!-- header -->
+	<header class="header">
+		<div class="header__wrap">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-12">
+						<div class="header__content">
+							<!-- header logo -->
+							<a href="{{url_for('home')}}" class="header__logo">
+								<img src="{{url_for('static', filename='img/logo.png')}}" alt="">
+							</a>
+							<!-- end header logo -->
+
+							<!-- header nav -->
+							<ul class="header__nav">
+								<li class="header__nav-item">
+									<a href="{{url_for('search')}}" class="header__nav-link">Tüm İçerikler</a>
+								</li>
+
+								<li class="header__nav-item">
+									<a href="{{url_for('catalog_movie')}}" class="header__nav-link {%if request.path == url_for('catalog_movie')%}header__nav-link--active{%endif%}">Filmler</a>
+								</li>
+
+								<li class="header__nav-item">
+									<a href="{{url_for('catalog_tv')}}" class="header__nav-link {%if request.path == url_for('catalog_tv')%}header__nav-link--active{%endif%}">Diziler</a>
+								</li>
+
+                {%if check_profile()%}
+                  <!-- dropdown -->
+                  <li class="header__nav-item">
+                    <a class="dropdown-toggle header__nav-link {%if request.path == url_for('collection_discover')%}header__nav-link--active{%endif%}" href="#" role="button" id="dropdownMenuCatalog" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Koleksiyonlar</a>
+
+                    <ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuCatalog">
+                      <li><a href="{{url_for('collection_discover')}}">Keşfet</a></li>
+                      {%if check_profile() == True%}
+                      <li><a href="#modal-header-my-collections" class="open-modal">Koleksiyonlarım</a></li>
+
+<div id="modal-header-my-collections" class="zoom-anim-dialog modal mfp-hide" style="max-width: 400px;">
+    <h6 class="modal__title">Koleksiyonlarım</h6>
+    <p class="modal__text"><a href="{{url_for('collection_new')}}" class="modal__btn" style="margin-top: 25px; width: calc(100%); color: white;">Yeni Oluştur</a></p>
+    {%for collection in g.PROFILE_COLLECTIONS_LIST%}
+    <p class="modal__text"><a href="{{url_for('collection_title', title_url=collection.titleUrl)}}" class="modal__btn" style="margin-top: 25px; width: calc(100%); color: white;">{{collection.title}}</a></p>
+    {%endfor%}
+    <div class="modal__btns">
+      <button class="modal__btn modal__btn--dismiss" style="margin-top: 5px; width: calc(100%);" type="button">Kapat</button>
+    </div>
+</div>
+
+                      {%endif%}
+                    </ul>
+                  </li>
+                  <!-- end dropdown -->
+                {%else%}
+                  <li class="header__nav-item">
+                    <a href="{{url_for('collection_discover')}}" class="header__nav-link {%if request.path == url_for('collection_discover')%}header__nav-link--active{%endif%}">Koleksiyonlar</a>
+                  </li>
+                {%endif%}
+                
+								<!-- dropdown -->
+								<li class="dropdown header__nav-item">
+									<a class="dropdown-toggle header__nav-link header__nav-link--more" href="#" role="button" id="dropdownMenuMore" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon ion-ios-menu"></i></a>
+
+									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuMore">
+								    <li><a href="{{url_for('cast_discover')}}">Oyuncular</a></li>
+										<li><a href="{{url_for('contact')}}">İletişim</a></li>
+									</ul>
+								</li>
+								<!-- end dropdown --> 
+
+							</ul>
+							<!-- end header nav -->
+
+							<!-- header auth -->
+							<div class="header__auth">
+								<button class="header__search-btn" type="button">
+									<i class="icon ion-ios-search"></i>
+								</button>
+
+								{%if check_profile() == True%}
+								<!-- dropdown -->
+								<div class="dropdown header__lang">
+									<a class="dropdown-toggle header__nav-link" href="#" role="button" id="dropdownMenuLang" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{get_profile_db(profile_id=session['PROFILE']['idProfile']).username}}</a>
+
+									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuLang" style="min-width: 225px; text-align: right;">
+										<li><a href="{{url_for('accountprofile', account_username=get_account_db(account_id=session['ACCOUNT']['idAccount']).username, profile_username=get_profile_db(profile_id=session['PROFILE']['idProfile']).username)}}">Profilim</a></li>
+										{%if check_admin() == True%}<li><a href="{{url_for('adminpanel_v2_home')}}">Yönetici Paneli</a></li>{%endif%}
+										<li><a href="{{url_for('whoiswatching')}}">Profili Değiştir</a></li>
+										<li><a href="#modal-header-settings" class="open-modal"><span>Ayarlar</span></a></li>
+
+<div id="modal-header-settings" class="zoom-anim-dialog modal mfp-hide" style="max-width: 300px;">
+		<h6 class="modal__title">Ayarlar</h6>
+		<p class="modal__text"><a href="{{url_for('settings_profile')}}" class="modal__btn modal__btn--apply" style="margin-top: 25px; width: calc(100%);">Profil Ayarları</a></p>
+		<p class="modal__text"><a href="{{url_for('settings_account_confirm_enter')}}" class="modal__btn modal__btn--apply" style="margin-top: 25px; width: calc(100%);">Hesap Ayarları</a></p>
+		<div class="modal__btns">
+			<button class="modal__btn modal__btn--dismiss" style="margin-top: 5px; width: calc(100%);" type="button">Kapat</button>
+		</div>
+</div>
+
+										<li><a href="{{url_for('destroy_account')}}">Çıkış Yap</a></li>
+									</ul>
+								</div>
+								<!-- end dropdown -->
+
+                <a href="{{url_for('accountprofile', account_username=get_account_db(account_id=session['ACCOUNT']['idAccount']).username, profile_username=get_profile_db(profile_id=session['PROFILE']['idProfile']).username)}}"><div style="width: 50px; height: 50px; margin-left: 25px; background-image: url('{{get_profile_db(profile_id=session['PROFILE']['idProfile']).imageAvatar}}'); background-size: cover; background-position: center; background-repeat: no-repeat; border-radius: 5px;"></div></a>
+
+								<!-- dropdown -->
+                  {%if 2 == 1%}
+								<li class="dropdown header__nav-item" style="margin-left: 25px;">
+									<a class="dropdown-toggle header__nav-link header__nav-link--more" href="#" role="button" id="dropdownMenuMore" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon ion-ios-chatbubbles"></i> <span style="font-size: 14px; font-weight: bold;">1</span></a>
+
+									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuMore" style="min-width: 400px;">
+                    {%for i in range(5)%}
+                    <li><a href="#">
+                      <span><b>ademyener</b> tarafından 25.01.2020 tarihinde gönderildi.</span>
+                      <span>asknaslgnalksgnalksgnbalksgbkl</span>
+                    </a><a href="#"><i class="icon ion-ios-trash" style="color: white;"></i> Mesajı Sil</a></li>
+                    <hr>
+                    {%endfor%}
+										<li><a href="#">Tüm Mesajları Göster</a></li>
+									</ul>
+								</li>
+                  {%endif%}
+								<!-- end dropdown -->
+								{%endif%}
+
+								{%if check_profile() == False%}
+                  {% if 2 == 1 %}
+								<a href="{{url_for('signup')}}" class="header__sign-in" style="background-image: linear-gradient(90deg, #030303 0%, #030303 100%);">
+									<i class="icon ion-ios-person-add"></i>
+									<span style="color: #bfbfbf;">kayıt ol</span>
+								</a>
+
+								<a href="{{url_for('signin')}}" class="header__sign-in" style="background-image: linear-gradient(90deg, #030303 0%, #030303 100%);">
+									<i class="icon ion-ios-person"></i>
+									<span style="color: #bfbfbf;">giriş yap</span>
+								</a>
+                  {% endif %}
+
+                
+                <li class="header__nav-item" style="margin-left: 25px;">
+									<a href="{{url_for('signin')}}" class="header__nav-link">Giriş Yap / Kayıt Ol</a>
+								</li>
+
+
+
+
+								{%endif%}
+							</div>
+							<!-- end header auth -->
+
+							<!-- header menu btn -->
+							<button class="header__btn" type="button">
+								<span></span>
+								<span></span>
+								<span></span>
+							</button>
+							<!-- end header menu btn -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+    {# DEPRECATED #}
+    {%if 2 == 1%}
+		<!-- header search -->
+		<form action="{{url_for('search')}}" method="POST" class="header__search">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-12">
+						<div class="header__search-content">
+							{{g.SEARCH_FORM.query()}}
+							{{g.SEARCH_FORM.search(style='width: 50px;')}}
+						</div>
+					</div>
+				</div>
+			</div>
+			{{g.SEARCH_FORM.csrf_token}}
+		</form>
+		<!-- end header search -->
+    {%endif%}
+
+		<!-- header search -->
+		<div class="header__search">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-12">
+						<div class="header__search-content">
+              <input type="text" placeholder="Aradığınız içeriğin adını buraya girin." name="" id="header_search_input">
+              <input type="button" style="width: 50px;" value="Ara" name="" id="header_search_button">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- end header search -->
+	</header>
+<!-- end header -->

@@ -1,0 +1,262 @@
+{%extends 'layouts/adminpanel/default.html'%}
+{%block container%}
+	<!-- main content -->
+	<main class="main">
+		<div class="container-fluid">
+			<div class="row">
+				<!-- main title -->
+				<div class="col-12">
+					<div class="main__title">
+						<h2>Yönetici Paneli</h2>
+					</div>
+				</div>
+				<!-- end main title -->
+
+				<!-- stats -->
+				<div class="col-12 col-sm-6 col-xl-3">
+					<div class="stats">
+						<span>Toplam İçerik Sayısı Film/Dizi Sayısı</span>
+            <p>{{all_movie_contents_info|length|int + all_tv_contents_info|length|int}} <span style="font-size: 13px; float: right; margin-left: 10px;">{{all_movie_contents_info|length}} film {{all_tv_contents_info|length}} dizi.</span></p>
+						<i class="icon ion-ios-tv"></i>
+					</div>
+				</div>
+				<!-- end stats -->
+
+				<!-- stats -->
+				<div class="col-12 col-sm-6 col-xl-3">
+					<div class="stats">
+						<span>Toplam Film/Dizi/Oyuncu Yorum Sayısı</span>
+						<p>{{all_movie_comments_info|length|int + all_tv_comments_info|length|int + all_tv_title_comments_info|length|int + all_cast_comments_info|length|int}}</p>
+						<i class="icon ion-ios-chatbubbles"></i>
+					</div>
+				</div>
+				<!-- end stats -->
+
+				<!-- stats -->
+				<div class="col-12 col-sm-6 col-xl-3">
+					<div class="stats">
+						<span>Toplam Profil Sayısı</span>
+						<p>{{all_profiles_info|length}}</p>
+						<i class="icon ion-ios-people"></i>
+					</div>
+				</div>
+				<!-- end stats -->
+
+				<!-- stats -->
+				<div class="col-12 col-sm-6 col-xl-3">
+					<div class="stats">
+						<span>Toplam Oyuncu Sayısı</span>
+						<p>{{all_casts_info|length}}</p>
+						<i class="icon ion-ios-contacts"></i>
+					</div>
+				</div>
+				<!-- end stats -->
+
+				<!-- dashbox -->
+				<div class="col-12 col-xl-6">
+					<div class="dashbox">
+						<div class="dashbox__title">
+							<h3><i class="icon ion-ios-film"></i> Son Eklenen Filmler</h3>
+
+							<div class="dashbox__wrap">
+								<a class="dashbox__refresh" onclick="mildReloadPage();" href="#"><i class="icon ion-ios-refresh"></i></a>
+								<a class="dashbox__more" href="#">Tümü</a>
+							</div>
+						</div>
+
+						<div class="dashbox__table-wrap">
+							<table class="main__table main__table--dash">
+								<thead>
+									<tr>
+										<th>FİLM</th>
+										<th>EKLEYEN KİŞİ</th>
+										<th>EKLENME / SON DÜZENLEME TARİHİ</th>
+									</tr>
+								</thead>
+								<tbody>
+                  {%for movie in latest_movie_contents_info%}
+                  <tr>
+                    <td>
+                      <div class="main__user">
+                        <div class="main__avatar" style="min-width: 75px; height: 100px; border-radius: 5px; -webkit-border-radius: 5px;">
+                          <div style="width: 100%; height: 100%; background-image: url('{{movie.imagePoster}}'); background-size: cover; background-position: center;"></div>
+                        </div>
+                        <div class="main__meta">
+                          <h3>{{movie.title}}</h3>
+                          <span>{{movie.titleOriginal}}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{get_profile_db(profile_id=movie.idAddProfile).username}}</div>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{format_date(movie.addDate, 'full', locale='tr')}}</div>
+                      <div class="main__table-text main__table-text--green">{{format_date(movie.lastEditDate, 'full', locale='tr')}}</div>
+                    </td>
+                  </tr>
+                  {%endfor%}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<!-- end dashbox -->
+
+				<!-- dashbox -->
+				<div class="col-12 col-xl-6">
+					<div class="dashbox">
+						<div class="dashbox__title">
+							<h3><i class="icon ion-ios-tv"></i> Son Eklenen Diziler</h3>
+
+							<div class="dashbox__wrap">
+								<a class="dashbox__refresh" onclick="mildReloadPage();" href="#"><i class="icon ion-ios-refresh"></i></a>
+								<a class="dashbox__more" href="#">Tümü</a>
+							</div>
+						</div>
+
+						<div class="dashbox__table-wrap">
+							<table class="main__table main__table--dash">
+								<thead>
+									<tr>
+										<th>DİZİ</th>
+										<th>SON BÖLÜM</th>
+										<th>EKLEYEN KİŞİ</th>
+										<th>EKLENME / SON DÜZENLEME TARİHİ</th>
+									</tr>
+								</thead>
+								<tbody>
+                  {%for tv in latest_tv_contents_info%}
+                  <tr>
+                    <td>
+                      <div class="main__user">
+                        <div class="main__avatar" style="min-width: 75px; height: 100px; border-radius: 5px; -webkit-border-radius: 5px;">
+                          <div style="width: 100%; height: 100%; background-image: url('{{tv.imagePoster}}'); background-size: cover; background-position: center;"></div>
+                        </div>
+                        <div class="main__meta">
+                          <h3>{{tv.title}}</h3>
+                          <span>{{tv.titleOriginal}}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{get_tvcontent_latestepisode(content_id=tv.idContent).seasonNumber}}. Sezon {{get_tvcontent_latestepisode(content_id=tv.idContent).episodeNumber}}. Bölüm</div>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{get_profile_db(profile_id=tv.idAddProfile).username}}</div>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{format_date(tv.addDate, 'full', locale='tr')}}</div>
+                      <div class="main__table-text main__table-text--green">{{format_date(tv.lastEditDate, 'full', locale='tr')}}</div>
+                    </td>
+                  </tr>
+                  {%endfor%}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<!-- end dashbox -->
+
+				<!-- dashbox -->
+				<div class="col-12 col-xl-6">
+					<div class="dashbox">
+						<div class="dashbox__title">
+							<h3><i class="icon ion-ios-people"></i> Son Eklenen Profiller</h3>
+
+							<div class="dashbox__wrap">
+								<a class="dashbox__refresh" onclick="mildReloadPage();" href="#"><i class="icon ion-ios-refresh"></i></a>
+								<a class="dashbox__more" href="#">Tümü</a>
+							</div>
+						</div>
+
+						<div class="dashbox__table-wrap">
+							<table class="main__table main__table--dash">
+								<thead>
+									<tr>
+										<th>PROFİL</th>
+										<th>E-POSTA ADRESİ</th>
+										<th>EKLENME / SON DÜZENLEME TARİHİ</th>
+									</tr>
+								</thead>
+								<tbody>
+                  {%for profile in latest_profiles_info%}
+                  <tr>
+                    <td>
+                      <div class="main__user">
+                        <div class="main__avatar" style="min-width: 75px; height: 75px; border-radius: 5px; -webkit-border-radius: 5px;">
+                          <div style="width: 100%; height: 100%; background-image: url('{{profile.imageAvatar}}'); background-size: cover; background-position: center;"></div>
+                        </div>
+                        <div class="main__meta">
+                          <h3>{{profile.username}}</h3>
+                          <span>{{get_account_db(account_id=profile.idAccount).username}}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{get_account_db(account_id=profile.idAccount).emailAddress}}</div>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{format_date(profile.addDate, 'full', locale='tr')}}</div>
+                      <div class="main__table-text main__table-text--green">{{format_date(profile.lastEditDate, 'full', locale='tr')}}</div>
+                    </td>
+                  </tr>
+                  {%endfor%}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<!-- end dashbox -->
+
+				<!-- dashbox -->
+				<div class="col-12 col-xl-6">
+					<div class="dashbox">
+						<div class="dashbox__title">
+							<h3><i class="icon ion-ios-contacts"></i> Son Eklenen Oyuncular</h3>
+
+							<div class="dashbox__wrap">
+								<a class="dashbox__refresh" onclick="mildReloadPage();" href="#"><i class="icon ion-ios-refresh"></i></a>
+								<a class="dashbox__more" href="#">Tümü</a>
+							</div>
+						</div>
+
+						<div class="dashbox__table-wrap">
+							<table class="main__table main__table--dash">
+								<thead>
+									<tr>
+										<th>OYUNCU</th>
+										<th>EKLENME / SON DÜZENLEME TARİHİ</th>
+									</tr>
+								</thead>
+								<tbody>
+                  {%for cast in latest_casts_info%}
+                  <tr>
+                    <td>
+                      <div class="main__user">
+                        <div class="main__avatar" style="min-width: 75px; height: 100px; border-radius: 5px; -webkit-border-radius: 5px;">
+                          <div style="width: 100%; height: 100%; background-image: url('{{cast.imagePoster}}'); background-size: cover; background-position: center;"></div>
+                        </div>
+                        <div class="main__meta">
+                          <h3>{{cast.name}}</h3>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="main__table-text">{{format_date(cast.addDate, 'full', locale='tr')}}</div>
+                      <div class="main__table-text main__table-text--green">{{format_date(cast.lastEditDate, 'full', locale='tr')}}</div>
+                    </td>
+                  </tr>
+                  {%endfor%}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<!-- end dashbox -->
+
+			</div>
+		</div>
+	</main>
+	<!-- end main content -->
+{%endblock%}

@@ -1,0 +1,56 @@
+{%extends 'layouts/default.html'%}
+{%block container%}
+
+<style media="screen">
+	.form__btn { display: inline-flex; margin-right: 25px; }
+	input[type=checkbox], input[type=radio] {
+		transition: border 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+	}
+	input[type=checkbox], input[type=radio]:checked {
+		border: 2px solid white;
+	}
+</style>
+
+<br>
+<br>
+<br>
+<br>
+
+	<!-- contacts -->
+	<section class="section">
+		<div class="container">
+			<div class="row">
+        <div class="col-lg-2"></div>
+				<div class="col-12 col-md-7 col-lg-8">
+					<div class="row">
+						<!-- section title -->
+						<div class="col-12">
+							<h2 class="section__title">Yeni Bir Koleksiyon Oluştur</h2>
+						</div>
+						<!-- end section title -->
+
+						<div class="col-12">
+							<form action="{{url_for('collection_new')}}" method="POST" class="form form--contacts">
+								<br/>
+								{{form.title(class='form__input', placeholder='Başlık')}}
+								{{form.overview(class='form__input', placeholder='Açıklama (boş bırakılabilir)')}}
+								<div class="sign__group sign__group--checkbox">
+									<input id="privatecollection" name="privatecollection" type="checkbox">
+									<label for="privatecollection">Gizli</label>
+								</div>
+								<br/>
+								<br/>
+								<br/>
+								{{form.create(class='form__btn', style='border: 0px; cursor: pointer;')}}
+							{{form.csrf_token}}
+							</form>
+						</div>
+					</div>
+				</div>
+        <div class="col-lg-2"></div>
+
+			</div>
+		</div>
+	</section>
+	<!-- end contacts -->
+{%endblock%}

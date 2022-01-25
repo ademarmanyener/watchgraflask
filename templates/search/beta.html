@@ -1,0 +1,108 @@
+{%extends 'layouts/default.html'%}
+{% from "macros/cards.html" import card_long_detailed %}
+{%block container%}
+<style>
+  .paginator {
+    background-color: transparent;
+    box-shadow: unset;
+  }
+  .ion-ios-arrow-back::before {
+    line-height: 50px;
+  }
+  .ion-ios-arrow-forward::before {
+    line-height: 50px;
+  }
+  .paginator__item--active a:hover {
+    color: rgb(90, 90, 90);
+  }
+  .filter__item-menu {
+    max-height: 500px;
+  }
+</style>
+
+<br>
+<br>
+<br>
+
+{% if 2 == 1 %}
+<!-- filter -->
+<div class="filter">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="filter__content">
+          <div class="filter__items">
+            <!-- filter item -->
+            <div class="filter__item" id="filter__genre">
+              <span class="filter__item-label">İÇERİK TÜRÜ</span>
+              <div class="filter__item-btn dropdown-toggle" role="navigation" id="filter-content-type" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <input type="button" value="Seç">
+                <span></span>
+              </div>
+              <ul class="filter__item-menu dropdown-menu scrollbar-dropdown" aria-labelledby="filter-content-type">
+                <a href="{{request.path}}?query={{_ARG['query']}}&page=1&type=*&sort={{_ARG['sort']}}"><li>Tümü</li></a>
+                <a href="{{request.path}}?query={{_ARG['query']}}&page=1&type=movie&sort={{_ARG['sort']}}"><li>Film</li></a>
+                <a href="{{request.path}}?query={{_ARG['query']}}&page=1&type=tv&sort={{_ARG['sort']}}"><li>Dizi</li></a>
+              </ul>
+            </div>
+            <!-- end filter item -->
+
+            <!-- filter item -->
+            <div class="filter__item" id="filter__genre">
+              <span class="filter__item-label">SIRALA</span>
+              <div class="filter__item-btn dropdown-toggle" role="navigation" id="filter-content-sort" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <input type="button" value="Seç">
+                <span></span>
+              </div>
+              <ul class="filter__item-menu dropdown-menu scrollbar-dropdown" aria-labelledby="filter-content-sort">
+                <a href="{{request.path}}?query={{_ARG['query']}}&page=1&type={{_ARG['type']}}&sort=a-to-z"><li>A'dan Z'ye</li></a>
+                <a href="{{request.path}}?query={{_ARG['query']}}&page=1&type={{_ARG['type']}}&sort=z-to-a"><li>Z'den A'ya</li></a>
+                <a href="{{request.path}}?query={{_ARG['query']}}&page=1&type={{_ARG['type']}}&sort=newest"><li>Yeniden Eskiye</li></a>
+                <a href="{{request.path}}?query={{_ARG['query']}}&page=1&type={{_ARG['type']}}&sort=oldest"><li>Eskiden Yeniye</li></a>
+                <a href="{{request.path}}?query={{_ARG['query']}}&page=1&type={{_ARG['type']}}&sort=vote"><li>Oy Oranına Göre</li></a>
+              </ul>
+            </div>
+            <!-- end filter item -->
+
+            <div class="filter__items">
+              <span class="filter__item-label" style="font-size: 20px; color: white;">{%if _ARG['query'] == '*'%}Tüm içerikler aranıyor.{%else%}'{{_ARG['query']}}' adındaki içerikler aranıyor.{%endif%}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end filter -->
+{% else %}
+{% for i in range(5) %}<br/>{% endfor %}
+{% endif %}
+
+<!-- paginator -->
+{%include 'search/paginator.html'%}
+<!-- end paginator -->
+
+<h2 style="color: white;">{{ context['results'] }}</h2>
+
+<!-- catalog -->
+<div class="catalog">
+  <div class="container-fluid">
+    <div class="row">
+      {% for content in context['results'] %}
+        {% if content.visibility %}
+
+          <div class="col-6 col-sm-12 col-lg-4">
+            {{ card_long_detailed(content=content) }}
+          </div>
+
+        {% endif %}
+      {% endfor %}
+
+      <!-- paginator -->
+      {%include 'search/paginator.html'%}
+      <!-- end paginator -->
+    </div>
+  </div>
+</div>
+<!-- end catalog -->
+{%endblock%}

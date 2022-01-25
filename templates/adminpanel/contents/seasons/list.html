@@ -1,0 +1,210 @@
+﻿{%extends 'layouts/adminpanel/default.html'%}
+{%block container%}
+<style>
+  .ion-ios-arrow-back::before {
+    line-height: 40px;
+  }
+  .ion-ios-arrow-forward::before {
+    line-height: 40px;
+  }
+  .paginator {
+    background-color: transparent;
+  }
+  .paginator__item--active a:hover {
+    color: rgb(90, 90, 90);
+  }
+</style>
+
+{%include 'adminpanel/contents/includes/sidebar.html'%}
+
+<!-- main content -->
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- main title -->
+      <div class="col-12">
+        <div class="main__title">
+          <h2>{{content_info.title}} Tüm Sezonlar</h2>
+
+          <span class="main__title-stat">Mevcut sayfa {{list_results_info|length}} içerik sergileniyor.</span>
+
+          <div class="main__title-wrap">
+
+            <a href="#modal-contents-addMenu_TV_Seasons" class="main__title-link open-modal" style="margin-right: 25px; min-width: 200px;">Yeni Ekle</a>
+
+            <!-- filter sort -->
+            <div class="filter" id="filter__sort">
+              <span class="filter__item-label">Sırala:</span>
+
+              <div class="filter__item-btn dropdown-toggle" role="navigation" id="filter-sort" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <input type="button" value="Eklenme Tarihi">
+                <span></span>
+              </div>
+
+              <ul class="filter__item-menu dropdown-menu scrollbar-dropdown" aria-labelledby="filter-sort">
+                <a href="{{request.path}}?page=1&sort=a-to-z&list_count={{_ARG['list_count']}}"><li>A'dan Z'ye</li></a>
+                <a href="{{request.path}}?page=1&sort=z-to-a&list_count={{_ARG['list_count']}}"><li>Z'den A'ya</li></a>
+                <a href="{{request.path}}?page=1&sort=newest&list_count={{_ARG['list_count']}}"><li>Yeniden Eskiye</li></a>
+                <a href="{{request.path}}?page=1&sort=oldest&list_count={{_ARG['list_count']}}"><li>Eskiden Yeniye</li></a>
+                <a href="{{request.path}}?page=1&sort=season-asc&list_count={{_ARG['list_count']}}"><li>Sezon Olarak Küçükten Büyüğe</li></a>
+                <a href="{{request.path}}?page=1&sort=season-desc&list_count={{_ARG['list_count']}}"><li>Sezon Olarak Büyükten Küçüğe</li></a>
+              </ul>
+            </div>
+            <!-- end filter sort -->
+
+          </div>
+        </div>
+      </div>
+      <!-- end main title -->
+
+      <!-- users -->
+      <div class="col-12">
+        <div class="main__table-wrap">
+          <table class="main__table">
+            <thead>
+              <tr>
+                <th>SEZON</th>
+                <th>AÇIKLAMA</th>
+                <th>SEZON NUMARASI</th>
+                <th>TOPLAM BÖLÜM SAYISI</th>
+                <th>EKLEYEN PROFİL</th>
+                <th>EKLENME / SON DÜZENLEME TARİHİ</th>
+                <th>FONKSİYONLAR</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {%for season in seasons_info%}
+              <tr id="main__table--tr-{{season.idTvSeason}}">
+                <td>
+                  <div class="main__user">
+                    <div class="main__avatar" style="min-width: 75px; height: 100px; border-radius: 5px; -webkit-border-radius: 5px;">
+                      <div style="width: 100%; height: 100%; background-image: url('{{season.imagePoster}}'); background-size: cover; background-position: center;"></div>
+                    </div>
+                    <div class="main__meta">
+                      <h3>{{season.title}}</h3>
+                      <span>{{season.titleOriginal}}</span>
+                      {%if season.visibility == 0%}<span style="font-size: 12px; font-weight: bold; color: rgb(189, 189, 189);">Gizli</span>{%endif%}
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="main__table-text">{{season.overview[:60]}}...</div>
+                </td>
+                <td>
+                  <div class="main__table-text">{{season.seasonNumber}}</div>
+                </td>
+                <td>
+                  <div class="main__table-text">SOON</div>
+                </td>
+                <td>
+                  <div class="main__table-text">{{get_profile_db(profile_id=season.idAddProfile).username}}</div>
+                </td>
+                <td>
+                  <div class="main__table-text">{{format_date(season.addDate, 'full', locale='tr')}}</div>
+                  <div class="main__table-text main__table-text--green">{{format_date(season.lastEditDate, 'full', locale='tr')}}</div>
+                </td>
+
+                <td>
+                  <div class="main__table-btns">
+                    <a href="{{url_for('tv_season_title', title_url=get_content_db(content_id=season.idContent).titleUrl, season_number=season.seasonNumber)}}" target="_blank" class="main__table-btn main__table-btn--banned">
+											<i class="icon ion-ios-play"></i>
+										</a>
+                    <a href="{{url_for('adminpanel_content_season_edit', title_url=get_content_db(content_id=season.idContent).titleUrl, season_number=season.seasonNumber)}}" class="main__table-btn main__table-btn--edit">
+                      <i class="icon ion-ios-create"></i>
+                    </a>
+                    <a href="#modal-drop-{{season.idTvSeason}}" class="main__table-btn main__table-btn--delete open-modal">
+                      <i class="icon ion-ios-trash"></i>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+              {%endfor%}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- end users -->
+
+      <!-- paginator -->
+      <div class="col-12">
+        <ul class="paginator paginator--list" style="background-color: transparent; box-shadow: unset; float: right; margin-right: 150px; margin-top: 25px;">
+          {%if not _ARG['page'] == 1%}<li class="paginator__item"><a href="{{request.path}}?page=1&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">1</a></li>{%endif%}
+          {%if _ARG['page'] - 1 >= 1%}
+          <li class="paginator__item paginator__item--prev">
+            <a href="{{request.path}}?page={{_ARG['page'] - 1}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}"><i class="icon ion-ios-arrow-back"></i></a>
+          </li>
+          {%endif%}
+          {%if _ARG['page'] - 4 >= 1%}<li class="paginator__item"><a href="{{request.path}}?page={{_ARG['page'] - 4}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] - 4}}</a></li>{%endif%}
+          {%if _ARG['page'] - 3 >= 1%}<li class="paginator__item"><a href="{{request.path}}?page={{_ARG['page'] - 3}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] - 3}}</a></li>{%endif%}
+          {%if _ARG['page'] - 2 >= 1%}<li class="paginator__item"><a href="{{request.path}}?page={{_ARG['page'] - 2}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] - 2}}</a></li>{%endif%}
+          {%if _ARG['page'] - 1 >= 1%}<li class="paginator__item"><a href="{{request.path}}?page={{_ARG['page'] - 1}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] - 1}}</a></li>{%endif%}
+          <li class="paginator__item paginator__item--active"><a href="#">{{_ARG['page']}}</a></li>
+          {%if _ARG['page'] + 1 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?page={{_ARG['page'] + 1}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] + 1}}</a></li>{%endif%}
+          {%if _ARG['page'] + 2 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?page={{_ARG['page'] + 2}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] + 2}}</a></li>{%endif%}
+          {%if _ARG['page'] + 3 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?page={{_ARG['page'] + 3}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] + 3}}</a></li>{%endif%}
+          {%if _ARG['page'] + 4 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?page={{_ARG['page'] + 4}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page'] + 4}}</a></li>{%endif%}
+          {%if _ARG['page'] + 1 <= _ARG['page_max']%}
+          <li class="paginator__item paginator__item--next">
+            <a href="{{request.path}}?page={{_ARG['page'] + 1}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}"><i class="icon ion-ios-arrow-forward"></i></a>
+          </li>
+          {%endif%}
+          {%if not _ARG['page'] == _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?page={{_ARG['page_max']}}&sort={{_ARG['sort']}}&list_count={{_ARG['list_count']}}">{{_ARG['page_max']}}</a></li>{%endif%}
+        </ul>
+      </div>
+      <!-- end paginator -->
+
+    </div>
+  </div>
+</main>
+<!-- end main content -->
+
+<!-- modal addMenu->TV->Seasons begin -->
+<div id="modal-contents-addMenu_TV_Seasons" class="zoom-anim-dialog modal mfp-hide">
+		<h6 class="modal__title">Yeni Ekle > Dizi > Sezonlar</h6>
+		<p class="modal__text"><a href="#modal-contents-addMenu_TV_Seasons_TMDB" class="modal__btn modal__btn--apply open-modal" style="width: calc(100%);">TMDB</a></p>
+		<p class="modal__text"><a onclick="adminproc_content_seasons_createNatural(content_id='{{content_info.idContent|safe}}');" class="modal__btn modal__btn--apply" style="width: calc(100%); cursor: pointer;">Natural</a></p>
+		<div class="modal__btns">
+			<button class="modal__btn modal__btn--dismiss" style="width: calc(100%);" type="button">Kapat</button>
+		</div>
+</div>
+<!-- modal addMenu->TV->Seasons end -->
+
+<!-- modal addMenu->TV->Seasons->TMDB begin -->
+<div id="modal-contents-addMenu_TV_Seasons_TMDB" class="zoom-anim-dialog mfp-hide modal">
+  <h6 class="modal__title">Yeni Ekle > Dizi > Sezonlar > TMDB</h6>
+  <p class="modal__text">Dizinin Sezon Numarası</p>
+  <input id="input___modal-contents-addMenu_TV_Seasons_seasonNumber" type="text" class="form__input">
+  <div class="modal__btns">
+    <button id="button___modal-contents-addMenu_TV_Seasons_TMDB" type="button" class="modal__btn modal__btn--apply" style="border: 0px;">Ekle</button>
+    <button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+  </div>
+  <br />
+  <p class="modal__text">İçeriğin yüklenmesi biraz uzun sürebilir.</p>
+</div>
+<!-- modal addMenu->TV->Seasons->TMDB end -->
+
+  {%for season in seasons_info%}
+    <!-- modal delete -->
+    <div id="modal-drop-{{season.idTvSeason}}" class="zoom-anim-dialog mfp-hide modal">
+      <h6 class="modal__title">Sezonu Sil</h6>
+      <p class="modal__text">{{season.title}} isimli sezonu silmek istediğinize emin misiniz? Bu işlem geri alınamaz!</p>
+      <div class="modal__btns">
+        <button onclick="adminproc_content_seasons_drop(season_id='{{season.idTvSeason}}');" class="modal__btn modal__btn--apply" type="button">Sil</button>
+        <button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+      </div>
+    </div>
+    <!-- end modal delete -->
+  {%endfor%}
+{%endblock%}
+
+{%block script%}
+  <script>
+    $('#button___modal-contents-addMenu_TV_Seasons_TMDB').click(() => {
+      get_season_number = $('#input___modal-contents-addMenu_TV_Seasons_seasonNumber').val();
+      if (get_season_number){
+        adminproc_content_seasons_tmdbImport(tmdb_id='{{content_info.idTmdb|safe}}', season_number=get_season_number);
+      }
+    });
+  </script>
+{%endblock%}

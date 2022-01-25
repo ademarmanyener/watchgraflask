@@ -1,0 +1,167 @@
+<div class="row">
+  <div class="col-12 col-md-5 form__cover">
+
+    <!-- IMAGE UPLOAD BEGIN -->
+    <div class="row">
+      <div class="col-12 col-sm-6 col-md-12">
+        <div class="form__img open-modal" href="#modal-list_poster">
+          <label for="form__img-upload">Poster Seç</label>
+          <img id="form__img" src="#" alt=" ">
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 col-sm-6 col-md-12">
+        <div class="form__img open-modal" style="height: 200px;" href="#modal-list_background">
+          <label for="form__imgBg-upload">Arkaplan Seç</label>
+          <img id="form__imgBg" src="#" alt=" ">
+        </div>
+      </div>
+    </div>
+    {{macro_upload(id='uploadFile')}}
+    <!-- IMAGE UPLOAD END -->
+  </div>
+
+  <div class="col-12 col-md-7 form__content">
+    <div class="row">
+      <div class="col-4">
+        {{macro_input(id='title', title='Başlık')}}
+      </div>
+
+      <div class="col-4">
+        {{macro_input(id='titleOriginal', title='Orijinal Başlık')}}
+      </div>
+
+      <div class="col-4">
+        {{macro_input(id='titleUrl', title='URL Başlığı')}}
+      </div>
+
+      <div class="col-10">
+        {{macro_textarea(id='overview', title='Açıklama')}}
+      </div>
+
+      <div class="col-2">
+        {{macro_input(id='voteAverage', title='Ortalama Oy')}}
+      </div>
+
+      <div class="col-6">
+        {{macro_input(id='idTmdb', title='TMDB ID')}}
+      </div>
+
+      <div class="col-6">
+        {{macro_input(id='idImdb', title='IMDB ID')}}
+      </div>
+
+      <div class="col-12">
+        <select class="js-example-basic-multiple" id="select2___country" name="select2___country" multiple="multiple">
+          {%for country in context['countryList']%}
+          <option value={{country.idISO_3166_1}} {%if contentCountry.query.filter(and_(contentCountry.idISO_3166_1 == country.idISO_3166_1, contentCountry.idContent == context['data'].idContent)).first()%}selected="selected"{%endif%}>{{country.title}}</option>
+          {%endfor%}
+        </select>
+      </div>
+      
+      <div class="col-12">
+        <select class="js-example-basic-multiple" id="select2___language" name="select2___language" multiple="multiple">
+          {%for language in context['languageList']%}
+          <option value="{{language.idISO_639_1}}" {%if contentLanguage.query.filter(and_(contentLanguage.idISO_639_1 == language.idISO_639_1, contentLanguage.idContent == context['data'].idContent)).first()%}selected="selected"{%endif%}>{{language.title}}</option>
+          {%endfor%}
+        </select>
+      </div>
+
+      <div class="col-12">
+        <select class="js-example-basic-multiple" id="select2___genre" name="select2___genre" multiple="multiple">
+          {%if context['data'].type == 'MOVIE'%}
+            {%for genre in context['movieGenreList']%}
+            <option value={{genre.idGenre}} {%if movieContentGenre.query.filter(and_(movieContentGenre.idGenre == genre.idGenre, movieContentGenre.idContent == context['data'].idContent)).first()%}selected="selected"{%endif%}>{{genre.title}}</option>
+            {%endfor%}
+          {%elif context['data'].type == 'TV'%}
+            {%for genre in context['tvGenreList']%}
+            <option value={{genre.idGenre}} {%if tvContentGenre.query.filter(and_(tvContentGenre.idGenre == genre.idGenre, tvContentGenre.idContent == context['data'].idContent)).first()%}selected="selected"{%endif%}>{{genre.title}}</option>
+            {%endfor%}
+          {%endif%}
+        </select>
+      </div>
+
+      <div class="col-9">
+        {{macro_input(id='imagePoster', title='Poster Resmi')}}
+      </div>
+
+      <div class="col-9">
+        {{macro_input(id='imageBackground', title='Arkaplan Resmi')}}
+      </div>
+
+      <div class="col-12 col-sm-6 col-lg-6">
+        {{macro_input(id='releaseDate', title='Yayın Tarihi')}}
+      </div>
+
+      <div class="col-2">
+        <div class="profile__group">
+          <label class="profile__label" for="select2___adult">Yetişkin İçerik</label>
+          <select class="js-example-basic-single" id="select2___adult" name="select2___adult">
+            <option value="0">Herkese Uygun</option>
+            <option value="1">Yetişkin İçerik</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-2">
+        <div class="profile__group">
+          <label class="profile__label" for="select2___visibility">Görünürlük</label>
+          <select class="js-example-basic-single" id="select2___visibility" name="select2___visibility">
+            <option value="1">Herkese Açık</option>
+            <option value="0">Gizli</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-2">
+        <div class="profile__group">
+          <label class="profile__label" for="select2___type">Tür</label>
+          <select class="js-example-basic-single" id="select2___type" name="select2___type">
+            <option value="MOVIE">Film</option>
+            <option value="TV">Dizi</option>
+          </select>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="row">
+      <div class="col-12">
+        <input type="submit" id="button___save" name="button___save" value="Kaydet" class="form__btn" style="border: 0px; cursor: pointer; float: right;">
+      </div>
+    </div>
+  </div>
+</div>
+
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+{%for _type in ['poster', 'background']%}
+<div id="modal-list_{{_type}}" class="zoom-anim-dialog modal mfp-hide">
+  <h6 class="modal__title">Poster Seç</h6>
+  <p class="modal__text">Bunlardan birini {{_type}} olarak seçin.</p>
+  <br />
+  <div class="row">
+    {%for _file in files['data']%}
+    <!-- item -->
+    <div class="col-4" style="border: 0px solid red; margin:0px;padding:0px; margin-bottom: 25px; padding-left: 5px; padding-right: 5px;">
+      <div class="row">
+        <div class="col-12">
+          <div onclick="select_image(type='{{_type}}', file='{{_file}}');" style="width: 100%; height: 125px; background-image: url({{url_for('storage', filename='content/' + context['data'].idContent + '/' + _file)}}); background-size: cover; background-position: center; cursor: pointer;"></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <a href="{{url_for('adminpanel_v2_edit_delete_file', table_name=_ARG['table'], id_key=_ARG['id'], file_name=_file)}}" class="form__btn" style="width: 100%; height: 25px;">Sil</a>
+        </div>
+      </div>
+    </div>
+    <!-- end item -->
+    {%endfor%}
+  </div>
+  <div class="modal__btns">
+    <button class="modal__btn modal__btn--dismiss" type="button">Seç</button>
+  </div>
+</div>
+{%endfor%}

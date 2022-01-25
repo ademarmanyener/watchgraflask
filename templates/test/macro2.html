@@ -1,0 +1,46 @@
+{% extends 'layouts/default.html' %}
+{% from "macros/cards.html" import card_long %}
+{% block container %}
+
+{% for i in range(5) %}<br />{% endfor %}
+
+<input type="button" id="testButton" value="Click" class="form__btn" style="border: 0px; cursor: pointer;">
+  <div id="myPlace">
+
+
+    <div class="row">
+    <div class="col-2">
+
+      {{ card_long(content=first_content) }}
+
+    </div>
+    </div>
+
+
+  </div>
+
+{% endblock %}
+
+
+{% block script %}
+  <script>
+
+    $('#testButton').on('click', () => {
+
+      $('#myPlace .row').append(`
+
+
+        <div class="col-2">
+
+          {{ card_long(content=first_content) }}
+
+        </div>
+
+
+      `);
+
+    });
+
+
+  </script>
+{% endblock %}

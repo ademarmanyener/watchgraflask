@@ -1,0 +1,41 @@
+<div class="row">
+  <div class="col-12 col-md-7 form__content">
+    <div class="row">
+      <div class="col-12">
+        {{macro_input(id='username', title='Kullanıcı Adı')}}
+      </div>
+
+      <div class="col-12">
+        {{macro_input(id='password', title='Parola', type='password')}}
+      </div>
+
+      <div class="col-12">
+        {{macro_input(id='securityPassword', title='Güvenlik Parolası', type='password')}}
+      </div>
+
+      <div class="col-12">
+        {{macro_input(id='emailAddress', title='E-Posta Adresi')}}
+      </div>
+
+      <div class="col-2">
+        <div class="profile__group">
+          <label class="profile__label" for="select2___permission">Yetki</label>
+          <select class="js-example-basic-single" id="select2___permission" name="select2___permission">
+            <option value="USER">Kullanıcı</option>
+            <option value="SYSTEM">Sistem</option>
+          </select>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="row">
+      <div class="col-12">
+        <input type="submit" id="button___save" name="button___save" value="Kaydet" class="form__btn" style="border: 0px; cursor: pointer; float: right;">
+      </div>
+    </div>
+  </div>
+</div>
+
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>

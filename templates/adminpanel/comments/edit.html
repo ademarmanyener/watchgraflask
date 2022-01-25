@@ -1,0 +1,179 @@
+﻿{%extends 'layouts/adminpanel/default.html'%}
+{%block container%}
+
+<style>
+  .form__input, .form__textarea {
+    /*background-color: #646464;*/
+  }
+  .select2-container--default .select2-selection--single {
+    background-color: unset;
+  }
+  .select2-dropdown {
+    background-color: #030303;
+  }
+  .form__textarea {
+    height: 287px;
+  }
+  .form__img, .form__img label {
+    background-color: unset;
+  }
+  .form__img {
+    background-position: center;
+    background-size: cover;
+    {%if _ARG['c_type'] == 'movie'%}
+      background-image: url('{{get_content_db(content_id=comment_info.idContent).imagePoster}}');
+    {%elif _ARG['c_type'] == 'tv'%}
+      background-image: url('{{get_content_db(content_id=comment_info.idContent).imagePoster}}');
+    {%elif _ARG['c_type'] == 'tv_title'%}
+      background-image: url('{{get_content_db(content_id=comment_info.idContent).imagePoster}}');
+    {%elif _ARG['c_type'] == 'cast'%}
+      background-image: url('{{get_cast_db(cast_id=comment_info.idCast).imagePoster}}');
+    {%endif%}
+  }
+	.form__btn { display: inline-flex; margin-right: 25px; }
+	input[type=checkbox], input[type=radio] {
+		transition: border 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+	}
+	input[type=checkbox], input[type=radio]:checked {
+		border: 2px solid white;
+	}
+</style>
+
+<!-- main content -->
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- main title -->
+      <div class="col-12">
+        <div class="main__title">
+          <h2>Yorum Düzenleniyor</h2>
+        </div>
+      </div>
+      <!-- end main title -->
+
+      <!-- form -->
+      <div class="col-12">
+        <form action="{{url_for('adminpanel_comment_edit')}}?c_id={{_ARG['c_id']}}&c_type={{_ARG['c_type']}}" method="POST" class="form" enctype="multipart/form-data">
+          <div class="row">
+            <div class="col-12 col-md-5 form__cover">
+              <!-- IMAGE UPLOAD BEGIN -->
+              <div class="row">
+                <div class="col-12 col-sm-6 col-md-12">
+                  <div class="form__img">
+                    <input id="" name="" type="file" accept=".png, .jpg, .jpeg">
+                    <img id="form__img" src="#" alt=" ">
+                  </div>
+                </div>
+              </div>
+              <!-- IMAGE UPLOAD END -->
+            </div>
+
+            <div class="col-12 col-md-7 form__content">
+              <div class="row">
+                <div class="col-6">
+                  <label class="profile__label" for="input___content">İçerik</label>
+                  <input id="input___content" name="input___content" type="text" class="form__input" placeholder="İçerik" disabled="">
+                </div>
+
+                <div class="col-6">
+                  <label class="profile__label" for="input___profile">Profil Adı</label>
+                  <input id="input___profile" name="input___profile" type="text" class="form__input" placeholder="Profil Adı" disabled="">
+                </div>
+
+                <div class="col-12">
+                  <label class="profile__label" for="input___text">Yorum</label>
+                  <textarea id="input___text" name="input___text" class="form__textarea" placeholder="Yorum"></textarea>
+                </div>
+
+                <div class="col-12">
+                  <label class="profile__label" for="input___replyTo">Yanıt Yorum</label>
+                  <input id="input___replyTo" name="input___replyTo" type="text" class="form__input" placeholder="Yanıt Yorum">
+                </div>
+
+                <div class="col-2">
+                  <div class="profile__group">
+                    <label class="profile__label" for="select2___visibility">Görünürlük</label>
+                    <select class="js-example-basic-single" id="select2___visibility" name="select2___visibility">
+                      <option value="0">Gizli</option>
+                      <option value="1">Görünür</option>
+                    </select>
+                  </div>
+                </div>
+
+                {%if not _ARG['c_type'] == 'cast'%}
+                <div class="col-2">
+                  <div class="profile__group">
+                    <label class="profile__label" for="select2___spoiler">Spoiler</label>
+                    <select class="js-example-basic-single" id="select2___spoiler" name="select2___spoiler">
+                      <option value="0">Spoiler İçermiyor</option>
+                      <option value="1">Spoiler İçeriyor</option>
+                    </select>
+                  </div>
+                </div>
+                {%endif%}
+
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="row">
+
+                <div class="col-12">
+                  <input type="submit" id="button___save" name="button___save" value="Kaydet" class="form__btn" style="border: 0px; cursor: pointer; float: right;">
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+        </form>
+      </div>
+      <!-- end form -->
+    </div>
+  </div>
+</main>
+<!-- end main content -->
+
+{%endblock%}
+
+{%block script%}
+<script>
+  $(document).ready(() => {
+    $('.js-example-basic-single').select2();
+    // inputs
+    {%if _ARG['c_type'] == 'movie'%}
+      $('#input___content').val(`{{get_content_db(content_id=comment_info.idContent).title|safe}}`);
+    {%elif _ARG['c_type'] == 'tv'%}
+      $('#input___content').val(`{{get_content_db(content_id=comment_info.idContent).title|safe}}`);
+    {%elif _ARG['c_type'] == 'tv_title'%}
+      $('#input___content').val(`{{get_content_db(content_id=comment_info.idContent).title|safe}}`);
+    {%elif _ARG['c_type'] == 'cast'%}
+      $('#input___content').val(`{{get_cast_db(cast_id=comment_info.idCast).name|safe}}`);
+    {%endif%}
+    $('#input___profile').val(`{{get_account_db(account_id=comment_info.idAddAccount).username|safe}} > {{get_profile_db(profile_id=comment_info.idAddProfile).username|safe}}`);
+    $('#input___text').val(`{{comment_info.text|safe}}`);
+    $('#input___replyTo').val(`{{comment_info.replyTo|safe}}`);
+    // select2
+    if ('{{comment_info.visibility}}' == 0){
+      $('#select2-select2___visibility-container').text('Gizli');
+      $('#select2___visibility').val('0');
+    } if ('{{comment_info.visibility}}' == 1){
+      $('#select2-select2___visibility-container').text('Görünür');
+      $('#select2___visibility').val('1');
+    }
+
+    {%if not _ARG['c_type'] == 'cast'%}
+    if ('{{comment_info.spoiler}}' == 0){
+      $('#select2-select2___spoiler-container').text('Spoiler İçermiyor');
+      $('#select2___spoiler').val('0');
+    } else if ('{{comment_info.spoiler}}' == 1){
+      $('#select2-select2___spoiler-container').text('Spoiler İçeriyor');
+      $('#select2___spoiler').val('1');
+    }
+    {%endif%}
+  });
+</script>
+{%endblock%}

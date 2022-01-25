@@ -1,0 +1,69 @@
+	<!-- footer -->
+	<footer class="footer">
+		<div class="container-fluid">
+			<div class="row">
+				<!-- footer list -->
+				<div class="col-12 col-md-3">
+					<h6 class="footer__title">WatchGraf</h6>
+					<ul class="footer__list">
+            <li><a href="{{url_for('contact')}}">Bu platform, 5651 sayılı kanuna ait 5. maddesinde tanımlanmış yer sağlayıcı olarak hizmet vermektedir. Telif hakkına konu olan içeriklerin yasal olmayan bir şekilde paylaşıldığını, yasal hakların çiğnendiğini düşünmekte olan hak sahipleri bizimle <b>iletisim@watchgraf.com</b> yoluyla iletişime geçebilirler. Bize ulaşan talepler ve şikayet yerinde görüldüğünde bahsi geçen içerik en fazla 3 iş günü içerisinde kaldırılacaktır.</a></li>
+					</ul>
+				</div>
+				<!-- end footer list -->
+
+				<!-- footer list -->
+				<div class="col-6 col-sm-4 col-md-3">
+					<h6 class="footer__title">Kullanıcı</h6>
+					<ul class="footer__list">
+						{%if check_profile() == True%}
+						<li><a href="{{url_for('whoiswatching')}}">Profili Değiştir</a></li>
+						<li><a href="{{url_for('destroy_account')}}">Çıkış Yap</a></li>
+						{%else%}
+						<li><a href="{{url_for('signin')}}">Giriş Yap</a></li>
+						<li><a href="{{url_for('signup')}}">Kayıt Ol</a></li>
+						{%endif%}
+					</ul>
+				</div>
+				<!-- end footer list -->
+
+				<!-- footer list -->
+				<div class="col-6 col-sm-4 col-md-3">
+					<h6 class="footer__title">Yasal</h6>
+					<ul class="footer__list">
+						<li><a href="{{url_for('contact')}}">Yasal & Bize Ulaşın</a></li>
+					</ul>
+				</div>
+				<!-- end footer list -->
+
+				<!-- footer list -->
+				<div class="col-12 col-sm-4 col-md-3">
+					<h6 class="footer__title">İletişim</h6>
+					<ul class="footer__list">
+						<li><a href="tel:+333666999"></a></li>
+						<li><a href="mailto:iletisim@watchgraf.com">iletisim@watchgraf.com</a></li>
+					</ul>
+					<ul class="footer__social">
+						<li class="facebook"><a href="#" target="_blank"><i class="icon ion-logo-facebook"></i></a></li>
+						<li class="instagram"><a href="https://instagram.com/watchgraf" target="_blank"><i class="icon ion-logo-instagram"></i></a></li>
+						<li class="twitter"><a href="https://twitter.com/watchgraf" target="_blank"><i class="icon ion-logo-twitter"></i></a></li>
+						<li class="vk"><a href="#" target="_blank"><i class="icon ion-logo-vk"></i></a></li>
+					</ul>
+				</div>
+				<!-- end footer list -->
+
+				<!-- footer copyright -->
+				<div class="col-12">
+					<div class="footer__copyright">
+						<small>© 2021 WatchGraf.</small>
+
+						<ul>
+							<li><a href="privacy.html">Terms of Use</a></li>
+							<li><a href="privacy.html">Privacy Policy</a></li>
+						</ul>
+					</div>
+				</div>
+				<!-- end footer copyright -->
+			</div>
+		</div>
+	</footer>
+	<!-- end footer -->

@@ -1,0 +1,14 @@
+{%for result in results_info%}
+  <!-- modal drop -->
+  <div id="modal-drop-{{result.idReport}}" class="zoom-anim-dialog mfp-hide modal">
+    <h6 class="modal__title">{{result.title}} Başlıklı Raporu Listeden Sil</h6>
+
+    <p class="modal__text">Bu raporu kalıcı olarak silmek istediğinize emin misiniz?</p>
+
+    <div class="modal__btns">
+      <button onclick="adminpanel_v2_function(tableName='report', functionName='drop', dictionary={'idReport': '{{result.idReport|safe}}'})" class="modal__btn modal__btn--apply" type="button">Sil</button>
+      <button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+    </div>
+  </div>
+  <!-- end modal drop -->
+{%endfor%}

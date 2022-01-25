@@ -1,0 +1,222 @@
+﻿{%extends 'layouts/default.html'%}
+{%block container%}
+<style>
+  .ion-ios-arrow-back::before {
+    line-height: 50px;
+  }
+  .ion-ios-arrow-forward::before {
+    line-height: 50px;
+  }
+  .paginator__item--active a:hover {
+    color: rgb(90, 90, 90);
+  }
+  .filter__item-menu {
+    max-height: 500px;
+  }
+  .home {
+    margin: 0px;
+    padding: 0px;
+    margin-bottom: 125px;
+  }
+  .owl-carousel .owl-stage-outer {
+    overflow: unset;
+  }
+</style>
+
+<!-- page title -->
+<section class="section section--first section--bg" data-bg="img/section/section.jpg">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="section__wrap">
+          <!-- section title -->
+          <h2 class="section__title">Keşfet <span style="font-size: 17px;">Diğer kullanıcılar tarafından oluşturulmuş koleksiyonları keşfet.</span></h2>
+          <!-- end section title -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- end page title -->
+
+<!-- filter -->
+<div class="filter">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="filter__content" style="justify-content: center;">
+          <div class="filter__items">
+
+  <!-- header search -->
+  <div class="header__search-_-_-_-_-disabled">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="header__search-content">
+            <input type="text" style="min-width: 453px;" id="collection_search_input" {%if not _ARG['query'] == '*'%}value="{{_ARG['query']}}"{%endif%} placeholder="Aradığınız koleksiyonun adını girin.">
+            <input type="button" value="Ara" id="collection_search_button" style="width: 50px;">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end header search -->
+        
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<!-- end filter -->
+
+{%if recommendations_info|length|int >= 1 and _ARG['query'] == '*'%}
+<section class="home">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h1 class="home__title">ÖNE ÇIKARILAN <b>KOLEKSİYONLAR</b> <span style="font-size: 13px;">Bu koleksiyonlar, <b>yöneticiler</b> tarafından oluşturulmuştur.</span></h1>
+
+        <button class="home__nav home__nav--prev" type="button">
+          <i class="icon ion-ios-arrow-round-back"></i>
+        </button>
+        <button class="home__nav home__nav--next" type="button">
+          <i class="icon ion-ios-arrow-round-forward"></i>
+        </button>
+      </div>
+
+      <div class="col-12">
+        <div class="owl-carousel home__carousel">
+          {%for collection in recommendations_info%}
+            {%if not collection.private%}
+
+          <div class="item">
+            <!-- card -->
+            <div class="card card--big">
+              <div class="card__cover">
+                <img src="{{collection.imagePoster}}" alt="">
+                <a href="{{url_for('collection_title', title_url=collection.titleUrl)}}" class="card__play">
+                  <i class="icon ion-ios-albums"></i>
+                </a>
+              </div>
+              <div class="card__content">
+                <h3 class="card__title"><a href="{{url_for('collection_title', title_url=collection.titleUrl)}}">{{collection.title}}</a></h3>
+                <span class="card__rate" style="font-weight: 100; color: rgba(255, 255, 255, 0.7); line-break: anywhere;">{{collection.overview}}</span>
+              </div>
+            </div>
+            <!-- end card -->
+          </div>
+
+            {%endif%}
+          {%endfor%}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- end home -->
+{%endif%}
+
+<!-- catalog -->
+<div class="catalog">
+  <div class="container-fluid">
+    <div class="row">
+      {%for collection in results_info%}
+        {%if collection.private == False%}
+          <!-- card -->
+          <div class="col-sm-12 col-md-6 col-lg-3">
+            <div class="card card--list">
+              <div class="row">
+                <div class="col-sm-12 col-md-6 col-lg-6">
+                  <div class="card__cover">
+                    <div style="width: 100%; height: 200px; background-image: url('{{collection.imagePoster}}'); background-position: center; background-size: cover;">
+                      <a href="{{url_for('collection_title', title_url=collection.titleUrl)}}" class="card__play">
+                        <i class="icon ion-ios-albums"></i>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-sm-12 col-md-6 col-lg-6">
+                  <div class="card__content">
+                    <h3 class="card__title"><a href="{{url_for('collection_title', title_url=collection.titleUrl)}}">{{collection.title}}</a></h3>
+
+                    <div class="card__wrap">
+                      <ul class="card__list" style="margin-left: 0px;">
+                        <li style="margin-right: 10px;">{{sql_execute('SELECT * FROM collectionitem WHERE idCollection = "' + collection.idCollection + '"').fetchall()|length}} içerik</li>
+                        {%for tag in sql_execute('SELECT * FROM collectiontag WHERE idCollection = "'+collection.idCollection+'"').fetchall()%}
+                        <li style="margin-right: 10px;">{{tag.title}}</li>
+                        {%endfor%}
+                      </ul>
+                    </div>
+
+                    <div class="card__description">
+                      <p>{{collection.overview}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- end card -->
+        {%endif%}
+      {%endfor%}
+
+      <!-- paginator -->
+      <div class="col-12">
+        <ul class="paginator paginator--list" style="background-color: transparent; box-shadow: unset;">
+          {%if not _ARG['page'] == 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page=1&tag={{_ARG['tag']}}">1</a></li>{%endif%}
+          {%if _ARG['page'] - 1 >= 1%}
+          <li class="paginator__item paginator__item--prev">
+            <a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] - 1}}&tag={{_ARG['tag']}}"><i class="icon ion-ios-arrow-back"></i></a>
+          </li>
+          {%endif%}
+          {%if _ARG['page'] - 4 >= 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] - 4}}&tag={{_ARG['tag']}}">{{_ARG['page'] - 4}}</a></li>{%endif%}
+          {%if _ARG['page'] - 3 >= 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] - 3}}&tag={{_ARG['tag']}}">{{_ARG['page'] - 3}}</a></li>{%endif%}
+          {%if _ARG['page'] - 2 >= 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] - 2}}&tag={{_ARG['tag']}}">{{_ARG['page'] - 2}}</a></li>{%endif%}
+          {%if _ARG['page'] - 1 >= 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] - 1}}&tag={{_ARG['tag']}}">{{_ARG['page'] - 1}}</a></li>{%endif%}
+          <li class="paginator__item paginator__item--active"><a href="#">{{_ARG['page']}}</a></li>
+          {%if _ARG['page'] + 1 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] + 1}}&tag={{_ARG['tag']}}">{{_ARG['page'] + 1}}</a></li>{%endif%}
+          {%if _ARG['page'] + 2 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] + 2}}&tag={{_ARG['tag']}}">{{_ARG['page'] + 2}}</a></li>{%endif%}
+          {%if _ARG['page'] + 3 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] + 3}}&tag={{_ARG['tag']}}">{{_ARG['page'] + 3}}</a></li>{%endif%}
+          {%if _ARG['page'] + 4 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] + 4}}&tag={{_ARG['tag']}}">{{_ARG['page'] + 4}}</a></li>{%endif%}
+          {%if _ARG['page'] + 1 <= _ARG['page_max']%}
+          <li class="paginator__item paginator__item--next">
+            <a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] + 1}}&tag={{_ARG['tag']}}"><i class="icon ion-ios-arrow-forward"></i></a>
+          </li>
+          {%endif%}
+          {%if not _ARG['page'] == _ARG['page_max'] and _ARG['page_max'] >= 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page_max']}}&tag={{_ARG['tag']}}">{{_ARG['page_max']}}</a></li>{%endif%}
+        </ul>
+      </div>
+      <!-- end paginator -->
+
+		</div>
+  </div>
+</div>
+<!-- end catalog -->
+{%endblock%}
+
+{%block script%}
+<script>
+  $('#collection_search_button').click(() => {
+    _get_search_query = $('#collection_search_input').val();
+    if (_get_search_query){
+      ret_url = `{{url_for('collection_discover')}}?query=${_get_search_query}&page=1&tag=*`;
+      window.location.href = ret_url;
+  } else {
+    ret_url = `{{url_for('collection_discover')}}?query=*&page=1&tag=*`;
+    window.location.href = ret_url;
+  }
+  });
+
+  $('#collection_search_input').keypress((e) => {
+    if (e.which == 13){
+      if ($('#collection_search_input').val()){
+        window.location.href = Flask.url_for('collection_discover') + `?query=${$('#collection_search_input').val()}&page=1&tag=*`;
+      } else {
+        window.location.href = Flask.url_for('collection_discover') + `?query=*&page=1&tag=*`;
+      }
+    }
+  });
+</script>
+{%endblock%}

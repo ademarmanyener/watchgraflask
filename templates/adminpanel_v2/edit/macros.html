@@ -1,0 +1,18 @@
+{%macro testMacroHeader(text='empty')%}
+<h2 style="color: white;"> ===>> {{text}}</h2>
+{%endmacro%}
+
+{%macro macro_upload(id, title='Dosya Yükle', class='form__btn')%}
+<input type="file" id="{{id}}" name="{{id}}" hidden/>
+<label class="{{class}}" for="{{id}}" style="width: 100%; cursor: pointer;">{{title}}</label>
+{%endmacro%}
+
+{%macro macro_input(id, title='', type='text', class='form__input', disabled=False)%}
+<label class="profile__label" for="input___{{id}}">{{title}}</label>
+<input id="input___{{id}}" name="input___{{id}}" type="{{type}}" class="{{class}}" placeholder="{{title}}" {%if disabled%}disabled=""{%endif%}>
+{%endmacro%}
+
+{%macro macro_textarea(id, title='', class='form__textarea', disabled=False)%}
+<label class="profile__label" for="input___{{id}}">{{title}}</label>
+<textarea id="input___{{id}}" name="input___{{id}}" class="{{class}}" placeholder="{{title}}" {%if disabled%}disabled=""{%endif%}></textarea>
+{%endmacro%}

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+  {%set test_adem  = ' ADEMM YENER ' %}
+  {%macro test_input(name, value='', type='text', size=20)%}
+  <input type="{{type}}" name="{{name}}" value="{{value}}" size="{{size}}">
+  {%endmacro%}
+  {%for i in range(5)-%} 
+    <h3>{{i}}</h3>
+    {{test_input(name=test_adem + i|string)}}
+  {%-endfor%}
+
+
+  <br/>
+  -------------------
+  <br/>
+
+  {% from "macros/cards.html" import card_long %}
+
+  <div id="myPlace">
+
+  </div>
+
+
+</body>
+</html>

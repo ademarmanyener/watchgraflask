@@ -1,0 +1,23 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+	{%include 'includes/head.html'%}
+  {%block inside_head%}{%endblock%}
+</head>
+<body class="body">
+
+  {%include 'includes/alert.html'%}
+
+	{%if header != False%}{%include 'includes/header.html'%}{%endif%}
+	{%block container%}{%endblock%}
+	{%if footer != False%}{%include 'includes/footer.html'%}{%endif%}
+
+	{%include 'includes/js.html'%}
+
+  {%include 'includes/ajax/main.html'%}
+  {%if check_profile() == True%}{%include 'includes/ajax/profile.html'%}{%endif%}
+  {%if check_admin() == True%}{%include 'includes/ajax/admin.html'%}{%endif%}
+
+  {%block script%}{%endblock%}
+</body>
+</html>

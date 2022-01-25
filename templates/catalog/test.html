@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+
+  {% if queryset.has_prev %}<a href="#">Geri</a>{% endif %}
+  {% if queryset.has_next %}<a href="#">İleri</a>{% endif %}
+
+  <h2>PREV NUM: {{ queryset.prev_num }}</h2>
+  <h2>NEXT NUM: {{ queryset.next_num }}</h2>
+
+
+  {% for _content in queryset.items %}
+  <div onClick='window.location.href = `{{ url_for('content_redirect', title_url=_content.titleUrl) }}`'>
+    <h3>{{ _content.title }}</h3>
+    <img src="{{ _content.imagePoster }}" alt="" />
+    </div>
+    <br />
+  {% endfor %}
+
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!-- modal insertNew -->
+<div id="modal-insertNew" class="zoom-anim-dialog mfp-hide modal">
+	<h6 class="modal__title">Yeni Film Türü Ekle</h6>
+
+  <input type="text" class="form__input" placeholder="idGenre" id="inputInsertNew_idGenre">
+  <input type="text" class="form__input" placeholder="Tür Adı" id="inputInsertNew_title">
+  <input type="text" class="form__input" placeholder="Orijinal Tür Adı" id="inputInsertNew_titleOriginal">
+
+	<div class="modal__btns">
+    <button id="btnInsertNew_insertNew" class="modal__btn modal__btn--apply" type="button">Oluştur</button>
+		<button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+	</div>
+</div>
+<!-- end modal insertNew -->
+
+{%for result in results_info%}
+  <!-- modal drop -->
+  <div id="modal-drop-{{result.idGenre}}" class="zoom-anim-dialog mfp-hide modal">
+    <h6 class="modal__title">{{result.title}} Adlı Türü Listeden Sil</h6>
+
+    <p class="modal__text">Bu türü kalıcı olarak listeden silmek istediğinize emin misiniz?</p>
+
+    <div class="modal__btns">
+      <button onclick="adminpanel_v2_function(tableName='moviegenrelist', functionName='drop', dictionary={'idGenre': '{{result.idGenre|safe}}'})" class="modal__btn modal__btn--apply" type="button">Sil</button>
+      <button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+    </div>
+  </div>
+  <!-- end modal drop -->
+{%endfor%}

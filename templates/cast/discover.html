@@ -1,0 +1,124 @@
+{%extends 'layouts/default.html'%}
+{%block container%}
+
+<!-- filter -->
+<div class="container-fluid" style="height: 75px; background-color: #030303; margin-top: 100px; margin-bottom: 50px; box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.5);">
+  <div class="row">
+    <div class="col-12">
+
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-6 col-sm-4"><input class="form__input" style="width: 100%; height: 100%; background-color: unset;" value="{%if not _ARG['query'] == '*'%}{{_ARG['query']}}{%endif%}" placeholder="Aradığınız Oyuncunun Adını Girin..." id="input_query" type="text"></div>
+          <div class="col-lg-2 col-md-3 col-sm-4">
+            <!-- filter item by gender -->
+            <div class="filter__item" id="filter__genre" style="margin-left: 15px; margin-top: 5px;">
+              <span class="filter__item-label">Cinsiyet</span>
+
+              <div class="filter__item-btn dropdown-toggle" role="navigation" id="filter-genre" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <input type="button" value="{%if _ARG['gender'] == 'female'%}Kadın{%elif _ARG['gender'] == 'male'%}Erkek{%else%}Tümü{%endif%}">
+                <span></span>
+              </div>
+
+              <ul class="filter__item-menu dropdown-menu scrollbar-dropdown" aria-labelledby="filter-genre">
+                <a href="#"><li>Tümü</li></a>
+                <a href="#"><li>Kadın</li></a>
+                <a href="#"><li>Erkek</li></a>
+              </ul>
+            </div>
+            <!-- end filter item by gender -->
+          </div>
+          <div class="col-lg-2 col-md-3 col-sm-4"><input class="form__btn" style="width: 100%; height: 100%; border: 0px; cursor: pointer; box-shadow: unset;" value="Ara" id="button_query" type="button"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- end filter -->
+
+<div class="container">
+  <div class="row">
+    {%for cast in list_results_info%}
+      {%if cast.visibility%}
+    <a href="{{url_for('cast_title', name_url=cast.nameUrl)}}" class="col-sm-6 col-md-4 col-lg-2" style="color: rgb(0, 0, 0); text-decoration: none; margin: 0px; padding: 0px; margin-bottom: 25px; padding-left: 15px; padding-right: 15px;">
+      <div class="col-12" style="margin: 0px; padding: 0px;">
+        <div style="width: 100%; height: 225px; background-image: url({{cast.imagePoster}}); background-position: center; background-repeat: no-repeat; background-size: cover;"></div>
+      </div>
+      <div class="col-12" style="margin: 0px; padding: 0px;">
+        <div style="width: 100%; min-height: 45px; background-color: #51CC85; color: #0D0D0D; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; text-align: center; line-height: 45px; line-break: anywhere;"><h4>{{cast.name}}</h4></div>
+      </div>
+    </a>
+      {%endif%}
+    {%endfor%}
+  </div>
+</div>
+
+<!-- paginator -->
+<div class="col-12">
+  <ul class="paginator paginator--list" style="background-color: transparent; box-shadow: unset;">
+    {%if not _ARG['page'] == 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page=1&gender={{_ARG['gender']}}">1</a></li>{%endif%}
+    {%if _ARG['page'] - 1 >= 1%}
+    <li class="paginator__item paginator__item--prev">
+      <a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] - 1}}&gender={{_ARG['gender']}}"><i class="icon ion-ios-arrow-back"></i></a>
+    </li>
+    {%endif%}
+    {%if _ARG['page'] - 4 >= 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] - 4}}&gender={{_ARG['gender']}}">{{_ARG['page'] - 4}}</a></li>{%endif%}
+    {%if _ARG['page'] - 3 >= 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] - 3}}&gender={{_ARG['gender']}}">{{_ARG['page'] - 3}}</a></li>{%endif%}
+    {%if _ARG['page'] - 2 >= 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] - 2}}&gender={{_ARG['gender']}}">{{_ARG['page'] - 2}}</a></li>{%endif%}
+    {%if _ARG['page'] - 1 >= 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] - 1}}&gender={{_ARG['gender']}}">{{_ARG['page'] - 1}}</a></li>{%endif%}
+    <li class="paginator__item paginator__item--active"><a href="#">{{_ARG['page']}}</a></li>
+    {%if _ARG['page'] + 1 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] + 1}}&gender={{_ARG['gender']}}">{{_ARG['page'] + 1}}</a></li>{%endif%}
+    {%if _ARG['page'] + 2 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] + 2}}&gender={{_ARG['gender']}}">{{_ARG['page'] + 2}}</a></li>{%endif%}
+    {%if _ARG['page'] + 3 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] + 3}}&gender={{_ARG['gender']}}">{{_ARG['page'] + 3}}</a></li>{%endif%}
+    {%if _ARG['page'] + 4 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] + 4}}&gender={{_ARG['gender']}}">{{_ARG['page'] + 4}}</a></li>{%endif%}
+    {%if _ARG['page'] + 1 <= _ARG['page_max']%}
+    <li class="paginator__item paginator__item--next">
+      <a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] + 1}}&gender={{_ARG['gender']}}"><i class="icon ion-ios-arrow-forward"></i></a>
+    </li>
+    {%endif%}
+    {%if not _ARG['page'] == _ARG['page_max'] and _ARG['page_max'] >= 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page_max']}}&gender={{_ARG['gender']}}">{{_ARG['page_max']}}</a></li>{%endif%}
+  </ul>
+</div>
+<!-- end paginator -->
+{%endblock%}
+
+{%block script%}
+  <script>
+    $('#button_query').click(() => {
+      get_input = $('#input_query').val();
+      get_gender = $('#filter-genre input').val();
+
+      gender_for_url = '*';
+      if (get_gender == 'Kadın'){
+        gender_for_url = 'female';
+      } else if (get_gender == 'Erkek'){
+        gender_for_url = 'male';
+      }
+
+      if (get_input){
+        ret_url = window.location.pathname + '?query=' + get_input + '&page=1&gender=' + gender_for_url;
+      } else {
+        ret_url = window.location.pathname + '?query=*&page=1&gender=' + gender_for_url;
+      }
+      window.location.href = ret_url;
+    });
+
+    $('#input_query').keypress((e) => {
+      if (e.which == 13){
+        get_input = $('#input_query').val();
+        get_gender = $('#filter-genre input').val();
+
+        gender_for_url = '*';
+        if (get_gender == 'Kadın'){
+          gender_for_url = 'female';
+        } else if (get_gender == 'Erkek'){
+          gender_for_url = 'male';
+        }
+
+        if (get_input){
+          window.location.href = window.location.pathname + `?query=${get_input}&page=1&gender=${gender_for_url}`;
+        }
+      }
+    });
+  </script>
+{%endblock%}

@@ -1,0 +1,65 @@
+{%extends 'layouts/adminpanel/default.html'%}
+{%block container%}
+
+<style>
+ .form__img, .form__input, .form__textarea, .form__video label, .form__gallery label, .select2-container--default .select2-selection--single, .select2-container--default .select2-selection--multiple {
+ }
+ .modal__btn--dismiss { width: 100%; }
+	input[type=checkbox], input[type=radio] {
+		transition: border 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+	}
+	input[type=checkbox], input[type=radio]:checked {
+		border: 2px solid white;
+	}
+</style>
+
+{%from 'adminpanel_v2/edit/macros.html' import macro_upload, macro_input, macro_textarea%}
+
+<!-- main content -->
+<main class="main">
+	<div class="container-fluid">
+
+    {%if request.args.get('debug') == 'true'%}<h1 style="color: white; font-size: 25px;">DEBUG: {{_ARG}}</h1>{%endif%}
+
+		<div class="row">
+			<!-- main title -->
+			<div class="col-12">
+				<div class="main__title">
+          <!-- ::changeable: title:: -->
+					<h2>
+            {%if _ARG['table'] == 'content'%}{{context['data'].title}} <span style="font-size: 16px;">({{context['data'].titleUrl}}) - {{context['data'].titleOriginal}}</span>{%endif%}
+            {%if _ARG['table'] == 'tvseasoncontent'%}{{context['data'].title}}{%endif%}
+            {%if _ARG['table'] == 'tvepisodecontent'%}{{context['data'].title}}{%endif%}
+            {%if _ARG['table'] == 'tvplayer'%}{{context['data'].title}}{%endif%}
+            {%if _ARG['table'] == 'movieplayer'%}{{context['data'].title}}{%endif%}
+            {%if _ARG['table'] == 'account'%}{{context['data'].username}}{%endif%}
+            {%if _ARG['table'] == 'profile'%}{{context['data'].username}}{%endif%}
+            {%if _ARG['table'] == 'cast'%}{{context['data'].name}}{%endif%}
+            {%if _ARG['table'] == 'collection'%}{{context['data'].title}}{%endif%}
+          </h2>
+          <!-- ::changeable: title:: -->
+				</div>
+			</div>
+			<!-- end main title -->
+
+      <div class="col-12">
+        <form action="{{url_for('adminpanel_v2_edit_save', table_name=_ARG['table'], id_key=_ARG['id'])}}" method="post" class="form" enctype="multipart/form-data">
+        <!-- ::changeable: form:: -->
+        {%include 'adminpanel_v2/edit/' + _ARG['table'] + '/form.html' ignore missing%}
+        <!-- ::changeable: form:: -->             
+        </form>
+      </div>
+		</div>
+	</div>
+</main>
+<!-- end main content -->
+
+{%endblock%}
+
+{%block script%}
+  <script>
+    <!-- ::changeable: scripts:: -->
+    {%include 'adminpanel_v2/edit/' + _ARG['table'] + '/script.js' ignore missing%}
+    <!-- ::changeable: scripts:: -->
+  </script>
+{%endblock%}

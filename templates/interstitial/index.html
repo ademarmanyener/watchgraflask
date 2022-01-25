@@ -1,0 +1,42 @@
+{%extends 'layouts/default.html'%}
+{%block container%}
+	<div class="sign section--bg" data-bg="img/section/section.jpg">
+		<div class="container">
+			<div class="row">
+				<div class="col-12">
+					<div class="sign__content">
+						<!-- authorization form -->
+						<form action="#" class="sign__form">
+							<a href="{{url_for('home')}}" class="sign__logo">
+								<img src="{{url_for('static', filename='img/logo.png')}}" alt="">
+							</a>
+
+							<a href="" style="width: 500px; height: 250px; background-image: url({{url_for('static', filename='img/advertorials/join-discord.png')}}); background-size: contain; background-position: center; background-repeat: no-repeat;"></a>
+
+							<a href="{{ret_url}}" id="passInterstitial" class="sign__btn">Reklamı Geç</a>
+
+							<span class="sign__text">Bu reklamlar, WatchGraf'ı desteklemek amaçlıdır.</span>
+						</form>
+						<!-- end authorization form -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{%endblock%}
+
+{%block script%}
+  <script>
+    document.getElementById('passInterstitial').hidden = true;
+    setTimeout(function(){
+      document.getElementById('passInterstitial').hidden = false;
+
+	  $(document).on('keypress', (e) => {
+		  if (e.which == 13){
+			  window.location.href = '{{ret_url}}';
+		  }
+	  });
+
+    }, 1500);
+  </script>
+{%endblock%}

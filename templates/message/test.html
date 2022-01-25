@@ -1,0 +1,422 @@
+{%extends 'layouts/default.html'%}
+{%block container%}
+
+<style>
+  :root {
+    /*
+    --core-bg: #222429;
+    --dark-bg: #0f0f13;
+    --primary: #1b1b1f;
+    --secondary: #17171b;
+    */
+    --core-bg: #030303;
+    --dark-bg: #000000;
+    --primary: #000000;
+    --secondary: #000000;
+
+    --core-bg: #660000;
+    --dark-bg: #289c05;
+    --primary: #b801b8;
+    --secondary: linear-gradient(0deg, #95FF7E 0%, #51CC85 100%);
+
+    --white: #fff;
+  }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  /*
+  body {
+    background: #f6f7f8;
+    min-height: 100vh;
+    display: flex;
+      align-items: center;
+    justify-content: center;
+    font-family: 'Open Sans', sans-serif;
+  }
+  */
+  .app {
+    /* border-radius: 4px; */
+    width: 100%;
+    /* max-width: 1400px; */
+    min-height: 650px;
+    background: var(--core-bg);
+    border: 2px solid var(--primary);
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    box-shadow: 1px 0px 10px 0px rgba(0, 0, 0, 0.4);
+  }
+  .c-sidepanel {
+    grid-column: 1;
+    display: grid;
+    grid-template-columns: minmax(50px, 1fr) minmax(250px, 4fr);
+  }
+  .c-panels {
+    height: 100%;
+    grid-column: 1;
+    background: var(--secondary);
+    text-align: center;
+    display: grid;
+    grid-template-rows: repeat(8, 50px);
+  }
+  .c-panels__logo {
+    color: var(--white);
+    text-decoration: none;
+    font-size: 10px;
+    border-radius: 100rem;
+    border: 1px solid var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin: 1rem auto;
+  }
+  .c-panels__navigation {
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+  .c-panels__li {
+    list-style: none;
+    margin: 1.7rem 0;
+  }
+  .c-panels__link {
+    color: rgba(255, 255, 255, 0.5);
+  }
+  .c-panels__link:hover {
+    color: #fff;
+  }
+  .c-users {
+    height: 100%;
+    grid-column: 1, 2;
+    background: var(--dark-bg);
+    padding: 1rem;
+  }
+  .c-users__search {
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
+    border-radius: 4px;
+    border: 0;
+    width: 100%;
+    background-color: var(--core-bg);
+    position: relative;
+    font-size: 14px;
+    color: var(--white);
+  }
+  .c-group-title {
+    color: var(--white);
+    font-size: 13px;
+    text-transform: uppercase;
+    margin: 1rem 0;
+    color: #fff;
+    display: block;
+    position: relative;
+    font-weight: 400;
+  }
+  .c-group-title .fa-plus, .c-group-title .fa-chevron-down, .c-group-title .fa-chevron-right {
+    color: var(--white);
+    position: absolute;
+    right: 0;
+  }
+  .c-users__person {
+    margin: 1rem 0;
+    list-style: none;
+    color: rgba(255, 255, 255, .5);
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+  }
+  .c-users__person:before {
+    width: 25px;
+    height: 25px;
+    border-radius: 100rem;
+    background: #235789;
+    content: 'AM';
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    margin-right: 1rem;
+    transition: font-size 0.5s ease;
+  }
+  /*
+  .c-users__person:nth-child(2):after {
+    content: '4';
+    background-color: #f36;
+    opacity: 0.6;
+    color: var(--white);
+    padding: 0 0.5rem;
+    border-radius: 4px;
+    position: absolute;
+    right: 0;
+  }
+  .c-users__person:nth-child(2):before {
+    background: #f1d302;
+    color: var(--dark-bg);
+  }
+  .c-users__person:nth-child(3):before {
+    background: #c1292e;
+  }
+  */
+  .c-users__person:hover {
+    color: #fff;
+  }
+  .c-users__person:hover:before {
+    font-size: 8px;
+  }
+  .c-users__person:hover:after {
+    opacity: 1;
+  }
+  .c-tags {
+    margin: 0 0.4rem;
+  }
+  .c-tags li {
+    list-style: none;
+    color: var(--white);
+    font-size: 14px;
+    margin: 1rem 0;
+    opacity: 0.5;
+  }
+  .c-tags li .fa-hashtag {
+    margin-right: 0.8rem;
+  }
+  .c-tags li:hover {
+    opacity: 1;
+  }
+  .c-chat__header {
+    padding: 1rem 1rem 1rem 3rem;
+    border-bottom: 1px solid var(--primary);
+  }
+  .c-chat__header--left {
+    padding: 1rem;
+  }
+  .c-chat__header h1 {
+    position: relative;
+  }
+  .c-chat__title {
+    color: var(--white);
+  }
+  .c-chat__title p, .c-chat__title button {
+    margin-top: 0.5rem;
+  }
+  .c-chat__title p {
+    display: inline-block;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 14px;
+  }
+  .c-chat__title button {
+    background: transparent;
+    border: 0;
+    color: var(--white);
+    margin-left: 1rem;
+  }
+  .c-chat__title button .fa-plus {
+    margin-right: 0.2rem;
+  }
+  .c-chat__title .fa-hashtag {
+    margin-right: 1rem;
+    color: rgba(255, 255, 255, 0.6);
+    position: absolute;
+    left: -2rem;
+    top: 5px;
+  }
+  .c-chat__window {
+    overflow-x: hidden;
+    max-height: 900px;
+  }
+  .c-chat__icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 100rem;
+    background: #f36;
+    position: absolute;
+    left: 15px;
+    top: 5px;
+  }
+  .c-chat__msg {
+    color: var(--white);
+    font-size: 12px;
+    padding: 0 0 0 4rem;
+    position: relative;
+  }
+  .c-chat__msg span {
+    margin: 0.5rem 1rem 0.2rem 0rem;
+  }
+  .c-chat__msg p {
+    margin: 1rem 0;
+    color: rgba(255, 255, 255, 0.6);
+  }
+  .c-chat__msg time {
+    opacity: 0.3;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+  .c-chat__msg time:before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    background: var(--white);
+    border-radius: 100rem;
+    display: inline-block;
+    margin-right: 0.5rem;
+  }
+  .c-chat__text {
+    padding: 1rem;
+    border-bottom: 1px solid var(--primary);
+  }
+  .c-chat-info {
+    border-left: 1px solid var(--primary);
+  }
+  .c-chat__options {
+    padding: 1rem;
+  }
+  @media only screen and (max-width: 900px) {
+    .app {
+      grid-template-columns: 1fr 2fr;
+    }
+    .c-chat-info {
+      display: none;
+    }
+  }
+  @media only screen and (max-width: 600px) {
+    .app {
+      grid-template-columns: 50px 1fr;
+    }
+    .c-users {
+      display: none;
+    }
+  }
+</style>
+
+<br><br><br><br>
+
+<main class='app'>
+  <aside class='c-sidepanel'>
+    <div class='c-panels'>
+      <a class='c-panels__logo' style='background-image: url({{get_profile_db(profile_id=session["PROFILE"]["idProfile"]).imageAvatar}}); background-size: cover; background-position: center; background-repeat: no-repeat;' title=''></a>
+      
+      <nav class='c-panels__navigation'>
+        <ul class='c-panels__ul'>
+          <li class='c-panels__li'><a class='c-panels__link' href='' title=''><i class="fas fa-search"></i>
+</a></li>
+          <li class='c-panels__li'><a class='c-panels__link' href='' title=''><i class="far fa-dot-circle"></i></a></li>
+          <li class='c-panels__li'><a class='c-panels__link' href='' title=''><i class="fas fa-chart-bar"></i></a></li>
+          <li class='c-panels__li'><a class='c-panels__link' href='' title=''><i class="far fa-comments"></i></a></li>
+          <li class='c-panels__li'><a class='c-panels__link' href='' title=''><i class="fab fa-app-store"></i></a></li>
+          <li class='c-panels__li'><a class='c-panels__link' href='' title=''><i class="fas fa-asterisk"></i></a></li>
+          <li class='c-panels__li'><a class='c-panels__link' href='' title=''><i class="fab fa-bandcamp"></i></a></li>
+          <li class='c-panels__li'><a class='c-panels__link' href='' title=''><i class="far fa-address-book"></i></a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class='c-users'>
+      <input class='c-users__search' type='text' placeholder='Search'>
+      
+      <h2 class='c-group-title'>Favourites <i class="fas fa-plus"></i></h2>
+      <input type='text' class='c-users__search' value='Pelican room'>
+      
+      <h2 class='c-group-title'>Direct Messages <i class="fas fa-plus"></i></h2>
+      <ul class='c-users__people'>
+        {%for i in range(1)%}
+        <li class='c-users__person'>Jeremy Firow</li>
+        <li class='c-users__person'>Mariuz Jaders</li>
+        <li class='c-users__person'>Emil Anders</li>
+        <li class='c-users__person'>Markus Gavrilov</li>
+        {%endfor%}
+      </ul>
+      
+      <h2 class='c-group-title'>Groups <i class="fas fa-plus"></i></h2>
+      <ul class='c-tags'> 
+        {%for i in range(6)%}
+        <a href="#"><li><i class="fas fa-hashtag"></i>Crypto</li></a>
+        <a href="#"><li><i class="fas fa-hashtag"></i>Futures</li></a>
+        <a href="#"><li><i class="fas fa-hashtag"></i>Finance</li></a>
+        <a href="#"><li><i class="fas fa-hashtag"></i>Stocktalk Germany</li></a>
+        {%endfor%}
+      </ul>
+    </div>
+  </aside>
+  {%if 1 == 1%}
+  <section class='c-chat'>
+    <header class='c-chat__header'>
+      <div class='c-chat__title'>
+        <h1><i class="fas fa-hashtag"></i> Pelican Room</h1>
+        <p>6 Members</p><button><i class="fas fa-plus"></i> Add Member</button>
+      </div>
+      <div class='c-chat__options'></div>
+    </header>
+    <div class='c-chat__window'>
+      <div class='c-chat__msg'>
+        <span class='c-chat__icon'></span>
+        <div class='c-chat__text'>
+          <span>Julian Herbst</span><time>12:49pm</time>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eu ante neque. Proin imperdiet fermentum risus at sagittis. Nulla nisi tellus, placerat at luctus a, pretium vitae orci.</p>
+        </div>
+      </div>
+      
+            <div class='c-chat__msg'>
+        <span class='c-chat__icon'></span>
+        <div class='c-chat__text'>
+          <span>Marius Jaders</span><time>12:49pm</time>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eu ante neque. Proin imperdiet fermentum risus at sagittis. Nulla nisi tellus, placerat at luctus a, pretium vitae orci.</p>
+        </div>
+      </div>
+      
+            <div class='c-chat__msg'>
+        <span class='c-chat__icon'></span>
+        <div class='c-chat__text'>
+          <span>Kevin Kalde</span><time>12:49pm</time>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eu ante neque. Proin imperdiet fermentum risus at sagittis. Nulla nisi tellus, placerat at luctus a, pretium vitae orci.</p>
+        </div>
+      </div>
+            <div class='c-chat__msg'>
+        <span class='c-chat__icon'></span>
+        <div class='c-chat__text'>
+          <span>Marius Jaders</span><time>12:49pm</time>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eu ante neque. Proin imperdiet fermentum risus at sagittis. Nulla nisi tellus, placerat at luctus a, pretium vitae orci.</p>
+        </div>
+      </div>
+      
+            <div class='c-chat__msg'>
+        <span class='c-chat__icon'></span>
+        <div class='c-chat__text'>
+          <span>Julian Herbst</span><time>12:49pm</time>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eu ante neque. Proin imperdiet fermentum risus at sagittis. Nulla nisi tellus, placerat at luctus a, pretium vitae orci.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class='c-chat-info'>
+    <header class='c-chat__header c-chat__header--left'>
+      <div class='c-chat__title'>
+        <h2><i class="fas fa-hashtag"></i> Group Info</h2>
+        <p>Created 2/22/2221</p>
+      </div>
+      
+    </header>
+    <div class='c-chat__options'>
+     <h2 class='c-group-title'>Members <i class="fas fa-chevron-down"></i></h2>
+      <ul class='c-users__people'>
+       
+        <li class='c-users__person'>Markus Gavrilov</li>
+        <li class='c-users__person'>Mariuz Jaders</li>
+        <li class='c-users__person'>Jeremy Firow</li>
+        <li class='c-users__person'>Emil Anders</li>
+        
+      </ul>
+    
+     <h2 class='c-group-title'>Shared Files <i class="fas fa-chevron-right"></i></h2>
+    <h2 class='c-group-title'>Pinned Messages <i class="fas fa-chevron-right"></i></h2>
+    <h2 class='c-group-title'>Starred Files <i class="fas fa-chevron-right"></i></h2>
+  </div>
+    </div>
+
+  {%endif%}
+</main>
+
+<br>
+
+{%endblock%}

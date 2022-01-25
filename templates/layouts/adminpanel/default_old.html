@@ -1,0 +1,21 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	{%include 'includes/adminpanel/head.html'%}
+</head>
+<body>
+
+  {%include 'includes/alert.html'%}
+
+  {%if sidebar != False%}{%include 'includes/adminpanel/sidebar.html'%}{%endif%}
+	{%block container%}{%endblock%}
+	
+	{%include 'includes/adminpanel/js.html'%}
+
+  {%include 'includes/ajax/main.html'%}
+  {%if check_profile() == True%}{%include 'includes/ajax/profile.html'%}{%endif%}
+  {%if check_admin() == True%}{%include 'includes/ajax/admin.html'%}{%endif%}
+
+  {%block script%}{%endblock%}
+</body>
+</html>

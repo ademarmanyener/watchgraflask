@@ -1,0 +1,354 @@
+{%extends 'layouts/default.html'%}
+{%block container%}
+<style media="screen">
+	input[type=checkbox], input[type=radio] {
+		transition: border 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+	}
+	input[type=checkbox], input[type=radio]:checked {
+		border: 2px solid white;
+	}
+	.form__img label {background-color: #030303;}
+  .profile {
+    background-color: transparent;
+  }
+  .content {
+    background-color: transparent;
+  }
+  .profile__avatar {border-radius: 0px;}
+  .profile__input {background-color: transparent;}
+</style>
+
+	<!-- content -->
+	<div class="content">
+		<!-- profile -->
+		<div class="profile">
+			<div class="container">
+				<div class="row">
+					<div class="col-12">
+						<div class="profile__content">
+							<div class="profile__user">
+								<div class="profile__avatar" style="width: 250px;">
+									<img src="{{url_for('static', filename='img/logo.png')}}" alt="">
+								</div>
+								<div class="profile__meta">
+									<h3>{{get_account_db(account_id=session['ACCOUNT']['idAccount']).username}}</h3>
+								</div>
+							</div>
+
+							<!-- content tabs nav -->
+							<ul class="nav nav-tabs content__tabs content__tabs--profile" id="content__tabs" role="tablist">
+							  <li class="nav-item">
+								  <a class="nav-link" data-toggle="" href="{{url_for('home')}}" role="" aria-controls="" aria-selected="false">Anasayfa</a>
+							  </li>
+
+								<li class="nav-item">
+									<a class="nav-link active" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Kullanıcı Adı & E-Posta</a>
+								</li>
+
+								<li class="nav-item">
+									<a class="nav-link" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="true">Parola</a>
+								</li>
+							</ul>
+							<!-- end content tabs nav -->
+
+							<!-- content mobile tabs nav -->
+							<div class="content__mobile-tabs content__mobile-tabs--profile" id="content__mobile-tabs">
+								<div class="content__mobile-tabs-btn dropdown-toggle" role="navigation" id="mobile-tabs" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<input type="button" value="Kullanıcı Adı & E-Posta">
+									<span></span>
+								</div>
+								<div class="content__mobile-tabs-menu dropdown-menu" aria-labelledby="mobile-tabs">
+									<ul class="nav nav-tabs" role="tablist">
+										<li class="nav-item"><a class="nav-link active" id="1-tab" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Kullanıcı Adı & E-Posta</a></li>
+
+										<li class="nav-item"><a class="nav-link" id="2-tab" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Parola</a></li>
+
+										<li class="nav-item"><a class="nav-link" id="" data-toggle="" href="{{url_for('home')}}" role="" aria-controls="" aria-selected="false">Anasayfa</a></li>
+									</ul>
+								</div>
+
+							</div>
+							<!-- end content mobile tabs nav -->
+
+							<a href="#modal-drop-account" class="profile__logout main__table-btn main__table-btn--banned open-modal" style="background-color: #c31515;">
+								<i class="icon ion-ios-lock"></i>
+								<span>Hesabı Sil</span>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- end profile -->
+
+		<div class="container">
+			<div class="tab-content" id="myTabContent">
+				<div class="tab-pane fade show active" id="" role="" aria-labelledby="">
+					<div class="row">
+						<!-- details form -->
+            <div class="col-lg-3"></div>
+						<div class="col-12 col-lg-6">
+							<form action="" method="POST" class="profile__form">
+								<div class="row">
+									<div class="col-12">
+										<h4 class="profile__title">Hesap Bilgileri</h4>
+									</div>
+									<div class="col-12 col-md-12 col-lg-12 col-xl-12">
+										<div class="profile__group">
+											<label class="profile__label" for=""><b>Hesap ID'si</b> <span style="font-size: 12px;">Değiştirilemez.</span></label>
+                      <input type="text" class="profile__input" value="{{session['ACCOUNT']['idAccount']}}" disabled="">
+										</div>
+										<div class="profile__group">
+											<label class="profile__label" for=""><b>Kayıt Tarihi</b> <span style="font-size: 12px;">Değiştirilemez.</span></label>
+                      <input type="text" class="profile__input" value="{{format_date(get_account_db(account_id=session['ACCOUNT']['idAccount']).signupDate, 'full', locale='tr')}}" disabled="">
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+						<!-- end details form -->
+					</div>
+				</div>
+			</div>
+
+			<!-- content tabs -->
+			<div class="tab-content" id="myTabContent">
+				<div class="tab-pane fade show active" id="tab-1" role="tabpanel" aria-labelledby="1-tab">
+					<div class="row">
+						<!-- details form -->
+            <div class="col-lg-3"></div>
+						<div class="col-12 col-lg-6">
+							<form action="#" method="#" class="profile__form">
+								<div class="row">
+									<div class="col-12">
+										<h4 class="profile__title">Kullanıcı Adı & E-Posta Ayarları</h4>
+									</div>
+									<div class="col-12 col-md-12 col-lg-12 col-xl-12">
+										<div class="profile__group">
+											<label class="profile__label" for=""><b>Kullanıcı Adı</b></label>
+                      <input type="text" class="profile__input" id="input_new_username" value="{{get_account_db(account_id=session['ACCOUNT']['idAccount']).username}}">
+										</div>
+										<div class="profile__group">
+											<label class="profile__label" for=""><b>E-Posta Adresi</b></label>
+                      <input type="text" class="profile__input" id="input_new_email_address" value="{{get_account_db(account_id=session['ACCOUNT']['idAccount']).emailAddress}}">
+										</div>
+									</div>
+
+                  <div class="col-12"><input type="button" onclick="changeUsernameEmailAddress();" class="profile__btn" style="border: 0px; width: 100%; cursor: pointer;" value="Değiştir"></div>
+								</div>
+							</form>
+						</div>
+						<!-- end details form -->
+					</div>
+				</div>
+
+				<div class="tab-pane fade" id="tab-2" role="tabpanel" aria-labelledby="2-tab">
+					<div class="row">
+						<!-- details form -->
+            <div class="col-lg-3"></div>
+						<div class="col-12 col-lg-6">
+							<form action="#" method="#" class="profile__form">
+								<div class="row">
+									<div class="col-12">
+										<h4 class="profile__title">Parola Ayarları</h4>
+									</div>
+									<div class="col-12 col-md-12 col-lg-12 col-xl-12">
+										<div class="profile__group">
+											<label class="profile__label" for=""><b>Mevcut Parola</b></label>
+                      <input type="password" class="profile__input" id="input_current_password" value="">
+										</div>
+										<div class="profile__group">
+											<label class="profile__label" for=""><b>Yeni Parola</b></label>
+                      <input type="password" class="profile__input" id="input_new_password" value="">
+										</div>
+										<div class="profile__group">
+											<label class="profile__label" for=""><b>Yeni Parolayı Onayla</b></label>
+                      <input type="password" class="profile__input" id="input_confirm_new_password" value="">
+										</div>
+									</div>
+                  <div class="col-12"><input type="button" onclick="changePassword();" class="profile__btn" style="border: 0px; width: 100%; cursor: pointer;" value="Değiştir"></div>
+								</div>
+							</form>
+						</div>
+						<!-- end details form -->
+					</div>
+
+					<div class="row">
+						<!-- details form -->
+            <div class="col-lg-3"></div>
+						<div class="col-12 col-lg-6">
+							<form action="#" method="#" class="profile__form">
+								<div class="row">
+									<div class="col-12">
+										<h4 class="profile__title">Gelişmiş Hesap Ayarları</h4>
+									</div>
+									<div class="col-12 col-md-12 col-lg-12 col-xl-12">
+										<div class="profile__group">
+											<label class="profile__label" for=""><b>Mevcut Güvenlik Parolası</b></label>
+                      <input type="password" class="profile__input" id="input_current_security_password" value="">
+										</div>
+									</div>
+									<div class="col-12 col-md-12 col-lg-12 col-xl-12">
+										<div class="profile__group">
+											<label class="profile__label" for=""><b>Yeni Güvenlik Parolası</b></label>
+                      <input type="password" class="profile__input" id="input_new_security_password" value="">
+										</div>
+									</div>
+									<div class="col-12 col-md-12 col-lg-12 col-xl-12">
+										<div class="profile__group">
+											<label class="profile__label" for=""><b>Yeni Güvenlik Parolasını Onayla</b></label>
+                      <input type="password" class="profile__input" id="input_confirm_new_security_password" value="">
+										</div>
+									</div>
+                  <div class="col-12"><input type="button" onclick="changeSecurityPassword();" class="profile__btn" style="border: 0px; width: 100%; cursor: pointer;" value="Değiştir"></div>
+								</div>
+							</form>
+						</div>
+						<!-- end details form -->
+					</div>
+
+				</div>
+			</div>
+			<!-- end content tabs -->
+		</div>
+	</div>
+	<!-- end content -->
+
+<div id="modal-drop-account" class="zoom-anim-dialog modal mfp-hide">
+		<h6 class="modal__title">Hesabımı Sil</h6>
+		<p class="modal__text">Hesabınızı silmek istediğinize emin misiniz?</p>
+    <p class="modal__text">
+      <span style="font-weight: bold;">Bu hesaba ait profiller ve söz konusu olan profillere ait veriler de silinir. Bu işlem geri alınamaz.</span>
+    </p>
+		<div class="modal__btns">
+			<a href="{{url_for('settings_account_dropaccount_confirmation')}}" class="modal__btn modal__btn--apply" type="button">Sil</a>
+			<button class="modal__btn modal__btn--dismiss" type="button" style="width: calc(50%); margin-left: calc(25%);">İptal Et</button>
+		</div>
+</div>
+
+{%endblock%}
+
+{%block script%}
+<script>
+
+function changeUsernameEmailAddress(){
+  $.ajax({
+    url: '{{url_for("settings_account_func_proc", function="change_username_emailaddress")}}',
+    data: JSON.stringify({
+      'new_username': $('#input_new_username').val(),
+      'new_email_address': $('#input_new_email_address').val(),
+    }),
+    dataType: 'json',
+    type: 'POST',
+    contentType: 'application/json; charset=utf-8',
+    processData: false,
+    headers: {
+      'X-CSRFToken': '{{csrf_token()}}',
+    },
+    success: function(response){
+      if (response.ret_url){
+        window.location = response.ret_url
+      }
+      else if (response.succ_msg){
+        $('.alertMainDiv').show();
+        $('.alertMainText').text(response.succ_msg);
+        setTimeout(() => {
+          $('.alertMainDiv').hide();
+        }, 2500);  
+      }
+      else if (response.err_msg){
+        $('.alertMainDiv').show();
+        $('.alertMainText').text(response.err_msg);
+        setTimeout(() => {
+          $('.alertMainDiv').hide();
+        }, 2500);
+      }
+    },
+    error: function(error){
+      console.log(error);
+    }
+  });
+};
+
+function changePassword(){
+  $.ajax({
+    url: '{{url_for("settings_account_func_proc", function="change_password")}}',
+    data: JSON.stringify({
+      'current_password': $('#input_current_password').val(),
+      'new_password': $('#input_new_password').val(),
+      'confirm_new_password': $('#input_confirm_new_password').val(),
+    }),
+    dataType: 'json',
+    type: 'POST',
+    contentType: 'application/json; charset=utf-8',
+    processData: false,
+    headers: {
+      'X-CSRFToken': '{{csrf_token()}}',
+    },
+    success: function(response){
+      if (response.ret_url){
+        window.location = response.ret_url
+      }
+      else if (response.succ_msg){
+        $('.alertMainDiv').show();
+        $('.alertMainText').text(response.succ_msg);
+        setTimeout(() => {
+          $('.alertMainDiv').hide();
+        }, 2500);  
+      }
+      else if (response.err_msg){
+        $('.alertMainDiv').show();
+        $('.alertMainText').text(response.err_msg);
+        setTimeout(() => {
+          $('.alertMainDiv').hide();
+        }, 2500);
+      }
+    },
+    error: function(error){
+      console.log(error);
+    }
+  });
+};
+
+function changeSecurityPassword(){
+  $.ajax({
+    url: '{{url_for("settings_account_func_proc", function="change_security_password")}}',
+    data: JSON.stringify({
+      'current_security_password': $('#input_current_security_password').val(),
+      'new_security_password': $('#input_new_security_password').val(),
+      'confirm_new_security_password': $('#input_confirm_new_security_password').val(),
+    }),
+    dataType: 'json',
+    type: 'POST',
+    contentType: 'application/json; charset=utf-8',
+    processData: false,
+    headers: {
+      'X-CSRFToken': '{{csrf_token()}}',
+    },
+    success: function(response){
+      if (response.ret_url){
+        window.location = response.ret_url
+      }
+      else if (response.succ_msg){
+        $('.alertMainDiv').show();
+        $('.alertMainText').text(response.succ_msg);
+        setTimeout(() => {
+          $('.alertMainDiv').hide();
+        }, 2500);  
+      }
+      else if (response.err_msg){
+        $('.alertMainDiv').show();
+        $('.alertMainText').text(response.err_msg);
+        setTimeout(() => {
+          $('.alertMainDiv').hide();
+        }, 2500);
+      }
+    },
+    error: function(error){
+      console.log(error);
+    }
+  });
+};
+
+</script>
+{%endblock%}

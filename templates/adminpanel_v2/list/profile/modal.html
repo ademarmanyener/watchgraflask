@@ -1,0 +1,50 @@
+<!-- modal insertNew -->
+<div id="modal-insertNew" class="zoom-anim-dialog mfp-hide modal">
+	<h6 class="modal__title">Yeni Profil Ekle</h6>
+
+  <input type="text" class="form__input" placeholder="Hesap Adı / ID " id="inputInsertNew_queryAccount">
+
+  <table>
+    <tbody id="queryTBody"></tbody>
+  </table>
+
+  <input type="text" class="form__input" placeholder="Kullanıcı Adı" id="inputInsertNew_username">
+  <input type="password" class="form__input" placeholder="Parola" id="inputInsertNew_password">
+  <textarea name="text" class="form__textarea" placeholder="Biyografi" id="inputInsertNew_biography"></textarea>
+
+  <select class="js-example-basic-single" id="selectInsertNew_adult">
+    <option value="1">Yetişkin Hesabı</option>
+    <option value="0">Çocuk Hesabı</option>
+  </select>
+
+  <select class="js-example-basic-single" id="selectInsertNew_permission">
+    <option value="USER">Kullanıcı Hesabı</option>
+    <option value="ADMIN">Admin Hesabı</option>
+  </select>
+
+  <select class="js-example-basic-single" id="selectInsertNew_private">
+    <option value="0">Herkese Açık</option>
+    <option value="1">Gizli</option>
+  </select>
+
+	<div class="modal__btns">
+    <button id="btnInsertNew_insertNew" class="modal__btn modal__btn--apply" type="button">Oluştur</button>
+		<button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+	</div>
+</div>
+<!-- end modal insertNew -->
+
+{%for result in results_info%}
+  <!-- modal drop -->
+  <div id="modal-drop-{{result.idProfile}}" class="zoom-anim-dialog mfp-hide modal">
+    <h6 class="modal__title">{{result.username}} Adlı Profili Sil</h6>
+
+    <p class="modal__text">Bu profili kalıcı olarak silmek istediğinize emin misiniz?</p>
+
+    <div class="modal__btns">
+      <button onclick="adminpanel_v2_function(tableName='profile', functionName='drop', dictionary={'idProfile': '{{result.idProfile|safe}}'})" class="modal__btn modal__btn--apply" type="button">Sil</button>
+      <button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+    </div>
+  </div>
+  <!-- end modal drop -->
+{%endfor%}

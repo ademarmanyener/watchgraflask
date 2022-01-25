@@ -1,0 +1,124 @@
+{%extends 'layouts/default.html'%}
+{%block container%}
+
+<style>
+  .home__cover {
+    opacity: 0.65;
+  }
+</style>
+
+<!-- home -->
+<section class="home">
+  <br> 
+  <!-- home bg -->
+  <div class="owl-carousel home__bg" style="background-image: url('{{collection_info.imageBackground}}'); background-position: center; background-size: cover; filter: blur(12px);">
+    <div class="item home__cover" data-bg=""></div>
+  </div>
+  <!-- end home bg -->
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div style="width: 250px; height: 250px; background-image: url('{{collection_info.imagePoster}}'); background-position: center; background-size: cover; border-radius: 5px; margin-bottom: 25px;"></div>
+        <h1 class="home__title">
+          {%if collection_info.private == True%}<div class="section__wrap" style="display: inline-flex"><i class="icon ion-ios-eye-off" style="font-size: 35px; color: white; margin-right: 5px;"></i></div>{%endif%}
+          <b>{{collection_info.title}}</b>
+          <span style="font-size: 12px;">{{get_profile_db(profile_id=collection_info.idAddProfile).username}} tarafından oluşturuldu.</span>
+
+        {%if check_profile() == True and collection_info.idAddProfile == session['PROFILE']['idProfile'] and collection_info.idAddAccount == session['ACCOUNT']['idAccount']%}
+        <div class="section__wrap" style="display: inline-flex">
+          <a href="{{url_for('collection_edit', title_url=collection_info.titleUrl)}}"><i class="icon ion-ios-settings" style="font-size: 25px; color: white; position: absolute; right: 30px; top: 0px;"></i></a>
+          <a href="#modal-drop-collection" class="open-modal"><i class="icon ion-ios-trash" style="font-size: 25px; color: white; position: absolute; right: 0px; top: 0px;"></i></a>
+        </div>
+        {%endif%}
+
+        {%if 2 == 1%}
+        <!-- BETA -->
+        <div class="section__wrap" style="display: inline-flex;">
+          <a href="#"><i class="icon ion-md-thumbs-up" style="font-size: 25px; color: rgb(139, 255, 104); position: absolute; right: 30px; top: 50px;"></i></a>
+          <a href="#"><i class="icon ion-md-thumbs-down" style="font-size: 25px; color: rgb(255, 102, 102); position: absolute; right: 0px; top: 50px;"></i></a>
+        </div>
+        {%endif%}
+
+        </h1>
+        <h4 class="home__title" style="font-size: 15px; text-transform: unset;">{{collection_info.overview}}</h4>
+        
+          <div class="card__content">
+            <div class="card__wrap">
+              <ul class="card__list">
+                {%for tag in collection_tags_info%}
+                <a href="#" style="margin-right: 10px;"><li>{{tag.title}}</li></a>
+                {%endfor%}
+              </ul>
+            </div>
+          </div>
+
+      </div>
+    </div>
+  </div>
+  <br>
+  <br>
+  <br> 
+</section>
+<!-- end home -->
+
+<section class="content content__head">
+  <br>
+  <br>
+  <div class="container">
+    <!-- content tabs -->
+    <div class="" id="">
+      <div class="" id="" role="" aria-labelledby="">
+        <div class="row">
+          {%for item in collection_items_info%}
+          <!-- card -->
+          <div class="col-6 col-sm-4 col-lg-3 col-xl-2" id="item_content_{{item.idContent}}">
+            <div class="card">
+
+              {%if check_profile() == True and collection_info.idAddProfile == session['PROFILE']['idProfile'] and collection_info.idAddAccount == session['ACCOUNT']['idAccount']%}
+              <ul class="card__list" style="width: 100%; margin: 0px; margin-bottom: 5px;">
+                <a onclick="profileproc_collection_dropcontent('{{collection_info.idCollection}}', '{{item.idContent}}');" style="cursor: pointer;" class="open-modal">
+                  <li>
+                    <i class="icon ion-md-close" style="font-size: 15px; color: rgb(223, 223, 223); margin-right: 5px;"></i>
+                    <span>Kaldır</span>
+                  </li>
+                </a>
+              </ul>
+              {%endif%}
+
+              <div class="card__cover">
+                <img src="{{get_content_db(item.idContent).imagePoster}}" alt="">
+                <a href="{{url_for('content_redirect', title_url=get_content_db(content_id=item.idContent).titleUrl)}}" class="card__play">
+                  <i class="icon ion-ios-play"></i>
+                </a>
+              </div>
+              <div class="card__content">
+                <h3 class="card__title"><a href="{{url_for('content_redirect', title_url=get_content_db(content_id=item.idContent).titleUrl)}}">{{get_content_db(content_id=item.idContent).title}}</a></h3>
+                <span class="card__rate" style="font-size: 13px;">{%if get_content_db(content_id=item.idContent).type == 'MOVIE'%}Film{%elif get_content_db(content_id=item.idContent).type == 'TV'%}Dizi{%endif%}</span>
+                <span class="card__category">
+                  {%for genre in get_content_genre(content_id=item.idContent)%}
+                  <a href="#">{{get_genre_list(genre_id=genre.idGenre, content_type=item.type).title}}</a>
+                  {%endfor%}
+                </span>
+                <span class="card__rate"><i class="icon ion-ios-star"></i>{{get_content_db(content_id=item.idContent).voteAverage}}</span>
+              </div>
+            </div>
+          </div>
+          <!-- end card -->
+          {%endfor%}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  {%if check_profile() == True and collection_info.idAddProfile == session['PROFILE']['idProfile'] and collection_info.idAddAccount == session['ACCOUNT']['idAccount']%}
+    <div id="modal-drop-collection" class="zoom-anim-dialog modal mfp-hide">
+        <h6 class="modal__title">Koleksiyonu Sil</h6>
+        <p class="modal__text">Koleksiyonunuzu silmek istediğinize emin misiniz? <span style="font-weight: bold;">Bu işlem geri alınamaz.</span></p>
+        <div class="modal__btns">
+          <a href="{{url_for('collection_delete', collection_id=collection_info.idCollection)}}" class="modal__btn modal__btn--apply" type="button">Sil</a>
+          <button class="modal__btn modal__btn--dismiss" type="button" style="width: calc(50%); margin-left: calc(25%);">İptal Et</button>
+        </div>
+    </div>
+  {%endif%}
+{%endblock%}

@@ -1,0 +1,257 @@
+﻿{%extends 'layouts/adminpanel/default.html'%}
+{%block container%}
+
+<style>
+  .form__input, .form__textarea {
+    /*background-color: #646464;*/
+  }
+  .select2-container--default .select2-selection--single {
+    background-color: unset;
+  }
+  .select2-dropdown {
+    background-color: #030303;
+  }
+  .form__textarea {
+    height: 287px;
+  }
+  .form__img, .form__img label {
+    background-color: unset;
+  }
+  .form__img {
+    height: 422px;
+    background-position: center;
+    background-size: cover;
+    background-image: url('{{cast_info.imagePoster}}');
+  }
+	.form__btn { display: inline-flex; margin-right: 25px; }
+	input[type=checkbox], input[type=radio] {
+		transition: border 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+	}
+	input[type=checkbox], input[type=radio]:checked {
+		border: 2px solid white;
+	}
+</style>
+
+{%if 2 == 1%}
+{%include 'adminpanel/contents/includes/sidebar.html'%}
+{%endif%}
+
+<!-- main content -->
+<main class="main">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- main title -->
+      <div class="col-12">
+        <div class="main__title">
+          <h2>{{cast_info.name}}</h2>
+        </div>
+      </div>
+      <!-- end main title -->
+
+      <!-- form -->
+      <div class="col-12">
+        <form action="{{url_for('adminpanel_cast_edit', name_url=cast_info.nameUrl)}}" method="POST" class="form" enctype="multipart/form-data">
+          <div class="row">
+            <div class="col-12 col-md-5 form__cover">
+              <!-- IMAGE UPLOAD BEGIN -->
+              <div class="row">
+                <div class="col-12 col-sm-6 col-md-12">
+                  <div class="form__img">
+                    <label for="form__img-upload">Avatar Yükle</label>
+                    <input id="form__img-upload" name="form__img-upload" type="file" accept=".png, .jpg, .jpeg">
+                    <img id="form__img" src="#" alt=" ">
+                  </div>
+                </div>
+              </div>
+              <!-- IMAGE UPLOAD END -->
+            </div>
+            
+            <div class="col-12 col-md-7 form__content">
+              <div class="row">
+                <div class="col-6">
+                  <label class="profile__label" for="input___name">Adı</label>
+                  <input id="input___name" name="input___name" type="text" class="form__input" placeholder="Adı">
+                </div>
+
+                <div class="col-6">
+                  <label class="profile__label" for="input___nameUrl">Ad URL</label>
+                  <input id="input___nameUrl" name="input___nameUrl" type="text" class="form__input" placeholder="Ad URL">
+                </div>
+
+                <div class="col-12">
+                  <label class="profile__label" for="input___biography">Biyografi</label>
+                  <textarea id="input___biography" name="input___biography" class="form__textarea" placeholder="Biyografi"></textarea>
+                </div>
+
+                <div class="col-9">
+                  <label class="profile__label" for="input___imagePoster">Poster Resmi</label>
+                  <input id="input___imagePoster" name="input___imagePoster" type="text" class="form__input" placeholder="Poster Resmi">
+                </div>
+
+                <div class="col-3">
+                  <a href="#modal-listPosters" id="button___listPosters" class="form__btn open-modal" style="border: 0px; cursor: pointer; float: left; width: 100%; margin-top: 30px;">Yüklenenlerden Seç</a>
+                </div>
+
+                <div class="col-3">
+                  <label class="profile__label" for="input___idTmdb">TMDB ID</label>
+                  <input id="input___idTmdb" name="input___idTmdb" type="text" class="form__input" placeholder="TMDB ID">
+                </div>
+
+                <div class="col-3">
+                  <label class="profile__label" for="input___idImdb">IMDB ID</label>
+                  <input id="input___idImdb" name="input___idImdb" type="text" class="form__input" placeholder="IMDB ID">
+                </div>
+
+                <div class="col-3">
+                  <label class="profile__label" for="input___idTwitter"><i class="icon ion-logo-twitter"></i> Twitter</label>
+                  <input id="input___idTwitter" name="input___idTwitter" type="text" class="form__input" placeholder="Twitter">
+                </div>
+
+                <div class="col-3">
+                  <label class="profile__label" for="input___idInstagram"><i class="icon ion-logo-instagram"></i> Instagram</label>
+                  <input id="input___idInstagram" name="input___idInstagram" type="text" class="form__input" placeholder="Instagram">
+                </div>
+
+                <div class="col-4">
+                  <label class="profile__label" for="input___birthPlace">Doğum Yeri</label>
+                  <input id="input___birthPlace" name="input___birthPlace" type="text" class="form__input" placeholder="Doğum Yeri">
+                </div>
+
+                <div class="col-4">
+                  <label class="profile__label" for="input___birthDate">Doğum Tarihi</label>
+                  <input id="input___birthDate" name="input___birthDate" type="text" class="form__input" placeholder="Doğum Tarihi">
+                </div>
+
+                <div class="col-4">
+                  <label class="profile__label" for="input___deathDate">Ölüm Tarihi</label>
+                  <input id="input___deathDate" name="input___deathDate" type="text" class="form__input" placeholder="Ölüm Tarihi">
+                </div>
+
+                <div class="col-2">
+                  <div class="profile__group">
+                    <label class="profile__label" for="select2___gender">Cinsiyet</label>
+                    <select class="js-example-basic-single" id="select2___gender" name="select2___gender">
+                      <option value="0">Belirtilmedi</option>
+                      <option value="1">Kadın</option>
+                      <option value="2">Erkek</option>
+                      <option value="3">Non-binary</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-2">
+                  <div class="profile__group">
+                    <label class="profile__label" for="select2___adult">Yetişkin Aktör</label>
+                    <select class="js-example-basic-single" id="select2___adult" name="select2___adult">
+                      <option value="0">Yetişkin Değil</option>
+                      <option value="1">Yetişkin</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-2">
+                  <div class="profile__group">
+                    <label class="profile__label" for="select2___visibility">Gizlilik</label>
+                    <select class="js-example-basic-single" id="select2___visibility" name="select2___visibility">
+                      <option value="0">Gizli</option>
+                      <option value="1">Herkese Açık</option>
+                    </select>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="row">
+
+                <div class="col-12">
+                  <input type="submit" id="button___save" name="button___save" value="Kaydet" class="form__btn" style="border: 0px; cursor: pointer; float: right;">
+                  <input type="button" id="button___goToTheCast" name="button___goToTheCast" value="Oyuncunun Sayfasına Git" class="form__btn" style="border: 0px; cursor: pointer; float: right; min-width: 300px;">
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+<div id="modal-listPosters" class="zoom-anim-dialog modal mfp-hide">
+    <h6 class="modal__title">Poster Seç</h6>
+    <p class="modal__text">Bunlardan birini poster olarak seçin.</p>
+    <br/>
+    <p class="modal__text">
+      {%for poster in posters_list_info%}
+      <input type="radio" id="{{poster}}" name="poster" value="{{poster}}" style="width: 75px; height: 75px;
+                                                                                  margin-top: 5px; margin-left: 5px; margin-right: 5px; margin-bottom: 5px; background-image: url({{url_for('storage', filename='cast/' + cast_info.idCast + '/poster/' + poster)}}); background-size: cover; background-position: center; background-repeat: no-repeat; cursor: pointer;">
+      {%endfor%}
+    </p>
+    <div class="modal__btns">
+      <button class="modal__btn modal__btn--dismiss" type="button">Seç</button>
+    </div>
+</div>
+
+        </form>
+      </div>
+      <!-- end form -->
+    </div>
+  </div>
+</main>
+<!-- end main content -->
+{%endblock%}
+
+{%block script%}
+<script>
+  $(document).ready(() => {
+    $('.js-example-basic-single').select2();
+    // inputs
+    $('#input___name').val(`{{cast_info.name|safe}}`);
+    $('#input___nameUrl').val(`{{cast_info.nameUrl|safe}}`);
+    $('#input___biography').val(`{{cast_info.biography|safe}}`);
+    $('#input___imagePoster').val(`{{cast_info.imagePoster|safe}}`);
+    $('#input___idTmdb').val(`{{cast_info.idTmdb|safe}}`);
+    $('#input___idImdb').val(`{{cast_info.idImdb|safe}}`);
+    $('#input___idTwitter').val(`{{cast_info.idTwitter|safe}}`);
+    $('#input___idInstagram').val(`{{cast_info.idInstagram|safe}}`);
+    $('#input___birthPlace').val(`{{cast_info.birthPlace|safe}}`);
+    $('#input___birthDate').val(`{{cast_info.birthDate|safe}}`);
+    $('#input___deathDate').val(`{{cast_info.deathDate|safe}}`);
+    // select2
+
+    if ('{{cast_info.gender}}' == 0){
+      $('#select2-select2___gender-container').text('Belirtilmedi');
+      $('#select2___gender').val('0');
+    } else if ('{{cast_info.gender}}' == 1){
+      $('#select2-select2___gender-container').text('Kadın');
+      $('#select2___gender').val('1');
+    } else if ('{{cast_info.gender}}' == 2){
+      $('#select2-select2___gender-container').text('Erkek');
+      $('#select2___gender').val('2');
+    } else if ('{{cast_info.gender}}' == 3){
+      $('#select2-select2___gender-container').text('Non-binary');
+      $('#select2___gender').val('3');
+    }
+
+    if ('{{cast_info.adult}}' == 0){
+      $('#select2-select2___adult-container').text('Yetişkin Değil');
+      $('#select2___adult').val('0');
+    } else if ('{{cast_info.adult}}' == 1){
+      $('#select2-select2___adult-container').text('Yetişkin');
+      $('#select2___adult').val('1');
+    }
+
+    if ('{{cast_info.visibility}}' == 0){
+      $('#select2-select2___visibility-container').text('Gizli');
+      $('#select2___visibility').val('0');
+    } else if ('{{cast_info.visibility}}' == 1){
+      $('#select2-select2___visibility-container').text('Herkese Açık');
+      $('#select2___visibility').val('1');
+    }
+  });
+
+  $('#button___goToTheCast').on('click', () => {
+    window.location.href = `{{url_for('cast_title', name_url=cast_info.nameUrl)}}`
+  });
+</script>
+{%endblock%}

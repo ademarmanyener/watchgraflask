@@ -1,0 +1,574 @@
+{%extends 'layouts/default.html'%}
+{% from "macros/cards.html" import card_long %}
+{%block container%}
+
+<style>
+  .test {
+    border: 0px solid red;
+  }
+  .poster-subject {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    width: 101%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  .poster-subject:hover > .poster-truncate-title {font-size: 14px;}
+  .poster-subject:hover > .poster-truncate-detail {font-size: 12px;}
+  .poster-subject:hover > .poster-img img {max-width: 100px;}
+  .poster-img {
+    position: absolute;
+    left: 20px;
+    bottom: 15px;
+    width: 100%;
+    overflow: hidden;
+    box-shadow: 1 1 1 5px black;
+  }
+  .poster-img img {
+    max-width: 85px;
+    border-radius: 5px;
+
+       transition: max-width 0.3s;
+  }
+  .poster-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+    position: relative;
+    color: white;   
+    text-shadow: 0px 0px 9px rgb(0, 0, 0);
+  }
+  .poster-truncate-title {
+    margin-left: 10px;
+    margin-bottom: 10px;
+
+          transition: font-size 0.3s;
+  }
+  .poster-truncate-title-with-thumbnail {
+    margin-left: 125px;
+    margin-bottom: 25px;
+  }
+  .poster-truncate-detail {
+    font-weight: 300;
+    margin-left: 10px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+
+       transition: font-size 0.3s;
+  }
+  .poster-truncate-detail-with-thumbnail {
+    margin-left: 125px;
+    margin-top: -25px;
+    margin-bottom: 25px;
+  }
+  .poster-tag {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.863);
+    min-width: 75px;
+    height: 25px;
+    line-height: 25px;
+    border-radius: 5px;
+    text-align: center;
+    text-transform: uppercase;
+    color: rgb(231, 231, 231);
+    font-size: 13px;
+    font-family: 'Ubuntu', sans-serif;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+</style>
+
+{%for i in range(4)%}<br />{%endfor%}
+
+<!-- most watched ones begin -->
+{%if content.query.all()|length >= 10%}
+<section class="content">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+
+        <div class="row">
+          <!-- tv series highlight begin -->
+          {%if content.query.filter_by(type='TV').all()|length >= 5%}
+          <div class="col-sm-12 col-md-6 col-lg-6">
+            <h2 class="content__title">En Çok İzlenen Diziler</h2>
+            <a href="{{url_for('content_redirect', title_url=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[0].titleUrl)}}">
+              <div class="row">
+                <div class="col-12 test" style="height: 300px; background-image: url({{content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[0].imageBackground}}); background-repeat: no-repeat; background-size: cover; background-position: center;">
+                  <div class="poster-subject">
+                    <figure class="poster-img">
+                      <img src="{{content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[0].imagePoster}}" alt="">
+                    </figure>
+                    <h3 class="poster-truncate poster-truncate-title poster-truncate-title-with-thumbnail">{{content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[0].title}}</h3>
+                    <h4 class="poster-truncate poster-truncate-detail poster-truncate-detail-with-thumbnail">{{tvEpisodeContent.query.filter_by(idContent=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[0].idContent).order_by(tvEpisodeContent.addDate.desc()).first().seasonNumber}}. Sezon {{tvEpisodeContent.query.filter_by(idContent=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[0].idContent).order_by(tvEpisodeContent.addDate.desc()).first().episodeNumber}}. Bölüm</h4>
+                    <span class="poster-tag">{{format_date(content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[0].addDate, 'full', locale='tr')}}</span>
+                  </div>
+                </div> 
+              </div>
+            </a>
+            <div class="row">
+              <div class="col-6 test" style="height: 150px;">
+                <a href="{{url_for('content_redirect', title_url=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[1].titleUrl)}}">
+                  <div class="row">
+                    <div class="col-12 test" style="height: 150px; background-image: url({{content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[1].imageBackground}}); background-repeat: no-repeat; background-size: cover; background-position: center;">
+                      <div class="poster-subject">
+                        <h3 class="poster-truncate poster-truncate-title">{{content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[1].title}}</h3>
+                        <h4 class="poster-truncate poster-truncate-detail">{{tvEpisodeContent.query.filter_by(idContent=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[1].idContent).order_by(tvEpisodeContent.addDate.desc()).first().seasonNumber}}. Sezon {{tvEpisodeContent.query.filter_by(idContent=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[1].idContent).order_by(tvEpisodeContent.addDate.desc()).first().episodeNumber}}. Bölüm</h4>
+                        <span class="poster-tag">{{format_date(content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[1].addDate, 'full', locale='tr')}}</span>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-6 test" style="height: 150px;">
+                <a href="{{url_for('content_redirect', title_url=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[2].titleUrl)}}">
+                  <div class="row">
+                    <div class="col-12 test" style="height: 150px; background-image: url({{content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[2].imageBackground}}); background-repeat: no-repeat; background-size: cover; background-position: center;">
+                      <div class="poster-subject">
+                        <h3 class="poster-truncate poster-truncate-title">{{content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[2].title}}</h3>
+                        <h4 class="poster-truncate poster-truncate-detail">{{tvEpisodeContent.query.filter_by(idContent=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[2].idContent).order_by(tvEpisodeContent.addDate.desc()).first().seasonNumber}}. Sezon {{tvEpisodeContent.query.filter_by(idContent=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[2].idContent).order_by(tvEpisodeContent.addDate.desc()).first().episodeNumber}}. Bölüm</h4>
+                        <span class="poster-tag">{{format_date(content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[2].addDate, 'full', locale='tr')}}</span>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6 test" style="height: 150px;">
+                <a href="{{url_for('content_redirect', title_url=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[3].titleUrl)}}">
+                  <div class="row">
+                    <div class="col-12 test" style="height: 150px; background-image: url({{content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[3].imageBackground}}); background-repeat: no-repeat; background-size: cover; background-position: center;">
+                      <div class="poster-subject">
+                        <h3 class="poster-truncate poster-truncate-title">{{content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[3].title}}</h3>
+                        <h4 class="poster-truncate poster-truncate-detail">{{tvEpisodeContent.query.filter_by(idContent=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[3].idContent).order_by(tvEpisodeContent.addDate.desc()).first().seasonNumber}}. Sezon {{tvEpisodeContent.query.filter_by(idContent=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[3].idContent).order_by(tvEpisodeContent.addDate.desc()).first().episodeNumber}}. Bölüm</h4>
+                        <span class="poster-tag">{{format_date(content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[3].addDate, 'full', locale='tr')}}</span>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-6 test" style="height: 150px;">
+                <a href="{{url_for('content_redirect', title_url=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[4].titleUrl)}}">
+                  <div class="row">
+                    <div class="col-12 test" style="height: 150px; background-image: url({{content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[4].imageBackground}}); background-repeat: no-repeat; background-size: cover; background-position: center;">
+                      <div class="poster-subject">
+                        <h3 class="poster-truncate poster-truncate-title">{{content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[4].title}}</h3>
+                        <h4 class="poster-truncate poster-truncate-detail">{{tvEpisodeContent.query.filter_by(idContent=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[4].idContent).order_by(tvEpisodeContent.addDate.desc()).first().seasonNumber}}. Sezon {{tvEpisodeContent.query.filter_by(idContent=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[4].idContent).order_by(tvEpisodeContent.addDate.desc()).first().episodeNumber}}. Bölüm</h4>
+                        <span class="poster-tag">{{format_date(content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[4].addDate, 'full', locale='tr')}}</span>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+          {%endif%}
+          <!-- tv series highlight end -->
+
+          <!-- movies highlight begin -->
+          {%if content.query.filter_by(type='MOVIE').all()|length >= 5%}
+          <div class="col-sm-12 col-md-6 col-lg-6">
+            <h2 class="content__title">En Çok İzlenen Filmler</h2>
+            <div class="row">
+              <div class="col-6 test" style="height: 150px;">
+                <a href="{{url_for('content_redirect', title_url=content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[0].titleUrl)}}">
+                  <div class="row">
+                    <div class="col-12 test" style="height: 150px; background-image: url({{content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[0].imageBackground}}); background-repeat: no-repeat; background-size: cover; background-position: center;">
+                      <div class="poster-subject">
+                        <h3 class="poster-truncate poster-truncate-title">{{content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[0].title}}</h3>
+                        <span class="poster-tag">{{format_date(content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[0].addDate, 'full', locale='tr')}}</span>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-6 test" style="height: 150px;">
+                <a href="{{url_for('content_redirect', title_url=content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[1].titleUrl)}}">
+                  <div class="row">
+                    <div class="col-12 test" style="height: 150px; background-image: url({{content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[1].imageBackground}}); background-repeat: no-repeat; background-size: cover; background-position: center;">
+                      <div class="poster-subject">
+                        <h3 class="poster-truncate poster-truncate-title">{{content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[1].title}}</h3>
+                        <span class="poster-tag">{{format_date(content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[1].addDate, 'full', locale='tr')}}</span>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <a href="{{url_for('content_redirect', title_url=content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[2].titleUrl)}}">
+              <div class="row">
+                <div class="col-12 test" style="height: 300px; background-image: url({{content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[2].imageBackground}}); background-repeat: no-repeat; background-size: cover; background-position: center;">
+                  <div class="poster-subject">
+                    <figure class="poster-img">
+                      <img src="{{content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[2].imagePoster}}" alt="">
+                    </figure>
+                    <h3 class="poster-truncate poster-truncate-title poster-truncate-title-with-thumbnail">{{content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[2].title}}</h3>
+                    <span class="poster-tag">{{format_date(content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[2].addDate, 'full', locale='tr')}}</span>
+                  </div>
+                </div> 
+              </div>
+            </a>
+            <div class="row">
+              <div class="col-6 test" style="height: 150px;">
+                <a href="{{url_for('content_redirect', title_url=content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[3].titleUrl)}}">
+                  <div class="row">
+                    <div class="col-12 test" style="height: 150px; background-image: url({{content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[3].imageBackground}}); background-repeat: no-repeat; background-size: cover; background-position: center;">
+                      <div class="poster-subject">
+                        <h3 class="poster-truncate poster-truncate-title">{{content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[3].title}}</h3>
+                        <span class="poster-tag">{{format_date(content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[3].addDate, 'full', locale='tr')}}</span>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-6 test" style="height: 150px;">
+                <a href="{{url_for('content_redirect', title_url=content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[4].titleUrl)}}">
+                  <div class="row">
+                    <div class="col-12 test" style="height: 150px; background-image: url({{content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[4].imageBackground}}); background-repeat: no-repeat; background-size: cover; background-position: center;">
+                      <div class="poster-subject">
+                        <h3 class="poster-truncate poster-truncate-title">{{content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[4].title}}</h3>
+                        <span class="poster-tag">{{format_date(content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[4].addDate, 'full', locale='tr')}}</span>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+          {%endif%}
+          <!-- movies highlight end -->
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+{%endif%}
+<!-- most watched ones end -->
+
+<style>
+  .segment-title {
+    font-weight: 600;
+    font-size: 18px;
+    padding-top: 40px;
+    margin-bottom: 20px;
+    color: #fff;
+    letter-spacing: -.41px;
+  }
+  .dark-segment > ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    margin-left: -10px;
+    margin-right: -10px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+	}
+  .dark-segment > ul .segment-poster-sm {
+    display: inline-block;
+    width: 33%;
+    padding: 10px;
+  }
+  .poster.poster-xs {
+    position: relative;
+    overflow: visible;
+	}
+  .poster .poster-text {
+    color: white;
+    position: absolute;
+    left: 15px;
+    bottom: 5px;
+    z-index: 10;
+    font: caption;
+    font-size: 24px;
+    text-shadow: 2px 3px 14px rgba(0,0,0,0.72);
+  }
+  .poster .poster-rate {
+    color: white;
+    position: absolute;
+    right: 15px;
+    top: 5px;
+    z-index: 10;
+    font: caption;
+    font-size: 27px;
+    text-shadow: 2px 3px 14px rgba(0,0,0,0.72);
+  }
+  .poster .poster-detail {
+    color: white;
+    position: absolute;
+    left: 15px;
+    top: 10px;
+    z-index: 10;
+    font: caption;
+    font-size: 15px;
+    text-shadow: 2px 3px 14px rgba(0,0,0,0.72);
+  }
+  .poster {
+    overflow: hidden;
+    transition: transform .1s linear;
+	}
+  .new-tvseries .segment-poster-sm .poster.poster-xs a {
+    flex-direction: column-reverse;
+    height: auto;
+    padding: 5px;
+  }
+  .poster.poster-xs a {
+    display: flex;
+    flex-direction: row-reverse;
+    height: 60px;
+    background-color: #0f0f0f;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    -webkit-transition: background-color 0.1s ease-in-out;
+    -moz-transition: background-color 0.1s ease-in-out;
+    -ms-transition: background-color 0.1s ease-in-out;
+    -o-transition: background-color 0.1s ease-in-out;
+    transition: background-color 0.1s ease-in-out;
+  }
+  .poster.poster-xs a:hover {background-color: #95FF7E;}
+  .new-tvseries .segment-poster-sm .poster.poster-xs a img {
+    max-width: 150px;
+    min-width: 100%;
+    width: 100%;
+    margin: 0;
+    height: 225px;
+    z-index: 1;
+    opacity: .75;
+  }
+  .poster.poster-xs img {
+    display: block;
+    max-width: 44px;
+    min-width: 44px;
+    height: 44px;
+    object-fit: cover;
+    border-radius: 2px;
+    margin: 8px 0 8px 8px;
+  }
+  .poster .lazy-wide {
+    width: 100%;
+    opacity: 0;
+    -webkit-transition: opacity 0.5s ease-in-out, transform 0.2s linear;
+    -moz-transition: opacity 0.5s ease-in-out, transform 0.2s linear;
+    -ms-transition: opacity 0.5s ease-in-out, transform 0.2s linear;
+    -o-transition: opacity 0.5s ease-in-out, transform 0.2s linear;
+    transition: opacity 0.5s ease-in-out, transform 0.2s linear;
+    z-index: 1;
+    display: block;
+  }
+
+</style>
+
+<!-- expected premiere -->
+<section class="section section--bg" data-bg="#" style="padding: 0px;">
+  <div class="content">
+    <div class="content__head-------disabled-css">
+      <br>
+      <div class="container">
+        <div class="row">
+          <!-- section title -->
+          <div class="col-12">
+            <h2 class="section__title">En Çok Oy Almış İçerikler</h2>
+          </div>
+          <!-- end section title -->
+          <div class="col-12">
+            <div class="row">
+              <!-- segment begin -->
+              <div class="dark-segment">
+                <!--<div class="segment-title">En Çok Oy Almış İçerikler</div>-->
+                <ul class="clearfix new-tvseries">
+                  {%for _content in content.query.filter_by().order_by(content.voteAverage.desc()).limit(9).all()%}
+                  <li class="segment-poster-sm">
+                    <div class="poster poster-xs">
+                      <a href="{{url_for('content_redirect', title_url=_content.titleUrl)}}" data-navigo="" title="{{_content.titleOriginal}}">
+                        <h4 class="poster-detail">{%if _content.type == 'MOVIE'%}Film{%elif _content.type == 'TV'%}Dizi{%endif%}</h4>
+                        <span class="card__rate poster-rate"><i class="icon ion-ios-star"></i>{{_content.voteAverage}}</span>
+                        <h2 class="poster-text">{{_content.title}}</h2>
+                        <img class="lazy-wide loaded" src="{{_content.imageBackground}}" alt="{{_content.titleOriginal}}" data-src="{{_content.imageBackground}}" data-was-processed="true">
+                      </a>
+                    </div>
+                  </li>
+                  {%endfor%}
+                </ul>
+              </div>
+             <!-- segment end -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- end expected premiere -->
+
+<!-- expected premiere -->
+<section class="section section--bg" data-bg="#" style="padding: 0px;">
+  <div class="content">
+    <div class="content__head-------disabled-css">
+      <br>
+      <div class="container">
+        <div class="row">
+          <!-- section title -->
+          <div class="col-12">
+            <h2 class="section__title">Son Eklenen İçerikler</h2>
+          </div>
+          <!-- end section title -->
+
+          <div class="col-lg-10 col-md-8 col-sm-7">
+            <div class="row">
+
+              {%for content in content.query.limit(125).all()%}
+                <div class="col-6 col-sm-4 col-lg-3 col-xl-3">
+                  {{ card_long(content=content) }}
+                </div>
+              {%endfor%}
+
+            </div>
+            <div class="row" style="margin-bottom: 40px;">
+              <a href="{{url_for('search')}}"><button class="header__sign-in" style="position: absolute; right: 10px; width: 100%; color: black;">Tümünü Göster</button></a>
+              </br></br>
+            </div>
+          </div>
+
+          <style>
+            .segment-poster-sm {
+              width: 100%;
+              display: inline-block;
+              margin-bottom: 10px;
+            }
+            .segment-poster-in-poster {
+              position: relative;
+              overflow: visible;
+              transition: transform .1s linear;
+            } 
+            .segment-poster-in-poster a {
+              display: flex;
+              flex-direction: row-reverse;
+              height: 79px;
+              background-color: #0f0f0f;
+              border-radius: 3px;
+              transition: red 0.1s ease-in-out;
+            }
+            .segment-poster-in-poster a:hover {
+              background-color: #353535;
+            }
+            .segment-poster-subject {
+              display: flex;
+              flex-direction: column;
+              flex: 1 1 auto;
+              min-width: 0;
+              position: relative;
+            }
+            .segment-poster-subject h2 {
+              line-height: 22px;
+              font-weight: 400;
+              margin: 3px 0 2px;
+              font-size: 14px;
+              min-width: 0;
+              padding: 10px 10px 0;
+              color: #fff;
+              position: relative;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              display: block;
+            }
+            .segment-poster-subject p {
+              margin: 0;
+              color: #bbb;
+              line-height: 18px;
+              padding: 0 10px 0;
+              display: block;
+              width: 100%;
+              font-size: 12px;
+              position: relative;
+              display: block;
+            }
+            .segment-poster-image-thumbnail {
+              display: block;
+              max-width: 44px;
+              min-width: 44px;
+              height: 65px;
+              object-fit: cover;
+              border-radius: 2px;
+              margin: 8px 0 8px 8px;
+            }
+          </style>
+
+          <div class="col-lg-2 col-md-4 col-sm-5">
+            <div class="row">
+
+              {%if highlightContent.query.all()|length >= 1%}
+              <div class="col-12" style="margin-bottom: 15px;">
+                <div class="row">
+                  <div class="col-12" style="margin-bottom: 10px;">
+                    <h2 class="section__title" style="font-size: 15px; margin: 0px; ">Öne Çıkarılmış İçerikler</h2>
+                  </div>
+                  {%for _highlight in highlightContent.query.all()%}
+                  <div class="col-12" style="padding: 0px;">
+                    <!-- item begin -->
+                    <li class="segment-poster-sm">
+                      <div class="segment-poster-in-poster">
+                        <a href="{{url_for('content_redirect', title_url=content.query.filter_by(idContent=_highlight.idContent).first().titleUrl)}}">
+                          <div class="segment-poster-subject">
+                            <h2>{{content.query.filter_by(idContent=_highlight.idContent).first().title}}</h2>
+                            <p>
+                              <span class="card__rate"><i class="icon ion-ios-star"></i>{{content.query.filter_by(idContent=_highlight.idContent).first().voteAverage}}</span>
+                              {%if content.query.filter_by(idContent=_highlight.idContent).first().type == 'MOVIE'%}Film{%elif content.query.filter_by(idContent=_highlight.idContent).first().type == 'TV'%}Dizi{%endif%}
+                            </p>
+                          </div>
+                          <img class="segment-poster-image-thumbnail" src="{{content.query.filter_by(idContent=_highlight.idContent).first().imagePoster}}" alt="">
+                        </a>
+                      </div>
+                    </li>
+                    <!-- item end -->
+                  </div>
+                  {%endfor%}
+                </div>
+              </div>
+              {%endif%}
+
+              <div class="col-12" style="margin-bottom: 15px;">
+                <div class="row">
+                  <div class="col-12" style="margin-bottom: 10px;">
+                    <h2 class="section__title" style="font-size: 15px; margin: 0px; ">Son Eklenen Bölümler</h2>
+                  </div>
+                  {%for _episode in tvEpisodeContent.query.order_by(tvEpisodeContent.addDate.desc()).limit(35).all()%}
+                  <div class="col-12" style="padding: 0px;">
+                    <!-- item begin -->
+                    <li class="segment-poster-sm">
+                      <div class="segment-poster-in-poster">
+                        <a href="{{url_for('tv_watch', title_url=content.query.filter_by(idContent=_episode.idContent).first().titleUrl, season_number=_episode.seasonNumber, episode_number=_episode.episodeNumber)}}" style="height: 45px;">
+                          <div class="segment-poster-subject">
+                            <h2 style="padding-top: 0px; margin-bottom: -2px;">{{content.query.filter_by(idContent=_episode.idContent).first().title}}</h2>
+                            <p>{{_episode.seasonNumber}}. Sezon {{_episode.episodeNumber}}. Bölüm</p>
+                          </div>
+                          <img class="segment-poster-image-thumbnail" style="height: 30px;" src="{{_episode.imagePoster}}" alt="">
+                        </a>
+                      </div>
+                    </li>
+                    <!-- item end -->
+                  </div>
+                  {%endfor%}
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- end expected premiere -->
+
+{%endblock%}

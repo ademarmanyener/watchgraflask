@@ -1,0 +1,14 @@
+{%for result in results_info%}
+  <!-- modal drop -->
+  <div id="modal-drop-{{result.idComment}}" class="zoom-anim-dialog mfp-hide modal">
+    <h6 class="modal__title">{{result.text}} Adlı Yorumu Listeden Sil</h6>
+
+    <p class="modal__text">Bu yorumu kalıcı olarak listeden silmek istediğinize emin misiniz?</p>
+
+    <div class="modal__btns">
+      <button onclick="adminpanel_v2_function(tableName='comments', functionName='drop', dictionary={'table': `{{_ARG['table']|safe}}`, 'idComment': '{{result.idComment|safe}}'})" class="modal__btn modal__btn--apply" type="button">Sil</button>
+      <button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+    </div>
+  </div>
+  <!-- end modal drop -->
+{%endfor%}

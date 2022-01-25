@@ -1,0 +1,52 @@
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<base href="{{request.host_url}}" /> <!-- ! url -->
+<meta name="description" content="{%if _META and _META['description']%}{{_META['description']|safe}}{%else%}En son çıkan yabancı dizi ve filmleri Türkçe, dublaj veya orjinal dillerinde ücretsiz 1080p olarak HD izle.{%endif%}" />
+<meta name="keywords" content="{%if _META and _META['keywords']%}{{_META['keywords']|safe}}{%else%}yabancı dizi film izle, en iyi yabancı diziler ve filmler, türkçe dublaj yabancı dizi film izle, altyazılı yabancı dizi film izle{%endif%}">
+<meta name="google" content="notranslate" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="WatchGraf">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<meta property="og:locale" content="tr_TR">
+<meta property="og:title" content="{%if title%}{{title}} | {%endif%}WatchGraf — Ücretsiz Yabancı Dizi ve Film Platformu">
+<meta property="og:site_name" content="{{request.host_url}}"> <!-- ! url -->
+<meta property="og:url" content="{{request.host_url}}"> <!-- ! url -->
+<meta property="og:image" content="{{url_for('static', filename='icon/apple-touch-icon-144x144')}}">
+
+<!-- Font -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600%7CUbuntu:300,400,500,700" rel="stylesheet">
+
+<!-- CSS -->
+<link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap-reboot.min.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap-grid.min.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='css/owl.carousel.min.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='css/jquery.mCustomScrollbar.min.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='css/nouislider.min.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='css/ionicons.min.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='css/plyr.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='css/photoswipe.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='css/default-skin.css')}}">
+
+<!-- from Admin Panel -->
+<link rel="stylesheet" href="{{url_for('static', filename='css/magnific-popup.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='css/admin-custom-wg.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='css/select2.min.css')}}">
+
+<link rel="stylesheet" href="{{url_for('static', filename='css/main-custom-wg.css')}}">
+
+<!-- videojs -->
+<link href="https://vjs.zencdn.net/7.10.2/video-js.css" rel="stylesheet" />
+
+<!-- Favicons -->
+<link rel="icon" type="image/png" href="{{url_for('static', filename='icon/favicon-32x32.png')}}" sizes="32x32">
+<link rel="apple-touch-icon" sizes="32x32" href="{{url_for('static', filename='icon/favicon-32x32.png')}}">
+<link rel="apple-touch-icon" sizes="72x72" href="{{url_for('static', filename='icon/apple-touch-icon-72x72.png')}}">
+<link rel="apple-touch-icon" sizes="114x114" href="{{url_for('static', filename='icon/apple-touch-icon-114x114.png')}}">
+<link rel="apple-touch-icon" sizes="144x144" href="{{url_for('static', filename='icon/apple-touch-icon-144x144.png')}}">
+
+<!-- Canonical -->
+<link rel="canonical" href="{% if _ARG and _ARG['canonical_url'] %}{% else %}{{request.base_url}}{% endif %}"> <!-- ! url -->
+
+<title>{%if title%}{{title}} | {%endif%}WatchGraf — Ücretsiz Yabancı Dizi ve Film Platformu</title>

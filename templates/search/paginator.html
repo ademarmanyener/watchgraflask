@@ -1,0 +1,27 @@
+<!-- paginator -->
+<div class="col-12">
+  <ul class="paginator paginator--list" style="background-color: transparent; box-shadow: unset;">
+    {%if not _ARG['page'] == 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page=1&type={{_ARG['type']}}&sort={{_ARG['sort']}}">1</a></li>{%endif%}
+    {%if _ARG['page'] - 1 >= 1%}
+    <li class="paginator__item paginator__item--prev">
+      <a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] - 1}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}"><i class="icon ion-ios-arrow-back"></i></a>
+    </li>
+    {%endif%}
+    {%if _ARG['page'] - 4 >= 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] - 4}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}">{{_ARG['page'] - 4}}</a></li>{%endif%}
+    {%if _ARG['page'] - 3 >= 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] - 3}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}">{{_ARG['page'] - 3}}</a></li>{%endif%}
+    {%if _ARG['page'] - 2 >= 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] - 2}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}">{{_ARG['page'] - 2}}</a></li>{%endif%}
+    {%if _ARG['page'] - 1 >= 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] - 1}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}">{{_ARG['page'] - 1}}</a></li>{%endif%}
+    <li class="paginator__item paginator__item--active"><a href="#">{{_ARG['page']}}</a></li>
+    {%if _ARG['page'] + 1 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] + 1}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}">{{_ARG['page'] + 1}}</a></li>{%endif%}
+    {%if _ARG['page'] + 2 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] + 2}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}">{{_ARG['page'] + 2}}</a></li>{%endif%}
+    {%if _ARG['page'] + 3 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] + 3}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}">{{_ARG['page'] + 3}}</a></li>{%endif%}
+    {%if _ARG['page'] + 4 <= _ARG['page_max']%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] + 4}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}">{{_ARG['page'] + 4}}</a></li>{%endif%}
+    {%if _ARG['page'] + 1 <= _ARG['page_max']%}
+    <li class="paginator__item paginator__item--next">
+      <a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page'] + 1}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}"><i class="icon ion-ios-arrow-forward"></i></a>
+    </li>
+    {%endif%}
+    {%if not _ARG['page'] == _ARG['page_max'] and _ARG['page_max'] >= 1%}<li class="paginator__item"><a href="{{request.path}}?query={{_ARG['query']}}&page={{_ARG['page_max']}}&type={{_ARG['type']}}&sort={{_ARG['sort']}}">{{_ARG['page_max']}}</a></li>{%endif%}
+  </ul>
+</div>
+<!-- end paginator -->

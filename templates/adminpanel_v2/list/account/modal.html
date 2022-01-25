@@ -1,0 +1,30 @@
+<!-- modal insertNew -->
+<div id="modal-insertNew" class="zoom-anim-dialog mfp-hide modal">
+	<h6 class="modal__title">Yeni Hesap Ekle</h6>
+
+  <input type="text" class="form__input" placeholder="Kullanıcı Adı" id="inputInsertNew_username">
+  <input type="text" class="form__input" placeholder="E-Posta Adresi" id="inputInsertNew_emailAddress">
+  <input type="password" class="form__input" placeholder="Parola" id="inputInsertNew_password">
+  <input type="password" class="form__input" placeholder="Güvenlik Parolası" id="inputInsertNew_securityPassword">
+
+	<div class="modal__btns">
+    <button id="btnInsertNew_insertNew" class="modal__btn modal__btn--apply" type="button">Oluştur</button>
+		<button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+	</div>
+</div>
+<!-- end modal insertNew -->
+
+{%for result in results_info%}
+  <!-- modal drop -->
+  <div id="modal-drop-{{result.idAccount}}" class="zoom-anim-dialog mfp-hide modal">
+    <h6 class="modal__title">{{result.username}} Adlı Hesabı Sil</h6>
+
+    <p class="modal__text">Bu hesabı kalıcı olarak silmek istediğinize emin misiniz?</p>
+
+    <div class="modal__btns">
+      <button onclick="adminpanel_v2_function(tableName='account', functionName='drop', dictionary={'idAccount': '{{result.idAccount|safe}}'})" class="modal__btn modal__btn--apply" type="button">Sil</button>
+      <button class="modal__btn modal__btn--dismiss" type="button">İptal Et</button>
+    </div>
+  </div>
+  <!-- end modal drop -->
+{%endfor%}

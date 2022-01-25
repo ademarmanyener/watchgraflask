@@ -1,0 +1,113 @@
+{%extends 'layouts/default.html'%}
+{%block container%}
+
+<style media="screen">
+	.form__btn { display: inline-flex; margin-right: 25px; }
+	input[type=checkbox], input[type=radio] {
+		transition: border 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+	}
+	input[type=checkbox], input[type=radio]:checked {
+		border: 2px solid white;
+	}
+	.modal__btn--dismiss {
+		width: calc(50%);
+		margin-left: calc(25%);
+	}
+</style>
+
+	<!-- contacts -->
+	<section class="section">
+		<div class="container">
+			<div class="row">
+				<div class="col-12 col-md-7 col-lg-8">
+					<div class="row">
+						<!-- section title -->
+						<div class="col-12">
+							<h2 class="section__title">Yeni Bir Profil Oluştur</h2>
+						</div>
+						<!-- end section title -->
+
+						<div class="col-12">
+							<form action="{{url_for('accountprofile_new')}}" method="POST" class="form form--contacts">
+								<a href="#modal-select-avatar" class="form__btn open-modal">
+									<span>Avatar Seç</span>
+								</a>
+								<a href="#modal-select-background" class="form__btn open-modal">
+									<span>Arkaplan Seç</span>
+								</a>
+								<div id="modal-select-avatar" class="zoom-anim-dialog modal mfp-hide">
+										<h6 class="modal__title">Avatar Seç</h6>
+										<p class="modal__text">Bunlardan birini avatar olarak seçin.</p>
+										<br/>
+										<p class="modal__text">
+											{%for avatar in g.AVATARS_LIST%}
+											<input type="radio" id="{{avatar}}" name="avatar" value="{{avatar}}" style="width: 75px; height: 75px;
+																																																	margin-top: 5px; margin-left: 5px; margin-right: 5px; margin-bottom: 5px; background-image: url({{url_for('static', filename='img/avatars/' + avatar)}}); background-size: cover; background-position: center; background-repeat: no-repeat; cursor: pointer;">
+											{%endfor%}
+
+										</p>
+										<div class="modal__btns">
+											<button class="modal__btn modal__btn--dismiss" type="button">Seç</button>
+										</div>
+								</div>
+								<div id="modal-select-background" class="zoom-anim-dialog modal mfp-hide">
+										<h6 class="modal__title">Arkaplan Seç</h6>
+										<p class="modal__text">Bunlardan birini arkaplan olarak seçin.</p>
+										<br/>
+										<p class="modal__text">
+											{%for background in g.BACKGROUNDS_LIST%}
+											<input type="radio" id="{{background}}" name="background" value="{{background}}" style="width: 150px; height: 75px;
+																																																	margin-top: 5px; margin-left: 5px; margin-right: 5px; margin-bottom: 5px; background-image: url({{url_for('static', filename='img/backgrounds/' + background)}}); background-size: cover; background-position: center; background-repeat: no-repeat; cursor: pointer;">
+											{%endfor%}
+
+										</p>
+										<div class="modal__btns">
+											<button class="modal__btn modal__btn--dismiss" type="button">Seç</button>
+										</div>
+								</div>
+								<br/>
+								<br/>
+								{{form.username(class='form__input', placeholder='Kullanıcı Adı')}}
+								{{form.password(class='form__input', placeholder='Parola (boş bırakılabilir)')}}
+								<div class="sign__group sign__group--checkbox">
+									<input id="childaccount" name="childaccount" type="checkbox">
+									<label for="childaccount">Çocuk Hesabı</label>
+								</div>
+								<br/>
+								<br/>
+								<br/>
+								<a href="{{url_for('welcome')}}" class="form__btn" type="button">Ana Menü</a>
+								<a href="{{url_for('destroy_account')}}" class="form__btn" type="button">Çıkış Yap</a>
+								{{form.create(class='form__btn', style='border: 0px; cursor: pointer;')}}
+							{{form.csrf_token}}
+							</form>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-12 col-md-5 col-lg-4">
+					<div class="row">
+						<!-- section title -->
+						<div class="col-12">
+							<h2 class="section__title">Neden bir profile ihtiyacım var?</h2>
+						</div>
+						<!-- end section title -->
+
+						<div class="col-12">
+							<p class="section__text">Tek bir hesap ile kayıt ol, arkadaşların veya ailen farklı, sen farklı bir profil ile kendine özel içeriklere ulaş.</p>
+
+							<ul class="contacts__social">
+								<li class="facebook"><a href="#"><i class="icon ion-logo-facebook"></i></a></li>
+								<li class="instagram"><a href="#"><i class="icon ion-logo-instagram"></i></a></li>
+								<li class="twitter"><a href="#"><i class="icon ion-logo-twitter"></i></a></li>
+								<li class="vk"><a href="#"><i class="icon ion-logo-vk"></i></a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</section>
+	<!-- end contacts -->
+{%endblock%}
