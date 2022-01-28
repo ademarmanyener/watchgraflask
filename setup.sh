@@ -53,7 +53,12 @@ create_db () {
   python3 -c "from includes import *;db.create_all();"
 }
 
+run_init () {
+  python3 -c "from includes import *;run_init();"
+}
+
 print_title
 check_virtenv
 install_reqs
 create_db
+run_init
