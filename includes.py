@@ -61,7 +61,7 @@ app.config['MAIL_USE_SSL'] = True
 
 mail = Mail(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db/charles.sqlite3'
+app.config['SQLALCHEMY_DATABASE_URI'] = SETTINGS['app_config']['sqlalchemy_database_uri']
 
 #app.config['SQLALCHEMY_POOL_RECYCLE'] = 60
 #app.config['SQLALCHEMY_POOL_TIMEOUT'] = 360

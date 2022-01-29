@@ -12,4 +12,14 @@ SETTINGS = {
         "username": "YOUR GOOGLE EMAIL ADDRESS",
         "password": "YOUR GOOGLE EMAIL PASSWORD",
     },
+    "app_config": {
+        "sqlalchemy_database_uri": "sqlite:///db/charles.sqlite3",
+    },
+    "debug": {
+        "enabled": False,
+        "session": {
+            "account_username": "YOUR ACCOUNT USERNAME FOR DEBUG",
+            "profile_username": "YOUR PROFILE USERNAME FOR DEBUG",
+        },
+    },
 }
