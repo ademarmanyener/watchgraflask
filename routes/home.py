@@ -16,22 +16,54 @@ def favicon():
 def storage(filename):
   return send_from_directory(os.path.join(app.root_path, 'storage'), filename)
 
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/', methods=['GET'])
 def home():
-    if check_account() == True and check_profile() == False: return redirect(url_for('whoiswatching'))
+  # if a profile signed in
+  if check_profile():
+    query = dict(
+      latest_watched_episodes = latestWatchedEpisode.query.filter_by(
+        idAddAccount = session['ACCOUNT']['idAccount'],
+        idAddProfile = session['PROFILE']['idProfile'],
+      ).order_by(latestWatchedEpisode.watchDate.desc()).all(),
+      latest_added_episodes = tvEpisodeContent.query.filter_by(
+        visibility = 1,
+      ).order_by(tvEpisodeContent.addDate.desc(), tvEpisodeContent.episodeNumber.desc()).all(),
+      latest_added_movies = content.query.filter_by(
+        visibility = 1,
+        type = 'MOVIE',
+      ).order_by(content.addDate.desc()).all(),
+    )
+    return render_template('home/private.html', title='Anasayfa', context=query)
 
-    highlight_info = highlightContent.query.all()
-    latest_all_info = content.query.order_by(content.addDate.desc()).limit(24).all()
-    latest_movie_info = content.query.filter_by(type='MOVIE').order_by(content.addDate.desc()).limit(24).all()
-    latest_tv_info = content.query.filter_by(type='TV').order_by(content.addDate.desc()).limit(24).all()
-    ### it's actually not random yet! so fix it too!
-    random_info = content.query.limit(6).all()
-    latest_tv_episodes_info = tvEpisodeContent.query.order_by(tvEpisodeContent.addDate.desc()).limit(18).all() # beta
+  # if anonymous 
+  else:
+    most_watched_series = content.query.filter_by(
+      visibility = 1,
+      type = 'TV',
+    ).order_by(content.visitCount.desc()).limit(5).all()
+    most_watched_movies = content.query.filter_by(
+      visibility = 1,
+      type = 'MOVIE',
+    ).order_by(content.visitCount.desc()).limit(5).all()
+    most_voted_contents = content.query.filter_by(
+      visibility = 1,
+    ).order_by(content.voteAverage.desc()).limit(9).all()
+    latest_added_contents = content.query.filter_by(
+      visibility = 1,
+    ).order_by(content.addDate.desc()).limit(125).all()
+    latest_added_episodes = tvEpisodeContent.query.filter_by(
+      visibility = 1,
+    ).order_by(tvEpisodeContent.addDate.desc(), tvEpisodeContent.episodeNumber.desc()).limit(35).all()
+    highlighted_contents = highlightContent.query.order_by(highlightContent.highlightDate.desc()).all()
 
-    if check_profile():
-      return render_template('home/private.html', title='Anasayfa', content=content, latestWatchedEpisode=latestWatchedEpisode, highlightContent=highlightContent, tvSeasonContent=tvSeasonContent, tvEpisodeContent=tvEpisodeContent)
-    else:
-      return render_template('home/public.html', title='', content=content, highlightContent=highlightContent, tvSeasonContent=tvSeasonContent, tvEpisodeContent=tvEpisodeContent)
+    return render_template('home/public.html', \
+                                                      most_watched_series=most_watched_series, \
+                                                      most_watched_movies=most_watched_movies, \
+                                                      most_voted_contents=most_voted_contents, \
+                                                      latest_added_contents=latest_added_contents, \
+                                                      latest_added_episodes=latest_added_episodes, \
+                                                      highlighted_contents=highlighted_contents)
+  return 'this place looks so lonely.'
 
 @app.route('/beta/everyone', methods=['POST', 'GET'])
 def home_beta_everyone():
