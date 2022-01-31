@@ -18,6 +18,8 @@ def storage(filename):
 
 @app.route('/', methods=['GET'])
 def home():
+  if check_account() and not check_profile(): return redirect(url_for('whoiswatching'))
+
   # if a profile signed in
   if check_profile():
     query = dict(

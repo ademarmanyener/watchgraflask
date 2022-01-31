@@ -17,3 +17,4 @@ python-slugify
 pillow
 termcolor
 bs4
+pymysql

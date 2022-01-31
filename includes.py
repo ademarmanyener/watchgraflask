@@ -63,12 +63,12 @@ mail = Mail(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = SETTINGS['app_config']['sqlalchemy_database_uri']
 
-#app.config['SQLALCHEMY_POOL_RECYCLE'] = 60
-#app.config['SQLALCHEMY_POOL_TIMEOUT'] = 360
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_size' : 100, 'pool_recycle' : 280}
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
 db = SQLAlchemy(app)
+db.init_app(app) # re-initing the db, it's stupid but works i guess
 
 migrate = Migrate(app, db, render_as_batch=True)
 
