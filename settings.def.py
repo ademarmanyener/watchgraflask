@@ -13,7 +13,12 @@ SETTINGS = {
         "password": "YOUR GOOGLE EMAIL PASSWORD",
     },
     "app_config": {
-        "sqlalchemy_database_uri": "sqlite:///db/charles.sqlite3",
+        "sqlalchemy_database_uri": "mysql+pymysql://{username}:{password}@{hostname}/{database}".format(
+            username = "",
+            password = "",
+            hostname = "",
+            database = "",
+        ),
     },
     "debug": {
         "enabled": False,

@@ -14,8 +14,9 @@ def before_request():
     get_debug_account = account.query.filter_by(username=SETTINGS['debug']['session']['account_username']).first()
     if get_debug_account:
       get_debug_profile = profile.query.filter_by(username=SETTINGS['debug']['session']['profile_username'], idAccount=get_debug_account.idAccount).first()
-      session['ACCOUNT'] = {'idAccount': get_debug_account.idAccount}
-      session['PROFILE'] = {'idProfile': get_debug_profile.idProfile}
+      if get_debug_profile:
+          session['ACCOUNT'] = {'idAccount': get_debug_account.idAccount}
+          session['PROFILE'] = {'idProfile': get_debug_profile.idProfile}
   # beta end 
   g.AVATARS_LIST = os.listdir(os.path.join(os.path.dirname(app.instance_path), 'static', 'img', 'avatars'))
   g.BACKGROUNDS_LIST = os.listdir(os.path.join(os.path.dirname(app.instance_path), 'static', 'img', 'backgrounds'))

@@ -147,4 +147,5 @@ def run_init():
             ))
 
     db.session.commit()
+    print('OK.')
     return 0

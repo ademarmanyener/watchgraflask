@@ -81,6 +81,36 @@ class content(db.Model):
         if self.type == 'MOVIE': return movieContentGenre.query.filter_by(idContent=self.idContent).all()
         elif self.type == 'TV': return tvContentGenre.query.filter_by(idContent=self.idContent).all()
 
+    def get_latest_season(self):
+        if self.type == 'TV':
+            latest_season = tvSeasonContent.query.filter_by(
+                idContent = self.idContent,
+                visibility = 1,
+            ).order_by(
+                tvSeasonContent.seasonNumber.desc(),
+                tvSeasonContent.airDate.desc(),
+                tvSeasonContent.addDate.desc(),
+            ).first()
+
+            if latest_season: return latest_season
+        return False
+
+    def get_latest_episode(self):
+        if self.type == 'TV':
+            if self.get_latest_season():
+                latest_episode = tvEpisodeContent.query.filter_by(
+                    idContent = self.idContent,
+                    idTvSeason = self.get_latest_season().idTvSeason,
+                    visibility = 1,
+                ).order_by(
+                    tvEpisodeContent.episodeNumber.desc(),
+                    tvEpisodeContent.airDate.desc(),
+                    tvEpisodeContent.addDate.desc(),
+                ).first()
+
+                if latest_episode: return latest_episode
+        return False
+
     def drop(self):
         #### FOLDER
         content_dir = os.path.join(STORAGE_PATH, 'content', self.idContent)
@@ -155,6 +185,8 @@ class highlightContent(db.Model):
         self.idAddAccount = idAddAccount
         self.highlightDate = datetime.now(pytz.timezone(PY_TIMEZONE))
 
+    def get_content(self): return content.query.filter_by(idContent=self.idContent).first()
+
     def drop(self):
         db.session.delete(self)
         db.session.commit()
@@ -176,6 +208,10 @@ class latestWatchedEpisode(db.Model):
         self.idAddProfile = idAddProfile
         self.idAddAccount = idAddAccount
         self.watchDate = datetime.now(pytz.timezone(PY_TIMEZONE))
+
+    def get_content(self): return content.query.filter_by(idContent=self.idContent).first()
+    def get_season(self): return tvSeasonContent.query.filter_by(idTvSeason=self.idTvSeason).first()
+    def get_episode(self): return tvEpisodeContent.query.filter_by(idTvEpisode=self.idTvEpisode).first()
 
     def drop(self):
         db.session.delete(self)

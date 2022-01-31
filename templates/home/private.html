@@ -15,7 +15,7 @@
   }
 </style>
 
-{%if latestWatchedEpisode.query.filter_by(idAddProfile=session['PROFILE']['idProfile']).all()|length >= 1%}
+{% if context['latest_watched_episodes']|length >= 1 %}
 <!-- latest watched episodes -->
 <section class="home" style="margin-top: 30px;">
   <!-- section title -->
@@ -41,32 +41,34 @@
     <div class="row">
       <div class="col-12">
         <div class="owl-carousel home__carousel">
-          {%for _l_w_episode in latestWatchedEpisode.query.filter_by(idAddProfile=session['PROFILE']['idProfile']).order_by(latestWatchedEpisode.watchDate.desc()).limit(25).all()%}
+          {% for _l_w_episode in context['latest_watched_episodes'] %}
             <div class="item">
               <!-- card -->
               <div class="card card--big">
                 <div class="card__cover">
-                  <img src="{{tvEpisodeContent.query.filter_by(idTvEpisode=_l_w_episode.idTvEpisode).first().imagePoster}}" alt="">
+                  <img src="{{ _l_w_episode.get_episode().imagePoster }}" alt="">
 
-                  <a href="{{url_for('tv_watch', title_url=content.query.filter_by(idContent=_l_w_episode.idContent).first().titleUrl, season_number=tvSeasonContent.query.filter_by(idTvSeason=_l_w_episode.idTvSeason).first().seasonNumber, episode_number=tvEpisodeContent.query.filter_by(idTvEpisode=_l_w_episode.idTvEpisode).first().episodeNumber)}}" class="card__play">
+                  <a href="{{ url_for('tv_watch', title_url=_l_w_episode.get_content().titleUrl, season_number=_l_w_episode.get_season().seasonNumber, episode_number=_l_w_episode.get_episode().episodeNumber) }}" class="card__play">
                     <i class="icon ion-ios-play"></i>
                   </a>
                 </div>
                 <div class="card__content">
-                  <h3 class="card__title"><a href="{{url_for('tv_title', title_url=content.query.filter_by(idContent=_l_w_episode.idContent).first().titleUrl)}}">{{content.query.filter_by(idContent=_l_w_episode.idContent).first().title}}</a></h3>
-                  <span class="card__rate" style="font-size: 17px; font-weight: lighter;">{{tvEpisodeContent.query.filter_by(idTvEpisode=_l_w_episode.idTvEpisode).first().seasonNumber}}. Sezon {{tvEpisodeContent.query.filter_by(idTvEpisode=_l_w_episode.idTvEpisode).first().episodeNumber}}. Bölüm</span>
+                  <h3 class="card__title"><a href="{{ url_for('tv_title', title_url=_l_w_episode.get_content().titleUrl) }}">{{ _l_w_episode.get_content().title }}</a></h3>
+                  <span class="card__rate" style="font-size: 17px; font-weight: lighter;">{{ _l_w_episode.get_season().seasonNumber }}. Sezon {{ _l_w_episode.get_episode().episodeNumber }}. Bölüm</span>
+                  <br>
+                  <span class="card__rate" style="font-size: 14px; font-weight: lighter;">{{ format_datetime(_l_w_episode.watchDate, 'short', locale='tr') }}</span>
                 </div>
               </div>
               <!-- end card -->
             </div>
-          {%endfor%}
+          {% endfor %}
         </div>
       </div>
     </div>
   </div>
 </section>
 <!-- end latest watched episodes -->
-{%endif%}
+{% endif %}
 
 <!-- expected premiere -->
 <section class="section section--bg" data-bg="#" style="padding: 0px;">
@@ -81,11 +83,11 @@
           </div>
           <!-- end section title -->
 
-            {%for episode in tvEpisodeContent.query.order_by(tvEpisodeContent.addDate.desc()).limit(30).all()%}
+            {% for episode in context['latest_added_episodes'][:30] %} <!-- limit: 30 -->
               <div class="col-6 col-sm-4 col-lg-3 col-xl-2 card-latestEpisode">
                 {{ card_wide(episode=episode) }}
               </div>
-            {%endfor%}
+            {% endfor %}
 
           <button id="button-latestEpisodes-loadMore" class="header__sign-in" style="color: #0d0d0d; width: 100%; margin: 0px; border-radius: 0px;">Daha Fazla Göster</button>
 
@@ -109,11 +111,11 @@
           </div>
           <!-- end section title -->
 
-            {%for content in content.query.filter_by(type='MOVIE').order_by(content.addDate.desc()).all()%}
+            {% for content in context['latest_added_movies'][:30] %}
               <div class="col-6 col-sm-4 col-lg-3 col-xl-2">
                 {{ card_long(content=content) }}
               </div>
-            {%endfor%}
+            {% endfor %}
 
         </div>
       </div>

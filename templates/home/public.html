@@ -88,7 +88,7 @@
 {%for i in range(4)%}<br />{%endfor%}
 
 <!-- most watched ones begin -->
-{%if content.query.all()|length >= 10%}
+{% if most_watched_movies|length + most_watched_series|length >= 10 %}
 <section class="content">
   <div class="container">
     <div class="row">
@@ -96,45 +96,45 @@
 
         <div class="row">
           <!-- tv series highlight begin -->
-          {%if content.query.filter_by(type='TV').all()|length >= 5%}
+          {% if most_watched_series|length >= 5 %}
           <div class="col-sm-12 col-md-6 col-lg-6">
             <h2 class="content__title">En Çok İzlenen Diziler</h2>
-            <a href="{{url_for('content_redirect', title_url=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[0].titleUrl)}}">
+            <a href="{{ url_for('content_redirect', title_url=most_watched_series[0].titleUrl) }}">
               <div class="row">
-                <div class="col-12 test" style="height: 300px; background-image: url({{content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[0].imageBackground}}); background-repeat: no-repeat; background-size: cover; background-position: center;">
+                <div class="col-12 test" style="height: 300px; background-image: url({{ most_watched_series[0].imageBackground }}); background-repeat: no-repeat; background-size: cover; background-position: center;">
                   <div class="poster-subject">
                     <figure class="poster-img">
-                      <img src="{{content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[0].imagePoster}}" alt="">
+                      <img src="{{ most_watched_series[0].imagePoster }}" alt="">
                     </figure>
-                    <h3 class="poster-truncate poster-truncate-title poster-truncate-title-with-thumbnail">{{content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[0].title}}</h3>
-                    <h4 class="poster-truncate poster-truncate-detail poster-truncate-detail-with-thumbnail">{{tvEpisodeContent.query.filter_by(idContent=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[0].idContent).order_by(tvEpisodeContent.addDate.desc()).first().seasonNumber}}. Sezon {{tvEpisodeContent.query.filter_by(idContent=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[0].idContent).order_by(tvEpisodeContent.addDate.desc()).first().episodeNumber}}. Bölüm</h4>
-                    <span class="poster-tag">{{format_date(content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[0].addDate, 'full', locale='tr')}}</span>
+                    <h3 class="poster-truncate poster-truncate-title poster-truncate-title-with-thumbnail">{{ most_watched_series[0].title }}</h3>
+                    <h4 class="poster-truncate poster-truncate-detail poster-truncate-detail-with-thumbnail">{{ most_watched_series[0].get_latest_season().seasonNumber }}. Sezon {{ most_watched_series[0].get_latest_episode().episodeNumber }}. Bölüm</h4>
+                    <span class="poster-tag">{{ format_date(most_watched_series[0].addDate, 'full', locale='tr') }}</span>
                   </div>
                 </div> 
               </div>
             </a>
             <div class="row">
               <div class="col-6 test" style="height: 150px;">
-                <a href="{{url_for('content_redirect', title_url=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[1].titleUrl)}}">
+                <a href="{{ url_for('content_redirect', title_url=most_watched_series[1].titleUrl) }}">
                   <div class="row">
-                    <div class="col-12 test" style="height: 150px; background-image: url({{content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[1].imageBackground}}); background-repeat: no-repeat; background-size: cover; background-position: center;">
+                    <div class="col-12 test" style="height: 150px; background-image: url({{ most_watched_series[1].imageBackground }}); background-repeat: no-repeat; background-size: cover; background-position: center;">
                       <div class="poster-subject">
-                        <h3 class="poster-truncate poster-truncate-title">{{content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[1].title}}</h3>
-                        <h4 class="poster-truncate poster-truncate-detail">{{tvEpisodeContent.query.filter_by(idContent=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[1].idContent).order_by(tvEpisodeContent.addDate.desc()).first().seasonNumber}}. Sezon {{tvEpisodeContent.query.filter_by(idContent=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[1].idContent).order_by(tvEpisodeContent.addDate.desc()).first().episodeNumber}}. Bölüm</h4>
-                        <span class="poster-tag">{{format_date(content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[1].addDate, 'full', locale='tr')}}</span>
+                        <h3 class="poster-truncate poster-truncate-title">{{ most_watched_series[1].title }}</h3>
+                        <h4 class="poster-truncate poster-truncate-detail">{{ most_watched_series[1].get_latest_season().seasonNumber }}. Sezon {{ most_watched_series[1].get_latest_episode().episodeNumber }}. Bölüm</h4>
+                        <span class="poster-tag">{{ format_date(most_watched_series[1].addDate, 'full', locale='tr') }}</span>
                       </div>
                     </div>
                   </div>
                 </a>
               </div>
               <div class="col-6 test" style="height: 150px;">
-                <a href="{{url_for('content_redirect', title_url=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[2].titleUrl)}}">
+                <a href="{{ url_for('content_redirect', title_url=most_watched_series[2].titleUrl) }}">
                   <div class="row">
-                    <div class="col-12 test" style="height: 150px; background-image: url({{content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[2].imageBackground}}); background-repeat: no-repeat; background-size: cover; background-position: center;">
+                    <div class="col-12 test" style="height: 150px; background-image: url({{ most_watched_series[2].imageBackground }}); background-repeat: no-repeat; background-size: cover; background-position: center;">
                       <div class="poster-subject">
-                        <h3 class="poster-truncate poster-truncate-title">{{content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[2].title}}</h3>
-                        <h4 class="poster-truncate poster-truncate-detail">{{tvEpisodeContent.query.filter_by(idContent=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[2].idContent).order_by(tvEpisodeContent.addDate.desc()).first().seasonNumber}}. Sezon {{tvEpisodeContent.query.filter_by(idContent=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[2].idContent).order_by(tvEpisodeContent.addDate.desc()).first().episodeNumber}}. Bölüm</h4>
-                        <span class="poster-tag">{{format_date(content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[2].addDate, 'full', locale='tr')}}</span>
+                        <h3 class="poster-truncate poster-truncate-title">{{ most_watched_series[2].title }}</h3>
+                        <h4 class="poster-truncate poster-truncate-detail">{{ most_watched_series[2].get_latest_season().seasonNumber }}. Sezon {{ most_watched_series[2].get_latest_episode().episodeNumber }}. Bölüm</h4>
+                        <span class="poster-tag">{{ format_date(most_watched_series[2].addDate, 'full', locale='tr') }}</span>
                       </div>
                     </div>
                   </div>
@@ -143,26 +143,26 @@
             </div>
             <div class="row">
               <div class="col-6 test" style="height: 150px;">
-                <a href="{{url_for('content_redirect', title_url=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[3].titleUrl)}}">
+                <a href="{{ url_for('content_redirect', title_url=most_watched_series[3].titleUrl) }}">
                   <div class="row">
-                    <div class="col-12 test" style="height: 150px; background-image: url({{content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[3].imageBackground}}); background-repeat: no-repeat; background-size: cover; background-position: center;">
+                    <div class="col-12 test" style="height: 150px; background-image: url({{ most_watched_series[3].imageBackground }}); background-repeat: no-repeat; background-size: cover; background-position: center;">
                       <div class="poster-subject">
-                        <h3 class="poster-truncate poster-truncate-title">{{content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[3].title}}</h3>
-                        <h4 class="poster-truncate poster-truncate-detail">{{tvEpisodeContent.query.filter_by(idContent=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[3].idContent).order_by(tvEpisodeContent.addDate.desc()).first().seasonNumber}}. Sezon {{tvEpisodeContent.query.filter_by(idContent=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[3].idContent).order_by(tvEpisodeContent.addDate.desc()).first().episodeNumber}}. Bölüm</h4>
-                        <span class="poster-tag">{{format_date(content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[3].addDate, 'full', locale='tr')}}</span>
+                        <h3 class="poster-truncate poster-truncate-title">{{ most_watched_series[3].title }}</h3>
+                        <h4 class="poster-truncate poster-truncate-detail">{{ most_watched_series[3].get_latest_season().seasonNumber }}. Sezon {{ most_watched_series[3].get_latest_episode().episodeNumber }}. Bölüm</h4>
+                        <span class="poster-tag">{{ format_date(most_watched_series[3].addDate, 'full', locale='tr') }}</span>
                       </div>
                     </div>
                   </div>
                 </a>
               </div>
               <div class="col-6 test" style="height: 150px;">
-                <a href="{{url_for('content_redirect', title_url=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[4].titleUrl)}}">
+                <a href="{{ url_for('content_redirect', title_url=most_watched_series[4].titleUrl) }}">
                   <div class="row">
-                    <div class="col-12 test" style="height: 150px; background-image: url({{content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[4].imageBackground}}); background-repeat: no-repeat; background-size: cover; background-position: center;">
+                    <div class="col-12 test" style="height: 150px; background-image: url({{ most_watched_series[4].imageBackground }}); background-repeat: no-repeat; background-size: cover; background-position: center;">
                       <div class="poster-subject">
-                        <h3 class="poster-truncate poster-truncate-title">{{content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[4].title}}</h3>
-                        <h4 class="poster-truncate poster-truncate-detail">{{tvEpisodeContent.query.filter_by(idContent=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[4].idContent).order_by(tvEpisodeContent.addDate.desc()).first().seasonNumber}}. Sezon {{tvEpisodeContent.query.filter_by(idContent=content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[4].idContent).order_by(tvEpisodeContent.addDate.desc()).first().episodeNumber}}. Bölüm</h4>
-                        <span class="poster-tag">{{format_date(content.query.filter_by(type='TV').order_by(content.visitCount.desc()).all()[4].addDate, 'full', locale='tr')}}</span>
+                        <h3 class="poster-truncate poster-truncate-title">{{ most_watched_series[4].title }}</h3>
+                        <h4 class="poster-truncate poster-truncate-detail">{{ most_watched_series[4].get_latest_season().seasonNumber }}. Sezon {{ most_watched_series[4].get_latest_episode().episodeNumber }}. Bölüm</h4>
+                        <span class="poster-tag">{{ format_date(most_watched_series[4].addDate, 'full', locale='tr') }}</span>
                       </div>
                     </div>
                   </div>
@@ -170,72 +170,72 @@
               </div>
             </div>
           </div>
-          {%endif%}
+          {% endif %}
           <!-- tv series highlight end -->
 
           <!-- movies highlight begin -->
-          {%if content.query.filter_by(type='MOVIE').all()|length >= 5%}
+          {% if most_watched_movies|length >= 5 %}
           <div class="col-sm-12 col-md-6 col-lg-6">
             <h2 class="content__title">En Çok İzlenen Filmler</h2>
             <div class="row">
               <div class="col-6 test" style="height: 150px;">
-                <a href="{{url_for('content_redirect', title_url=content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[0].titleUrl)}}">
+                <a href="{{ url_for('content_redirect', title_url=most_watched_movies[0].titleUrl) }}">
                   <div class="row">
-                    <div class="col-12 test" style="height: 150px; background-image: url({{content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[0].imageBackground}}); background-repeat: no-repeat; background-size: cover; background-position: center;">
+                    <div class="col-12 test" style="height: 150px; background-image: url({{ most_watched_movies[0].imageBackground }}); background-repeat: no-repeat; background-size: cover; background-position: center;">
                       <div class="poster-subject">
-                        <h3 class="poster-truncate poster-truncate-title">{{content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[0].title}}</h3>
-                        <span class="poster-tag">{{format_date(content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[0].addDate, 'full', locale='tr')}}</span>
+                        <h3 class="poster-truncate poster-truncate-title">{{ most_watched_movies[0].title }}</h3>
+                        <span class="poster-tag">{{ format_date(most_watched_movies[0].addDate, 'full', locale='tr') }}</span>
                       </div>
                     </div>
                   </div>
                 </a>
               </div>
               <div class="col-6 test" style="height: 150px;">
-                <a href="{{url_for('content_redirect', title_url=content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[1].titleUrl)}}">
+                <a href="{{ url_for('content_redirect', title_url=most_watched_movies[1].titleUrl) }}">
                   <div class="row">
-                    <div class="col-12 test" style="height: 150px; background-image: url({{content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[1].imageBackground}}); background-repeat: no-repeat; background-size: cover; background-position: center;">
+                    <div class="col-12 test" style="height: 150px; background-image: url({{ most_watched_movies[1].imageBackground }}); background-repeat: no-repeat; background-size: cover; background-position: center;">
                       <div class="poster-subject">
-                        <h3 class="poster-truncate poster-truncate-title">{{content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[1].title}}</h3>
-                        <span class="poster-tag">{{format_date(content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[1].addDate, 'full', locale='tr')}}</span>
+                        <h3 class="poster-truncate poster-truncate-title">{{ most_watched_movies[1].title }}</h3>
+                        <span class="poster-tag">{{ format_date(most_watched_movies[1].addDate, 'full', locale='tr') }}</span>
                       </div>
                     </div>
                   </div>
                 </a>
               </div>
             </div>
-            <a href="{{url_for('content_redirect', title_url=content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[2].titleUrl)}}">
+            <a href="{{ url_for('content_redirect', title_url=most_watched_movies[2].titleUrl) }}">
               <div class="row">
-                <div class="col-12 test" style="height: 300px; background-image: url({{content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[2].imageBackground}}); background-repeat: no-repeat; background-size: cover; background-position: center;">
+                <div class="col-12 test" style="height: 300px; background-image: url({{ most_watched_movies[2].imageBackground }}); background-repeat: no-repeat; background-size: cover; background-position: center;">
                   <div class="poster-subject">
                     <figure class="poster-img">
-                      <img src="{{content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[2].imagePoster}}" alt="">
+                      <img src="{{ most_watched_movies[2].imagePoster }}" alt="{{ most_watched_movies[2].title }} ({{ most_watched_movies[2].titleOriginal }})">
                     </figure>
-                    <h3 class="poster-truncate poster-truncate-title poster-truncate-title-with-thumbnail">{{content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[2].title}}</h3>
-                    <span class="poster-tag">{{format_date(content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[2].addDate, 'full', locale='tr')}}</span>
+                    <h3 class="poster-truncate poster-truncate-title poster-truncate-title-with-thumbnail">{{ most_watched_movies[2].title }}</h3>
+                    <span class="poster-tag">{{ format_date(most_watched_movies[2].addDate, 'full', locale='tr') }}</span>
                   </div>
                 </div> 
               </div>
             </a>
             <div class="row">
               <div class="col-6 test" style="height: 150px;">
-                <a href="{{url_for('content_redirect', title_url=content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[3].titleUrl)}}">
+                <a href="{{ url_for('content_redirect', title_url=most_watched_movies[3].titleUrl) }}">
                   <div class="row">
-                    <div class="col-12 test" style="height: 150px; background-image: url({{content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[3].imageBackground}}); background-repeat: no-repeat; background-size: cover; background-position: center;">
+                    <div class="col-12 test" style="height: 150px; background-image: url({{ most_watched_movies[3].imageBackground }}); background-repeat: no-repeat; background-size: cover; background-position: center;">
                       <div class="poster-subject">
-                        <h3 class="poster-truncate poster-truncate-title">{{content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[3].title}}</h3>
-                        <span class="poster-tag">{{format_date(content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[3].addDate, 'full', locale='tr')}}</span>
+                        <h3 class="poster-truncate poster-truncate-title">{{ most_watched_movies[3].title }}</h3>
+                        <span class="poster-tag">{{ format_date(most_watched_movies[3].addDate, 'full', locale='tr') }}</span>
                       </div>
                     </div>
                   </div>
                 </a>
               </div>
               <div class="col-6 test" style="height: 150px;">
-                <a href="{{url_for('content_redirect', title_url=content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[4].titleUrl)}}">
+                <a href="{{ url_for('content_redirect', title_url=most_watched_movies[4].titleUrl) }}">
                   <div class="row">
-                    <div class="col-12 test" style="height: 150px; background-image: url({{content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[4].imageBackground}}); background-repeat: no-repeat; background-size: cover; background-position: center;">
+                    <div class="col-12 test" style="height: 150px; background-image: url({{ most_watched_movies[4].imageBackground }}); background-repeat: no-repeat; background-size: cover; background-position: center;">
                       <div class="poster-subject">
-                        <h3 class="poster-truncate poster-truncate-title">{{content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[4].title}}</h3>
-                        <span class="poster-tag">{{format_date(content.query.filter_by(type='MOVIE').order_by(content.visitCount.desc()).all()[4].addDate, 'full', locale='tr')}}</span>
+                        <h3 class="poster-truncate poster-truncate-title">{{ most_watched_movies[4].title }}</h3>
+                        <span class="poster-tag">{{ format_date(most_watched_movies[4].addDate, 'full', locale='tr') }}</span>
                       </div>
                     </div>
                   </div>
@@ -243,7 +243,7 @@
               </div>
             </div>
           </div>
-          {%endif%}
+          {% endif %}
           <!-- movies highlight end -->
         </div>
 
@@ -251,7 +251,7 @@
     </div>
   </div>
 </section>
-{%endif%}
+{% endif %}
 <!-- most watched ones end -->
 
 <style>
@@ -385,18 +385,18 @@
               <div class="dark-segment">
                 <!--<div class="segment-title">En Çok Oy Almış İçerikler</div>-->
                 <ul class="clearfix new-tvseries">
-                  {%for _content in content.query.filter_by().order_by(content.voteAverage.desc()).limit(9).all()%}
+                  {% for _content in most_voted_contents %}
                   <li class="segment-poster-sm">
                     <div class="poster poster-xs">
-                      <a href="{{url_for('content_redirect', title_url=_content.titleUrl)}}" data-navigo="" title="{{_content.titleOriginal}}">
-                        <h4 class="poster-detail">{%if _content.type == 'MOVIE'%}Film{%elif _content.type == 'TV'%}Dizi{%endif%}</h4>
-                        <span class="card__rate poster-rate"><i class="icon ion-ios-star"></i>{{_content.voteAverage}}</span>
-                        <h2 class="poster-text">{{_content.title}}</h2>
-                        <img class="lazy-wide loaded" src="{{_content.imageBackground}}" alt="{{_content.titleOriginal}}" data-src="{{_content.imageBackground}}" data-was-processed="true">
+                      <a href="{{ url_for('content_redirect', title_url=_content.titleUrl) }}" data-navigo="" title="{{ _content.titleOriginal }}">
+                        <h4 class="poster-detail">{% if _content.type == 'MOVIE' %}Film{% elif _content.type == 'TV' %}Dizi{% endif %}</h4>
+                        <span class="card__rate poster-rate"><i class="icon ion-ios-star"></i>{{ _content.voteAverage }}</span>
+                        <h2 class="poster-text">{{ _content.title }}</h2>
+                        <img class="lazy-wide loaded" src="{{ _content.imageBackground }}" alt="{{ _content.titleOriginal }}" data-src="{{ _content.imageBackground }}" data-was-processed="true">
                       </a>
                     </div>
                   </li>
-                  {%endfor%}
+                  {% endfor %}
                 </ul>
               </div>
              <!-- segment end -->
@@ -425,15 +425,15 @@
           <div class="col-lg-10 col-md-8 col-sm-7">
             <div class="row">
 
-              {%for content in content.query.limit(125).all()%}
+              {% for content in latest_added_contents %}
                 <div class="col-6 col-sm-4 col-lg-3 col-xl-3">
                   {{ card_long(content=content) }}
                 </div>
-              {%endfor%}
+              {% endfor %}
 
             </div>
             <div class="row" style="margin-bottom: 40px;">
-              <a href="{{url_for('search')}}"><button class="header__sign-in" style="position: absolute; right: 10px; width: 100%; color: black;">Tümünü Göster</button></a>
+              <a href="{{ url_for('search') }}"><button class="header__sign-in" style="position: absolute; right: 10px; width: 100%; color: black;">Tümünü Göster</button></a>
               </br></br>
             </div>
           </div>
@@ -506,58 +506,58 @@
           <div class="col-lg-2 col-md-4 col-sm-5">
             <div class="row">
 
-              {%if highlightContent.query.all()|length >= 1%}
+              {% if highlighted_contents|length >= 1 %}
               <div class="col-12" style="margin-bottom: 15px;">
                 <div class="row">
                   <div class="col-12" style="margin-bottom: 10px;">
                     <h2 class="section__title" style="font-size: 15px; margin: 0px; ">Öne Çıkarılmış İçerikler</h2>
                   </div>
-                  {%for _highlight in highlightContent.query.all()%}
+                  {% for _highlight in highlighted_contents %}
                   <div class="col-12" style="padding: 0px;">
                     <!-- item begin -->
                     <li class="segment-poster-sm">
                       <div class="segment-poster-in-poster">
-                        <a href="{{url_for('content_redirect', title_url=content.query.filter_by(idContent=_highlight.idContent).first().titleUrl)}}">
+                        <a href="{{ url_for('content_redirect', title_url=_highlight.get_content().titleUrl )}}">
                           <div class="segment-poster-subject">
-                            <h2>{{content.query.filter_by(idContent=_highlight.idContent).first().title}}</h2>
+                            <h2>{{ _highlight.get_content().title }}</h2>
                             <p>
-                              <span class="card__rate"><i class="icon ion-ios-star"></i>{{content.query.filter_by(idContent=_highlight.idContent).first().voteAverage}}</span>
-                              {%if content.query.filter_by(idContent=_highlight.idContent).first().type == 'MOVIE'%}Film{%elif content.query.filter_by(idContent=_highlight.idContent).first().type == 'TV'%}Dizi{%endif%}
+                              <span class="card__rate"><i class="icon ion-ios-star"></i>{{ _highlight.get_content().voteAverage}}</span>
+                              {% if _highlight.get_content().type == 'MOVIE' %}Film{% elif _highlight.get_content().type == 'TV' %}Dizi{% endif %}
                             </p>
                           </div>
-                          <img class="segment-poster-image-thumbnail" src="{{content.query.filter_by(idContent=_highlight.idContent).first().imagePoster}}" alt="">
+                          <img class="segment-poster-image-thumbnail" src="{{ _highlight.get_content().imagePoster }}" alt="{{ _highlight.get_content().title }} ({{ _highlight.get_content().titleOriginal }})">
                         </a>
                       </div>
                     </li>
                     <!-- item end -->
                   </div>
-                  {%endfor%}
+                  {% endfor %}
                 </div>
               </div>
-              {%endif%}
+              {% endif %}
 
               <div class="col-12" style="margin-bottom: 15px;">
                 <div class="row">
                   <div class="col-12" style="margin-bottom: 10px;">
                     <h2 class="section__title" style="font-size: 15px; margin: 0px; ">Son Eklenen Bölümler</h2>
                   </div>
-                  {%for _episode in tvEpisodeContent.query.order_by(tvEpisodeContent.addDate.desc()).limit(35).all()%}
+                  {% for _episode in latest_added_episodes %}
                   <div class="col-12" style="padding: 0px;">
                     <!-- item begin -->
                     <li class="segment-poster-sm">
                       <div class="segment-poster-in-poster">
-                        <a href="{{url_for('tv_watch', title_url=content.query.filter_by(idContent=_episode.idContent).first().titleUrl, season_number=_episode.seasonNumber, episode_number=_episode.episodeNumber)}}" style="height: 45px;">
+                        <a href="{{ url_for('tv_watch', title_url=_episode.get_content().titleUrl, season_number=_episode.get_season().seasonNumber, episode_number=_episode.episodeNumber) }}" style="height: 45px;">
                           <div class="segment-poster-subject">
-                            <h2 style="padding-top: 0px; margin-bottom: -2px;">{{content.query.filter_by(idContent=_episode.idContent).first().title}}</h2>
-                            <p>{{_episode.seasonNumber}}. Sezon {{_episode.episodeNumber}}. Bölüm</p>
+                            <h2 style="padding-top: 0px; margin-bottom: -2px;">{{ _episode.get_content().title }}</h2>
+                            <p>{{ _episode.get_season().seasonNumber }}. Sezon {{ _episode.episodeNumber }}. Bölüm</p>
                           </div>
-                          <img class="segment-poster-image-thumbnail" style="height: 30px;" src="{{_episode.imagePoster}}" alt="">
+                          <img class="segment-poster-image-thumbnail" style="height: 30px;" src="{{ _episode.imagePoster }}" alt="">
                         </a>
                       </div>
                     </li>
                     <!-- item end -->
                   </div>
-                  {%endfor%}
+                  {% endfor %}
                 </div>
               </div>
 
