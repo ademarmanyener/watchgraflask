@@ -11,6 +11,15 @@ from math import ceil
 from passlib.hash import sha512_crypt
 # FLASK
 from flask import Flask, render_template, redirect, request, url_for, session, flash, g, json, jsonify, make_response, send_from_directory, send_file
+# FLASK LOGIN
+from flask_login import (
+    LoginManager,
+    UserMixin,
+    login_user,
+    logout_user,
+    login_required,
+    current_user,
+)
 from flask_jsglue import JSGlue
 from werkzeug.utils import secure_filename
 # FLASK MAIL
@@ -63,12 +72,13 @@ mail = Mail(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = SETTINGS['app_config']['sqlalchemy_database_uri']
 
-app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_size' : 100, 'pool_recycle' : 280}
+#app.config['sqlalchemy_engine_options'] = {'pool_size' : 100, 'pool_recycle' : 280}
+app.config['sqlalchemy_engine_options'] = {'pool_recycle' : 280}
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
 db = SQLAlchemy(app)
-db.init_app(app) # re-initing the db, it's stupid but works i guess
+#db.init_app(app) # re-initing the db, it's stupid but works i guess
 
 migrate = Migrate(app, db, render_as_batch=True)
 
@@ -77,6 +87,10 @@ migrate = Migrate(app, db, render_as_batch=True)
 app.config['WTF_CSRF_TIME_LIMIT'] = 36000
 csrf = CSRFProtect()
 csrf.init_app(app)
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.session_protection = 'strong'
 
 jsglue = JSGlue()
 jsglue.init_app(app)

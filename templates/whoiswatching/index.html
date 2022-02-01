@@ -51,7 +51,7 @@
 				{%for profile in profiles%}
 				<!-- price -->
 				<div class="col-12 col-md-6 col-lg-4">
-					<div class="price {%if check_profile() == True and profile.idProfile == session['PROFILE']['idProfile']%}price--premium{%endif%}">
+					<div class="price {%if check_profile() == True and profile.idProfile == current_user.idProfile%}price--premium{%endif%}">
 						<div class="price__item price__item--first"><span>{{profile.username}}</span><span></span></div>
 						<div class="price__item price__item--first" style="margin-top: 10px; margin-bottom: 10px;"><div id="curr_____profile_photo" style="background-image: url({{profile.imageAvatar}});"></div></div>
 

@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from includes import *
 
-class account(db.Model):
+class account(db.Model, UserMixin):
     __tablename__ = 'account'
     idAccount = ID_COLUMN(default=str(id_generator(title='account_', size=32)))
     username = STRING_COLUMN(unique=True)
@@ -20,6 +20,11 @@ class account(db.Model):
         self.permission = permission
         self.lastEditDate = lastEditDate
         self.signupDate = datetime.now(pytz.timezone(PY_TIMEZONE))
+
+    def get_id(self):
+        return (self.idAccount)
+
+    def get_class(self): return account
 
     def drop(self):
         for get_reference in reference.query.filter(or_(reference.idGuestAccount == self.idAccount, reference.idHostAccount == self.idAccount)).all():
@@ -50,7 +55,7 @@ class accountPasswordRecovery(db.Model):
     db.session.delete(self)
     db.session.commit()
 
-class profile(db.Model):
+class profile(db.Model, UserMixin):
     __tablename__ = 'profile'
     idProfile = ID_COLUMN(default=str(id_generator(title='profile_', size=32)))
     idAccount = ID_COLUMN(foreign_key='account.idAccount')
@@ -87,6 +92,13 @@ class profile(db.Model):
         # mkdir: /storage/profile/{{idProfile}}
         if not os.path.exists(profile_dir): os.makedirs(profile_dir)
         #### END FOLDER
+
+    def get_id(self):
+        return (self.idProfile)
+
+    def get_class(self): return profile
+
+    def get_account(self): return account.query.filter_by(idAccount=self.idAccount).first()
 
     def drop(self):
         #### FOLDER

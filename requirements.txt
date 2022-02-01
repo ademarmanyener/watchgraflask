@@ -4,6 +4,7 @@ flask-wtf
 flask-sqlalchemy
 flask-migrate
 flask-jsglue
+flask-login
 tmdbv3api
 passlib
 email_validator

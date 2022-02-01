@@ -57,7 +57,7 @@ def profileproc_collection_addcontent():
     collection_id = request.get_json()['idCollection']
     content_id = request.get_json()['idContent']
 
-    select_collection = collection.query.filter(and_(collection.idCollection == collection_id, collection.idAddProfile == session['PROFILE']['idProfile'], collection.idAddAccount == session['ACCOUNT']['idAccount'])).first()
+    select_collection = collection.query.filter(and_(collection.idCollection == collection_id, collection.idAddProfile == get_logged_profile().idProfile, collection.idAddAccount == get_logged_account().idAccount)).first()
     if select_collection == None: return make_response(jsonify({'err_msg': 'Bu ID ile hesabınıza ilişkili bir koleksiyon bulunamadı.'}))
 
     select_content = content.query.filter_by(idContent=content_id).first()
@@ -68,8 +68,8 @@ def profileproc_collection_addcontent():
 
     db.session.add(collectionItem(
       idCollection = collection_id,
-      idAddProfile = session['PROFILE']['idProfile'],
-      idAddAccount = session['ACCOUNT']['idAccount'],
+      idAddProfile = get_logged_profile().idProfile,
+      idAddAccount = get_logged_account().idAccount,
       idContent = content_id
     ))
     db.session.commit()
@@ -85,7 +85,7 @@ def profileproc_collection_dropcontent():
     collection_id = request.get_json()['idCollection']
     content_id = request.get_json()['idContent']
 
-    select_collection = collection.query.filter(and_(collection.idCollection == collection_id, collection.idAddProfile == session['PROFILE']['idProfile'], collection.idAddAccount == session['ACCOUNT']['idAccount'])).first()
+    select_collection = collection.query.filter(and_(collection.idCollection == collection_id, collection.idAddProfile == get_logged_profile().idProfile, collection.idAddAccount == get_logged_account().idAccount)).first()
     if select_collection == None: return make_response(jsonify({'err_msg': 'Bu ID ile hesabınıza ilişkili bir koleksiyon bulunamadı.'}))
 
     select_content = content.query.filter_by(idContent=content_id).first()
@@ -111,7 +111,7 @@ def profileproc_tvepisodecontent_clearlatestwatchedepisodes():
 
     if request.is_json == False: return error(err_msg='JSON değil.')
 
-    select_latest_watched_episodes = latestWatchedEpisode.query.filter_by(idAddProfile=session['PROFILE']['idProfile']).all()
+    select_latest_watched_episodes = latestWatchedEpisode.query.filter_by(idAddProfile=get_logged_profile().idProfile).all()
     for latest_watched_episode in select_latest_watched_episodes:
         latest_watched_episode.drop()
 
@@ -131,14 +131,14 @@ def profileproc_tvepisodecontent_addtolatestwatchedepisode():
     if not tvEpisodeContent.query.filter(and_(tvEpisodeContent.idContent == content_id, tvEpisodeContent.idTvSeason == tv_season_id, tvEpisodeContent.idTvEpisode == tv_episode_id)).first(): return make_response(jsonify({'err_msg': 'Bu ID ile ilişkili bir bölüm bulunamadı.'}))
 
     # check if this user already has this episode watched, if not then add
-    if latestWatchedEpisode.query.filter(and_(latestWatchedEpisode.idAddProfile == session['PROFILE']['idProfile'], latestWatchedEpisode.idTvEpisode == tv_episode_id)).first(): pass
+    if latestWatchedEpisode.query.filter(and_(latestWatchedEpisode.idAddProfile == get_logged_profile().idProfile, latestWatchedEpisode.idTvEpisode == tv_episode_id)).first(): pass
     else:
         db.session.add(latestWatchedEpisode(
             idContent = content_id,
             idTvSeason = tv_season_id,
             idTvEpisode = tv_episode_id,
-            idAddProfile = session['PROFILE']['idProfile'],
-            idAddAccount = session['ACCOUNT']['idAccount'],
+            idAddProfile = get_logged_profile().idProfile,
+            idAddAccount = get_logged_account().idAccount,
         ))
         db.session.commit()
         return make_response(jsonify({'succ_msg': 'Bu bölüm, son izlenilenlere eklendi.'}))

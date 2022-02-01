@@ -64,8 +64,8 @@ def adminpanel_v2_function(table_name, function_name):
         if function_name == 'insertNew':
             if GET_DICTIONARY['title'] and GET_DICTIONARY['titleOriginal'] and GET_DICTIONARY['titleUrl'] and GET_DICTIONARY['type']:
                 db.session.add(content(
-                    idAddProfile = session['PROFILE']['idProfile'],
-                    idAddAccount = session['ACCOUNT']['idAccount'],
+                    idAddProfile = get_logged_profile().idProfile,
+                    idAddAccount = get_logged_account().idAccount,
                     type = GET_DICTIONARY['type'],
                     title = GET_DICTIONARY['title'],
                     titleOriginal = GET_DICTIONARY['titleOriginal'],
@@ -152,8 +152,8 @@ def adminpanel_v2_function(table_name, function_name):
             if GET_DICTIONARY['title'] and GET_DICTIONARY['seasonNumber']:
                 db.session.add(tvSeasonContent(
                     idContent = content.query.filter_by(idTmdb=GET_DICTIONARY['idTmdb']).first().idContent,
-                    idAddProfile = session['PROFILE']['idProfile'],
-                    idAddAccount = session['ACCOUNT']['idAccount'],
+                    idAddProfile = get_logged_profile().idProfile,
+                    idAddAccount = get_logged_account().idAccount,
                     title = GET_DICTIONARY['title'],
                     overview = GET_DICTIONARY['overview'],
                     idTmdb = GET_DICTIONARY['idTmdb'],
@@ -193,8 +193,8 @@ def adminpanel_v2_function(table_name, function_name):
                 db.session.add(tvEpisodeContent(
                     idContent = content.query.filter_by(idTmdb=GET_DICTIONARY['idTmdb']).first().idContent,
                     idTvSeason = tvSeasonContent.query.filter_by(idTmdb=GET_DICTIONARY['idTmdb']).first().idTvSeason,
-                    idAddProfile = session['PROFILE']['idProfile'],
-                    idAddAccount = session['ACCOUNT']['idAccount'],
+                    idAddProfile = get_logged_profile().idProfile,
+                    idAddAccount = get_logged_account().idAccount,
                     title = GET_DICTIONARY['title'],
                     overview = GET_DICTIONARY['overview'],
                     idTmdb = GET_DICTIONARY['idTmdb'],
@@ -231,8 +231,8 @@ def adminpanel_v2_function(table_name, function_name):
                     idContent = GET_DICTIONARY['_ARG']['idContent'],
                     idTvSeason = GET_DICTIONARY['_ARG']['idTvSeason'],
                     idTvEpisode = GET_DICTIONARY['_ARG']['idTvEpisode'],
-                    idAddProfile = session['PROFILE']['idProfile'],
-                    idAddAccount = session['ACCOUNT']['idAccount'],
+                    idAddProfile = get_logged_profile().idProfile,
+                    idAddAccount = get_logged_account().idAccount,
                     language = GET_DICTIONARY['language'],
                     source = GET_DICTIONARY['source'],
                     title = GET_DICTIONARY['title'],
@@ -266,8 +266,8 @@ def adminpanel_v2_function(table_name, function_name):
             if GET_DICTIONARY['title'] and GET_DICTIONARY['source'] and GET_DICTIONARY['order'] and GET_DICTIONARY['language'] and GET_DICTIONARY['type']:
                 db.session.add(moviePlayer(
                     idContent = GET_DICTIONARY['_ARG']['idContent'],
-                    idAddProfile = session['PROFILE']['idProfile'],
-                    idAddAccount = session['ACCOUNT']['idAccount'],
+                    idAddProfile = get_logged_profile().idProfile,
+                    idAddAccount = get_logged_account().idAccount,
                     language = GET_DICTIONARY['language'],
                     source = GET_DICTIONARY['source'],
                     title = GET_DICTIONARY['title'],
@@ -393,8 +393,8 @@ def adminpanel_v2_function(table_name, function_name):
         if function_name == 'insertNew':
             if GET_DICTIONARY['gender'] and GET_DICTIONARY['name'] and GET_DICTIONARY['nameUrl'] and GET_DICTIONARY['idTmdb'] and GET_DICTIONARY['idImdb'] and GET_DICTIONARY['adult']:
                 db.session.add(cast(
-                    idAddProfile = session['PROFILE']['idProfile'],
-                    idAddAccount = session['ACCOUNT']['idAccount'],
+                    idAddProfile = get_logged_profile().idProfile,
+                    idAddAccount = get_logged_account().idAccount,
                     gender = GET_DICTIONARY['gender'],
                     name = GET_DICTIONARY['name'],
                     nameUrl = GET_DICTIONARY['nameUrl'],

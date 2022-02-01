@@ -145,7 +145,6 @@ def utility_processor():
                 check_account=check_account, \
                 check_profile=check_profile, \
                 check_admin=check_admin, \
-                check_follow=check_follow, \
                 get_content_db=get_content_db, \
                 get_profile_db=get_profile_db, get_account_db=get_account_db, \
                 get_cast_db=get_cast_db, \

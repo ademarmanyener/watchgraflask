@@ -8,7 +8,7 @@ def accountprofile_new():
 
     MAX_PROFILE_COUNT = 9
 
-    select_account = account.query.filter(and_(account.idAccount == session['ACCOUNT']['idAccount'])).first()
+    select_account = account.query.filter(and_(account.idAccount == get_logged_account().idAccount)).first()
     if select_account == None: return error(err_msg='Böyle bir hesap bulunamadı.', ret_url=url_for('home'))
 
     select_profiles = profile.query.filter(and_(profile.idAccount == select_account.idAccount)).all()
@@ -31,10 +31,10 @@ def accountprofile_new():
         if request.form.getlist('childaccount'): selected_adult = 0
 
         # check if a profile in that account exists with this username
-        check_profile = profile.query.filter(and_(profile.username == form.username.data, profile.idAccount == session['ACCOUNT']['idAccount'])).first()
+        check_profile = profile.query.filter(and_(profile.username == form.username.data, profile.idAccount == get_logged_account().idAccount)).first()
         if check_profile == None:
             db.session.add(profile(
-                idAccount = session['ACCOUNT']['idAccount'],
+                idAccount = get_logged_account().idAccount,
                 username = form.username.data,
                 password = form.password.data,
                 biography = '',
@@ -74,8 +74,8 @@ def accountprofile(account_username, profile_username):
     # check privacy
     if get_profile.private == True:
         if check_profile() == True:
-            if get_account.idAccount == session['ACCOUNT']['idAccount'] and \
-                get_profile.idProfile == session['PROFILE']['idProfile']: pass
+            if get_account.idAccount == get_logged_account().idAccount and \
+                get_profile.idProfile == current_user.idProfile: pass
         else: return error(err_msg='Bu profil gizli.', ret_url=url_for('home'))
 
     get_collections = collection.query.filter(and_(collection.idAddProfile == get_profile.idProfile, collection.idAddAccount == get_account.idAccount, collection.private == False)).all()
@@ -100,7 +100,7 @@ def accountprofiles(account_username):
     get_account = account.query.filter_by(username=account_username).first()
     if get_account == None: return error(err_msg='Böyle bir hesap bulunamadı.', ret_url=url_for('home'))
 
-    if get_account.idAccount == session['ACCOUNT']['idAccount']: pass
+    if get_account.idAccount == get_logged_account().idAccount: pass
     else: return error(err_msg='Bu senin hesabın mı?')
 
     profiles_info = profile.query.filter_by(idAccount=get_account.idAccount).all()

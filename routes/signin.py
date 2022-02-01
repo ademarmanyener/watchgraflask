@@ -1,16 +1,6 @@
 # -*- encoding: utf-8 -*-
 from includes import *
 
-# TEST TEST TEST
-@app.route('/mailxd')
-def mailxd():
-  try:
-    msg = Message('abababababab', sender='aniwened@gmail.com', recipients=['lovisestdeus@tutanota.com'])
-    msg.body = 'TEST MESAJJJJ: ' + str(request.url_root) + 'signin'
-    mail.send(msg)
-    return 'mail gönderildi.'
-  except: return 'hata'
-
 @app.route('/forgot-my-password', methods=['POST', 'GET'])
 @app.route('/sifremi-unuttum', methods=['POST', 'GET'])
 def forgotmypassword():
@@ -79,15 +69,8 @@ def signin():
             if signin_user.permission == 'SYSTEM': return redirect(url_for('signin'))
 
             if hash_str_verify(get_answ=form.password.data, get_hashed_str=signin_user.password) == True:
-                session['ACCOUNT'] = {
-                    "idAccount": signin_user.idAccount,
-                    "username": signin_user.username,
-                    "password": signin_user.password,
-                    "securityPassword": signin_user.securityPassword,
-                    "emailAddress": signin_user.emailAddress,
-                    "lastEditDate": signin_user.lastEditDate,
-                    "signupDate": signin_user.signupDate
-                }
+                session['login_type'] = 'ACCOUNT'
+                login_user(signin_user)
                 return redirect(url_for('home'))
             else: return error(err_code=':(', err_msg='Yanlış şifre girdiniz.', ret_url=url_for('signin'))
         else: return error(err_code=':(', err_msg='Böyle bir kullanıcı bulunamadı.', ret_url=url_for('signin'))

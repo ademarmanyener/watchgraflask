@@ -38,15 +38,8 @@ def signup():
                         idHostAccount = request.args.get('ref')
                     ))
                     db.session.commit()
-            session['ACCOUNT'] = {
-                "idAccount": signup_account.idAccount,
-                "username": signup_account.username,
-                "password": form.password.data,
-                "securityPassword": signup_account.securityPassword,
-                "emailAddress": signup_account.emailAddress,
-                "lastEditDate": signup_account.lastEditDate,
-                "signupDate": signup_account.signupDate
-            }
+            session['login_type'] = 'ACCOUNT'
+            login_user(signup_account)
             return redirect(url_for('home'))
         else: return error(err_msg='Bir hata meydana geldi.', ret_url=url_for('signup'))
     return render_template('signup/index.html', title='Kayıt Ol', form=form, header=False, footer=False)

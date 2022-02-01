@@ -91,3 +91,50 @@ def test_fetch_popular():
         else: print('doesnt exist {}'.format(p['title']))
 
     return str(get_popular)
+
+@app.route('/flask_login/home')
+def flask_login_home():
+    if current_user.is_authenticated:
+        return """hi {username} ({permission})! <a href="{url}">logout</a><br />
+        <h2>{login_type}</h2><br />
+        check_account => {check_account}, check_profile => {check_profile}<br />
+        get_logged_account = {log_acc}, get_logged_profile = {log_prof}<br />
+        current_user = {curr_us}<br />
+        """.format(username=current_user.username.lower(), permission=current_user.permission.lower(), url=url_for('flask_login_logout'), login_type=session['login_type'], check_account=check_account(), check_profile=check_profile(), \
+            log_acc=get_logged_account().idAccount, log_prof=get_logged_profile().idProfile, \
+            curr_us=current_user.get_account().username
+        )
+    else:
+        return 'not authenticated! <a href="{url}">login</a>'.format(url=url_for('flask_login_login'))
+    return 'POOG => ' + str(current_user.is_authenticated)
+
+@app.route('/flask_login/login')
+def flask_login_login():
+    get_profile = profile.query.order_by(profile.addDate.desc()).first()
+    get_account = account.query.filter_by(idAccount=get_profile.idAccount).first()
+
+    if not get_profile or not get_account: return 'error.'
+
+    session['login_type'] = 'ACCOUNT'
+    login_user(get_account)
+
+    session['login_type'] = 'PROFILE'
+    login_user(get_profile)
+
+    return redirect(url_for('flask_login_home'))
+
+@app.route('/flask_login/logout')
+def flask_login_logout():
+    logout_user()
+    return 'ok.;'
+
+    if current_user.is_authenticated:
+        if current_user.get_class() == account:
+            acc = account.query.filter_by(idAccount=current_user.idAccount).first()
+
+        elif current_user.get_class() == profile:
+            acc = profile.query.filter_by(idProfile=current_user.idProfile).first()
+
+        logout_user(acc)
+
+    return redirect(url_for('flask_login_home'))

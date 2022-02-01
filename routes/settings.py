@@ -10,7 +10,7 @@ def settings_account_confirm_enter():
     if check_account() == False: return redirect(url_for('home'))
     if check_account() == True and check_profile() == False: return redirect(url_for('whoiswatching'))
 
-    get_account = account.query.filter_by(idAccount=session['ACCOUNT']['idAccount']).first()
+    get_account = account.query.filter_by(idAccount=get_logged_account().idAccount).first()
     if get_account == None: return error(err_msg='Böyle bir hesap bulunamadı.', ret_url=url_for('whoiswatching'))
 
     confirmenterform = SettingsAccountConfirmEnterForm()
@@ -28,7 +28,7 @@ def settings_account():
     if check_account() == False: return redirect(url_for('home'))
     if check_account() == True and check_profile() == False: return redirect(url_for('whoiswatching'))
 
-    #get_account = account.query.filter_by(idAccount=session['ACCOUNT']['idAccount']).first()
+    #get_account = account.query.filter_by(idAccount=get_logged_account().idAccount).first()
     #if get_account == None: return error(err_msg='Böyle bir hesap bulunamadı.', ret_url=url_for('whoiswatching'))
 
     changemyusernameemailform = SettingsAccountChangeUsernameEmailForm()
@@ -48,7 +48,7 @@ def settings_account_dropaccount_confirmation():
 
   ret_url = url_for('home')
 
-  select_account = account.query.filter_by(idAccount=session['ACCOUNT']['idAccount']).first()
+  select_account = account.query.filter_by(idAccount=get_logged_account().idAccount).first()
   if select_account == None: return error(err_msg="Couldn't find such an account.", ret_url=ret_url)
 
   form = SettingsAccountDropAccountConfirmationForm()
@@ -66,7 +66,7 @@ def settings_account_func_proc(function):
 
     if request.is_json == False: return error(err_msg='JSON değil.')
 
-    get_account = account.query.filter_by(idAccount=session['ACCOUNT']['idAccount']).first()
+    get_account = account.query.filter_by(idAccount=get_logged_account().idAccount).first()
     if get_account == None: return error(err_msg='Böyle bir hesap bulunamadı.', ret_url=url_for('home'))
 
     if function == 'change_username_emailaddress':
@@ -126,14 +126,14 @@ def settings_profile_func_proc(function):
 
     if request.is_json == False: return error(err_msg='JSON değil.')
 
-    get_profile = profile.query.filter(and_(profile.idAccount == session['ACCOUNT']['idAccount'], profile.idProfile == session['PROFILE']['idProfile'])).first()
+    get_profile = profile.query.filter(and_(profile.idAccount == get_logged_account().idAccount, profile.idProfile == get_logged_profile().idProfile)).first()
     if get_profile == None: return error(err_msg='Böyle bir profil bulunamadı.', ret_url=url_for('whoiswatching'))
 
     if function == 'change_username':
         get_new_username = request.get_json()['new_username']
         if get_new_username:
             if check_username(username=get_new_username) == False: return make_response(jsonify({'err_msg': 'Kullanıcı adında geçersiz karakterler mevcut!'}))
-            check_if_exists = profile.query.filter(and_(profile.idAccount == session['ACCOUNT']['idAccount'], profile.username == get_new_username)).first()
+            check_if_exists = profile.query.filter(and_(profile.idAccount == get_logged_account().idAccount, profile.username == get_new_username)).first()
             if check_if_exists != None: return make_response(jsonify({'err_msg': 'Bu kullanıcı adı zaten bir profil tarafından kullanılmaktadır!'}))
             get_profile.username = get_new_username
             db.session.commit()
@@ -182,10 +182,10 @@ def settings_profile():
 
   RET_URL = url_for('settings_profile')
 
-  get_account = account.query.filter(account.idAccount == session['ACCOUNT']['idAccount']).first()
+  get_account = account.query.filter(account.idAccount == get_logged_account().idAccount).first()
   if not get_account: return error(err_msg='Böyle bir hesap bulunamadı.', ret_url=url_for('signin'))
 
-  get_profile = profile.query.filter(and_(profile.idProfile == session['PROFILE']['idProfile'], profile.idAccount == session['ACCOUNT']['idAccount'])).first()
+  get_profile = profile.query.filter(and_(profile.idProfile == get_logged_profile().idProfile, profile.idAccount == get_logged_account().idAccount)).first()
   if not get_profile: return error(err_msg='Böyle bir profil bulunamadı.', ret_url=url_for('whoiswatching'))
 
   """
@@ -273,10 +273,10 @@ def settings_profile_dropprofile_confirmation():
 
   ret_url = url_for('home')
 
-  select_account = account.query.filter_by(idAccount=session['ACCOUNT']['idAccount']).first()
+  select_account = account.query.filter_by(idAccount=get_logged_account().idAccount).first()
   if select_account == None: return error(err_msg="Couldn't find such an account.", ret_url=ret_url)
 
-  select_profile = profile.query.filter(and_(profile.idAccount == session['ACCOUNT']['idAccount'], profile.idProfile == session['PROFILE']['idProfile'])).first()
+  select_profile = profile.query.filter(and_(profile.idAccount == get_logged_account().idAccount, profile.idProfile == get_logged_profile().idProfile)).first()
   if select_profile == None: return error(err_msg="Couldn't find such an profile.", ret_url=ret_url)
 
   form = SettingsProfileDropProfileConfirmationForm()
