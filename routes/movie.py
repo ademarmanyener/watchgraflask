@@ -19,8 +19,8 @@ def movie_watch_func_proc(function):
     if get_text:
       db.session.add(movieComment(
         idContent = get_content_id,
-        idAddProfile = session['PROFILE']['idProfile'],
-        idAddAccount = session['ACCOUNT']['idAccount'],
+        idAddProfile = get_logged_profile().idProfile,
+        idAddAccount = get_logged_account().idAccount,
         text = get_text,
         replyTo = '',
         visibility = 1,
@@ -29,7 +29,7 @@ def movie_watch_func_proc(function):
       ))
       db.session.commit()
 
-      latest_comment =  movieComment.query.filter(and_(movieComment.idContent == get_content_id, movieComment.replyTo == '', movieComment.idAddProfile == session['PROFILE']['idProfile'], movieComment.idAddAccount == session['ACCOUNT']['idAccount'])).order_by(movieComment.addDate.desc()).first()
+      latest_comment =  movieComment.query.filter(and_(movieComment.idContent == get_content_id, movieComment.replyTo == '', movieComment.idAddProfile == get_logged_profile().idProfile, movieComment.idAddAccount == get_logged_account().idAccount)).order_by(movieComment.addDate.desc()).first()
       if latest_comment == None: return make_response(jsonify({'err_msg': 'Böyle bir yorum bulunamadı.'}))
 
       return make_response(jsonify({'succ_msg': 'Yorumunuz başarıyla gönderildi!', \
@@ -51,8 +51,8 @@ def movie_watch_func_proc(function):
 
       db.session.add(movieComment(
         idContent = get_content_id,
-        idAddProfile = session['PROFILE']['idProfile'],
-        idAddAccount = session['ACCOUNT']['idAccount'],
+        idAddProfile = get_logged_profile().idProfile,
+        idAddAccount = get_logged_account().idAccount,
         text = get_reply,
         replyTo = get_reply_to,
         visibility = 1,
@@ -61,7 +61,7 @@ def movie_watch_func_proc(function):
       ))
       db.session.commit()
 
-      latest_reply =  movieComment.query.filter(and_(movieComment.idContent == get_content_id, movieComment.replyTo != '', movieComment.idAddProfile == session['PROFILE']['idProfile'], movieComment.idAddAccount == session['ACCOUNT']['idAccount'])).order_by(movieComment.addDate.desc()).first()
+      latest_reply =  movieComment.query.filter(and_(movieComment.idContent == get_content_id, movieComment.replyTo != '', movieComment.idAddProfile == get_logged_profile().idProfile, movieComment.idAddAccount == get_logged_account().idAccount)).order_by(movieComment.addDate.desc()).first()
       if latest_reply == None: return make_response(jsonify({'err_msg': 'Böyle bir yorum bulunamadı.'}))
 
       return make_response(jsonify({'succ_msg': 'Yanıtınız başarıyla gönderildi!', \
@@ -94,7 +94,7 @@ def movie_watch_func_proc(function):
 
     get_comment = movieComment.query.filter(and_(movieComment.idContent == get_content_id, movieComment.idComment == get_comment_id)).first()
     if get_comment == None: return make_response(jsonify({'err_msg': 'Böyle bir yorum bulunamadı.'}))
-    if get_comment.idAddProfile == session['PROFILE']['idProfile'] and get_comment.idAddAccount == session['ACCOUNT']['idAccount']: pass
+    if get_comment.idAddProfile == get_logged_profile().idProfile and get_comment.idAddAccount == get_logged_account().idAccount: pass
     else: return make_response(jsonify({'err_msg': 'Bu yorumun sizin profilinize ait olduğuna emin misiniz?'}))
 
     get_comment.drop()
@@ -111,22 +111,22 @@ def movie_watch_func_proc(function):
     get_comment = movieComment.query.filter(and_(movieComment.idContent == get_content_id, movieComment.idComment == get_comment_id)).first()
     if get_comment == None: return make_response(jsonify({'err_msg': 'Böyle bir yorum bulunamadı.'}))
 
-    get_comment_rate = movieCommentRate.query.filter(and_(movieCommentRate.idContent == get_content_id, movieCommentRate.idComment == get_comment_id, movieCommentRate.idRateProfile == session['PROFILE']['idProfile'], movieCommentRate.idRateAccount == session['ACCOUNT']['idAccount'], movieCommentRate.rateType == 'LIKE')).first()
+    get_comment_rate = movieCommentRate.query.filter(and_(movieCommentRate.idContent == get_content_id, movieCommentRate.idComment == get_comment_id, movieCommentRate.idRateProfile == get_logged_profile().idProfile, movieCommentRate.idRateAccount == get_logged_account().idAccount, movieCommentRate.rateType == 'LIKE')).first()
     if get_comment_rate == None:
-      if get_comment.idAddAccount == session['ACCOUNT']['idAccount'] and get_comment.idAddProfile == session['PROFILE']['idProfile']:
+      if get_comment.idAddAccount == get_logged_account().idAccount and get_comment.idAddProfile == get_logged_profile().idProfile:
         return make_response(jsonify({'err_msg': 'Kendi profiliniz tarafından yapılan yorumları beğenemezsiniz.'}))
       else:
         db.session.add(movieCommentRate(
           idContent = get_content_id,
           idComment = get_comment_id,
-          idRateProfile = session['PROFILE']['idProfile'],
-          idRateAccount = session['ACCOUNT']['idAccount'],
+          idRateProfile = get_logged_profile().idProfile,
+          idRateAccount = get_logged_account().idAccount,
           rateType = 'LIKE',
         ))
         db.session.commit()
 
         # if the profile has disliked the comment, then drop it first
-        select_dislike = movieCommentRate.query.filter(and_(movieCommentRate.idContent == get_content_id, movieCommentRate.idComment == get_comment_id, movieCommentRate.idRateProfile == session['PROFILE']['idProfile'], movieCommentRate.idRateAccount == session['ACCOUNT']['idAccount'], movieCommentRate.rateType == 'DISLIKE')).first()
+        select_dislike = movieCommentRate.query.filter(and_(movieCommentRate.idContent == get_content_id, movieCommentRate.idComment == get_comment_id, movieCommentRate.idRateProfile == get_logged_profile().idProfile, movieCommentRate.idRateAccount == get_logged_account().idAccount, movieCommentRate.rateType == 'DISLIKE')).first()
         if select_dislike:
           select_dislike.drop()
           return make_response(jsonify({'gave_like': 'Yorumu başarıyla beğendiniz!', 'took_dislike': 'OK'}))
@@ -146,22 +146,22 @@ def movie_watch_func_proc(function):
     get_comment = movieComment.query.filter(and_(movieComment.idContent == get_content_id, movieComment.idComment == get_comment_id)).first()
     if get_comment == None: return make_response(jsonify({'err_msg': 'Böyle bir yorum bulunamadı.'}))
 
-    get_comment_rate = movieCommentRate.query.filter(and_(movieCommentRate.idContent == get_content_id, movieCommentRate.idComment == get_comment_id, movieCommentRate.idRateProfile == session['PROFILE']['idProfile'], movieCommentRate.idRateAccount == session['ACCOUNT']['idAccount'], movieCommentRate.rateType == 'DISLIKE')).first()
+    get_comment_rate = movieCommentRate.query.filter(and_(movieCommentRate.idContent == get_content_id, movieCommentRate.idComment == get_comment_id, movieCommentRate.idRateProfile == get_logged_profile().idProfile, movieCommentRate.idRateAccount == get_logged_account().idAccount, movieCommentRate.rateType == 'DISLIKE')).first()
     if get_comment_rate == None:
-      if get_comment.idAddAccount == session['ACCOUNT']['idAccount'] and get_comment.idAddProfile == session['PROFILE']['idProfile']:
+      if get_comment.idAddAccount == get_logged_account().idAccount and get_comment.idAddProfile == get_logged_profile().idProfile:
         return make_response(jsonify({'err_msg': 'Kendi profiliniz tarafından yapılan yorumlara dislike atamazsın.'}))
       else:
         db.session.add(movieCommentRate(
           idContent = get_content_id,
           idComment = get_comment_id,
-          idRateProfile = session['PROFILE']['idProfile'],
-          idRateAccount = session['ACCOUNT']['idAccount'],
+          idRateProfile = get_logged_profile().idProfile,
+          idRateAccount = get_logged_account().idAccount,
           rateType = 'DISLIKE',
         ))
         db.session.commit()
 
         # if the profile has liked the comment, then drop it first
-        select_like = movieCommentRate.query.filter(and_(movieCommentRate.idContent == get_content_id, movieCommentRate.idComment == get_comment_id, movieCommentRate.idRateProfile == session['PROFILE']['idProfile'], movieCommentRate.idRateAccount == session['ACCOUNT']['idAccount'], movieCommentRate.rateType == 'LIKE')).first()
+        select_like = movieCommentRate.query.filter(and_(movieCommentRate.idContent == get_content_id, movieCommentRate.idComment == get_comment_id, movieCommentRate.idRateProfile == get_logged_profile().idProfile, movieCommentRate.idRateAccount == get_logged_account().idAccount, movieCommentRate.rateType == 'LIKE')).first()
         if select_like:
           select_like.drop()
           return make_response(jsonify({'gave_dislike': 'Başarıyla dislikledınız!', 'took_like': 'OK'}))
@@ -199,7 +199,7 @@ def movie_watch(title_url):
   # CHECK ADULT BEGIN
   if select_content.adult == True:
       if check_profile() == True:
-          if profile.query.filter(and_(profile.idAccount == session['ACCOUNT']['idAccount'], profile.idProfile == session['PROFILE']['idProfile'])).first().adult == False: return error(err_msg='Bu içerik çocuk hesabı için uygun değildir.', ret_url=url_for('home'))
+          if profile.query.filter(and_(profile.idAccount == get_logged_account().idAccount, profile.idProfile == get_logged_profile().idProfile)).first().adult == False: return error(err_msg='Bu içerik çocuk hesabı için uygun değildir.', ret_url=url_for('home'))
           else: pass
       else: pass
   else: pass
@@ -226,8 +226,8 @@ def movie_watch(title_url):
   if watchcommentform.validate_on_submit():
     db.session.add(movieComment(
       idContent = select_content.idContent,
-      idAddProfile = session['PROFILE']['idProfile'],
-      idAddAccount = session['ACCOUNT']['idAccount'],
+      idAddProfile = get_logged_profile().idProfile,
+      idAddAccount = get_logged_account().idAccount,
       text = watchcommentform.text.data,
       replyTo = '',
       visibility = 1,

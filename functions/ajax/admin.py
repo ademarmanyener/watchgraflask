@@ -32,8 +32,8 @@ def adminproc_highlights():
     else:
       db.session.add(highlightContent(
         idContent = get_content.idContent,
-        idAddProfile = session['PROFILE']['idProfile'],
-        idAddAccount = session['ACCOUNT']['idAccount']
+        idAddProfile = get_logged_profile().idProfile,
+        idAddAccount = get_logged_account().idAccount
       ))
       db.session.commit()
       return make_response(jsonify({'succ_msg': 'Öne çıkarılanlara başarıyla eklendi!'}))
@@ -118,8 +118,8 @@ def adminproc_contents():
       def_random_id = id_generator(chars=string.digits, size=8)
 
       db.session.add(content(
-        idAddProfile = session['PROFILE']['idProfile'],
-        idAddAccount = session['ACCOUNT']['idAccount'],
+        idAddProfile = get_logged_profile().idProfile,
+        idAddAccount = get_logged_account().idAccount,
         type = content_type,
         title = 'İçerik {}'.format(def_random_id),
         titleOriginal = 'Content {}'.format(def_random_id),
@@ -196,8 +196,8 @@ def adminproc_content_players():
 
     db.session.add(moviePlayer(
       idContent = content_id, 
-      idAddProfile = session['PROFILE']['idProfile'],
-      idAddAccount = session['ACCOUNT']['idAccount'],
+      idAddProfile = get_logged_profile().idProfile,
+      idAddAccount = get_logged_account().idAccount,
       language = 'ORIGINAL',
       source = '#',
       title = 'İçerik {}'.format(def_random_id),
@@ -274,8 +274,8 @@ def adminproc_content_seasons():
     db.session.add(tvSeasonContent(
       #idContent = content.query.filter(and_(content.idContent == content_id, content.type == 'TV')).first().idContent,
       idContent = content_id,
-      idAddProfile = session['PROFILE']['idProfile'],
-      idAddAccount = session['ACCOUNT']['idAccount'],
+      idAddProfile = get_logged_profile().idProfile,
+      idAddAccount = get_logged_account().idAccount,
       title = 'İçerik {}'.format(def_random_id),
       overview = '#',
       idTmdb = '#',
@@ -355,8 +355,8 @@ def adminproc_content_season_episodes():
     db.session.add(tvEpisodeContent(
       idTvSeason = tv_season_id,
       idContent = content_id,
-      idAddProfile = session['PROFILE']['idProfile'],
-      idAddAccount = session['ACCOUNT']['idAccount'],
+      idAddProfile = get_logged_profile().idProfile,
+      idAddAccount = get_logged_account().idAccount,
       title = 'İçerik {}'.format(def_random_id),
       overview = '#',
       idTmdb = '#',
@@ -443,8 +443,8 @@ def adminproc_content_season_episode_players():
         idTvSeason = tv_season_id,
         idTvEpisode = tv_episode_id,
         idContent = content_id,
-        idAddProfile = session['PROFILE']['idProfile'],
-        idAddAccount = session['ACCOUNT']['idAccount'],
+        idAddProfile = get_logged_profile().idProfile,
+        idAddAccount = get_logged_account().idAccount,
         language = 'ORIGINAL',
         source = '#',
         title = 'İçerik {}'.format(def_random_id),

@@ -24,8 +24,8 @@ def home():
   if check_profile():
     query = dict(
       latest_watched_episodes = latestWatchedEpisode.query.filter_by(
-        idAddAccount = session['ACCOUNT']['idAccount'],
-        idAddProfile = session['PROFILE']['idProfile'],
+        idAddAccount = get_logged_account().idAccount,
+        idAddProfile = get_logged_profile().idProfile,
       ).order_by(latestWatchedEpisode.watchDate.desc()).all(),
       latest_added_episodes = tvEpisodeContent.query.filter_by(
         visibility = 1,

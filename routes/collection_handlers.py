@@ -60,8 +60,8 @@ def collection_new():
         if collection.query.filter(and_(collection.titleUrl == SELECTED_TITLE_URL)).first() != None: SELECTED_TITLE_URL = SELECTED_TITLE_URL + '_' + str(id_generator(chars=string.ascii_letters, size=12))
 
         db.session.add(collection(
-          idAddProfile = session['PROFILE']['idProfile'],
-          idAddAccount = session['ACCOUNT']['idAccount'],
+          idAddProfile = get_logged_profile().idProfile,
+          idAddAccount = get_logged_account().idAccount,
           title = form.title.data,
           titleUrl = SELECTED_TITLE_URL,
           overview = form.overview.data,
@@ -86,7 +86,7 @@ def collection_title(title_url):
     if select_collection == None: return error(err_msg='Böyle bir koleksiyon bulunamadı.', ret_url=url_for('home'))
 
     if select_collection.private == True:
-        if check_profile() == True and session['PROFILE']['idProfile'] == select_collection.idAddProfile and session['ACCOUNT']['idAccount'] == select_collection.idAddAccount: pass
+        if check_profile() == True and get_logged_profile().idProfile == select_collection.idAddProfile and get_logged_account().idAccount == select_collection.idAddAccount: pass
         else: return error(err_msg='Bu koleksiyon gizli.', ret_url=url_for('home'))
 
     select_collection_items = collectionItem.query.filter_by(idCollection=select_collection.idCollection).order_by(collectionItem.index.desc()).order_by(collectionItem.addDate.desc()).all()
@@ -105,7 +105,7 @@ def collection_edit(title_url):
 
     RET_URL = url_for('home')
 
-    select_collection = collection.query.filter(and_(collection.titleUrl == title_url, collection.idAddProfile == session['PROFILE']['idProfile'], collection.idAddAccount == session['ACCOUNT']['idAccount'])).first()
+    select_collection = collection.query.filter(and_(collection.titleUrl == title_url, collection.idAddProfile == get_logged_profile().idProfile, collection.idAddAccount == get_logged_account().idAccount)).first()
     if select_collection == None: return error(err_msg='Bu ID ile hesabınıza ilişkili bir koleksiyon bulunamadı.', ret_url=url_for('home'))
 
     select_collection_items = collectionItem.query.filter_by(idCollection=select_collection.idCollection).all()
@@ -207,7 +207,7 @@ def collection_delete(collection_id):
     if check_account() == False: return redirect(url_for('home'))
     if check_account() == True and check_profile() == False: return redirect(url_for('whoiswatching'))
 
-    select_collection = collection.query.filter(and_(collection.idCollection == collection_id, collection.idAddProfile == session['PROFILE']['idProfile'], collection.idAddAccount == session['ACCOUNT']['idAccount'])).first()
+    select_collection = collection.query.filter(and_(collection.idCollection == collection_id, collection.idAddProfile == get_logged_profile().idProfile, collection.idAddAccount == get_logged_account().idAccount)).first()
     if select_collection == None: return error(err_msg='Bu ID ile hesabınıza ilişkili bir koleksiyon bulunamadı.', ret_url=url_for('home'))
 
     select_collection.drop()

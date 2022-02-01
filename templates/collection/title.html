@@ -24,7 +24,7 @@
           <b>{{collection_info.title}}</b>
           <span style="font-size: 12px;">{{get_profile_db(profile_id=collection_info.idAddProfile).username}} tarafından oluşturuldu.</span>
 
-        {%if check_profile() == True and collection_info.idAddProfile == session['PROFILE']['idProfile'] and collection_info.idAddAccount == session['ACCOUNT']['idAccount']%}
+        {%if check_profile() == True and collection_info.idAddProfile == current_user.idProfile and collection_info.idAddAccount == current_user.get_account().idAccount%}
         <div class="section__wrap" style="display: inline-flex">
           <a href="{{url_for('collection_edit', title_url=collection_info.titleUrl)}}"><i class="icon ion-ios-settings" style="font-size: 25px; color: white; position: absolute; right: 30px; top: 0px;"></i></a>
           <a href="#modal-drop-collection" class="open-modal"><i class="icon ion-ios-trash" style="font-size: 25px; color: white; position: absolute; right: 0px; top: 0px;"></i></a>
@@ -74,7 +74,7 @@
           <div class="col-6 col-sm-4 col-lg-3 col-xl-2" id="item_content_{{item.idContent}}">
             <div class="card">
 
-              {%if check_profile() == True and collection_info.idAddProfile == session['PROFILE']['idProfile'] and collection_info.idAddAccount == session['ACCOUNT']['idAccount']%}
+              {%if check_profile() == True and collection_info.idAddProfile == current_user.idProfile and collection_info.idAddAccount == current_user.get_account().idAccount%}
               <ul class="card__list" style="width: 100%; margin: 0px; margin-bottom: 5px;">
                 <a onclick="profileproc_collection_dropcontent('{{collection_info.idCollection}}', '{{item.idContent}}');" style="cursor: pointer;" class="open-modal">
                   <li>
@@ -111,7 +111,7 @@
   </div>
 </section>
 
-  {%if check_profile() == True and collection_info.idAddProfile == session['PROFILE']['idProfile'] and collection_info.idAddAccount == session['ACCOUNT']['idAccount']%}
+  {%if check_profile() == True and collection_info.idAddProfile == current_user.idProfile and collection_info.idAddAccount == current_user.get_account().idAccount%}
     <div id="modal-drop-collection" class="zoom-anim-dialog modal mfp-hide">
         <h6 class="modal__title">Koleksiyonu Sil</h6>
         <p class="modal__text">Koleksiyonunuzu silmek istediğinize emin misiniz? <span style="font-weight: bold;">Bu işlem geri alınamaz.</span></p>

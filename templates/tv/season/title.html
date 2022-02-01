@@ -361,14 +361,14 @@
                         {%endif%}
                         <div class="comments__actions">
                           <div class="comments__rate">
-                            <button type="button" id="{{comment.idComment}}_comment__like" {%if check_profile() == True%}onclick="likeComment('{{comment.idComment}}');"{%endif%}><i {%if check_profile() == True and get_tvtitlecomment_rate(comment_id=comment.idComment, profile_id=session["PROFILE"]["idProfile"], rate_type='LIKE')%}id="comment__like__selected"{%endif%} class="icon ion-md-thumbs-up"></i><p id="{{comment.idComment}}_comment__like_count" style="display: contents;">{{get_tvtitlecomment_rates(content_id=content_info.idContent, tv_season_id=season_info.idTvSeason, comment_id=comment.idComment, rate_type='LIKE')|length}}</p></button>
+                            <button type="button" id="{{comment.idComment}}_comment__like" {%if check_profile() == True%}onclick="likeComment('{{comment.idComment}}');"{%endif%}><i {%if check_profile() == True and get_tvtitlecomment_rate(comment_id=comment.idComment, profile_id=current_user.idProfile, rate_type='LIKE')%}id="comment__like__selected"{%endif%} class="icon ion-md-thumbs-up"></i><p id="{{comment.idComment}}_comment__like_count" style="display: contents;">{{get_tvtitlecomment_rates(content_id=content_info.idContent, tv_season_id=season_info.idTvSeason, comment_id=comment.idComment, rate_type='LIKE')|length}}</p></button>
 
-                            <button type="button" id="{{comment.idComment}}_comment__dislike" {%if check_profile() == True%}onclick="dislikeComment('{{comment.idComment}}');"{%endif%}><p id="{{comment.idComment}}_comment__dislike_count" style="display: contents;">{{get_tvtitlecomment_rates(content_id=content_info.idContent, tv_season_id=season_info.idTvSeason, comment_id=comment.idComment, rate_type='DISLIKE')|length}}</p><i {%if check_profile() == True and get_tvtitlecomment_rate(comment_id=comment.idComment, profile_id=session["PROFILE"]["idProfile"], rate_type='DISLIKE')%}id="comment__dislike__selected"{%endif%} class="icon ion-md-thumbs-down"></i></button>
+                            <button type="button" id="{{comment.idComment}}_comment__dislike" {%if check_profile() == True%}onclick="dislikeComment('{{comment.idComment}}');"{%endif%}><p id="{{comment.idComment}}_comment__dislike_count" style="display: contents;">{{get_tvtitlecomment_rates(content_id=content_info.idContent, tv_season_id=season_info.idTvSeason, comment_id=comment.idComment, rate_type='DISLIKE')|length}}</p><i {%if check_profile() == True and get_tvtitlecomment_rate(comment_id=comment.idComment, profile_id=current_user.idProfile, rate_type='DISLIKE')%}id="comment__dislike__selected"{%endif%} class="icon ion-md-thumbs-down"></i></button>
                           </div>
 
                           {%if check_profile() == True%}
                           <button type="button" onclick="showReplyComment('{{comment.idComment}}');"><i class="icon ion-ios-share-alt"></i>Yanıtla</button>
-                            {%if comment.idAddProfile == session['PROFILE']['idProfile']%}
+                            {%if comment.idAddProfile == current_user.idProfile%}
                           <button type="button" onclick="deleteComment('{{comment.idComment}}');"><i class="icon ion-ios-trash"></i>Sil</button>
                             {%endif%}
                           {%endif%}
@@ -385,13 +385,13 @@
                         <p class="comments__text">{{reply.text}}</p>
                         <div class="comments__actions">
                           <div class="comments__rate">
-                            <button type="button" id="{{reply.idComment}}_comment__like" {%if check_profile() == True%}onclick="likeComment('{{reply.idComment}}');"{%endif%}><i {%if check_profile() == True and get_tvtitlecomment_rate(comment_id=reply.idComment, profile_id=session["PROFILE"]["idProfile"], rate_type='LIKE')%}id="comment__like__selected"{%endif%} class="icon ion-md-thumbs-up"></i><p id="{{reply.idComment}}_comment__like_count" style="display: contents;">{{get_tvtitlecomment_rates(content_id=content_info.idContent, tv_season_id=season_info.idTvSeason, comment_id=reply.idComment, rate_type='LIKE')|length}}</p></button>
+                            <button type="button" id="{{reply.idComment}}_comment__like" {%if check_profile() == True%}onclick="likeComment('{{reply.idComment}}');"{%endif%}><i {%if check_profile() == True and get_tvtitlecomment_rate(comment_id=reply.idComment, profile_id=current_user.idProfile, rate_type='LIKE')%}id="comment__like__selected"{%endif%} class="icon ion-md-thumbs-up"></i><p id="{{reply.idComment}}_comment__like_count" style="display: contents;">{{get_tvtitlecomment_rates(content_id=content_info.idContent, tv_season_id=season_info.idTvSeason, comment_id=reply.idComment, rate_type='LIKE')|length}}</p></button>
 
-                            <button type="button" id="{{reply.idComment}}_comment__dislike" {%if check_profile() == True%}onclick="dislikeComment('{{reply.idComment}}');"{%endif%}><p id="{{reply.idComment}}_comment__dislike_count" style="display: contents;">{{get_tvtitlecomment_rates(content_id=content_info.idContent, tv_season_id=season_info.idTvSeason, comment_id=reply.idComment, rate_type='DISLIKE')|length}}</p><i {%if check_profile() == True and get_tvtitlecomment_rate(comment_id=reply.idComment, profile_id=session["PROFILE"]["idProfile"], rate_type='DISLIKE')%}id="comment__dislike__selected"{%endif%} class="icon ion-md-thumbs-down"></i></button>
+                            <button type="button" id="{{reply.idComment}}_comment__dislike" {%if check_profile() == True%}onclick="dislikeComment('{{reply.idComment}}');"{%endif%}><p id="{{reply.idComment}}_comment__dislike_count" style="display: contents;">{{get_tvtitlecomment_rates(content_id=content_info.idContent, tv_season_id=season_info.idTvSeason, comment_id=reply.idComment, rate_type='DISLIKE')|length}}</p><i {%if check_profile() == True and get_tvtitlecomment_rate(comment_id=reply.idComment, profile_id=current_user.idProfile, rate_type='DISLIKE')%}id="comment__dislike__selected"{%endif%} class="icon ion-md-thumbs-down"></i></button>
                           </div>
 
                           {%if check_profile() == True%}
-                            {%if reply.idAddProfile == session['PROFILE']['idProfile']%}
+                            {%if reply.idAddProfile == current_user.idProfile%}
                           <button type="button" onclick="deleteComment('{{reply.idComment}}');"><i class="icon ion-ios-trash"></i>Sil</button>
                             {%endif%}
                           {%endif%}
@@ -687,9 +687,9 @@ function sendReply(){
           $('#' + get_selected_comment_id).after(`
 
             <li id="${response.latest_reply_id}" class="comments__item comments__item--answer ${response.latest_reply_replyto}">
-              <div style="min-width: 50px; min-height: 50px; background-image: url('{{get_profile_db(profile_id=session['PROFILE']['idProfile']).imageAvatar}}'); background-size: cover; background-position: center; border-radius: 50%; margin-right: 20px; float: left;"></div>
+              <div style="min-width: 50px; min-height: 50px; background-image: url('{{get_profile_db(profile_id=current_user.idProfile).imageAvatar}}'); background-size: cover; background-position: center; border-radius: 50%; margin-right: 20px; float: left;"></div>
               <div class="comments__autor">
-                <span class="comments__name">{{get_profile_db(profile_id=session['PROFILE']['idProfile']).username}}</span>
+                <span class="comments__name">{{get_profile_db(profile_id=current_user.idProfile).username}}</span>
                 <span class="comments__time">şimdi</span>
               </div>
               <p class="comments__text">${response.latest_reply_text}</p>
@@ -766,9 +766,9 @@ function sendComment(){
           $('.comments__list').prepend(`
 
             <li id="${response.latest_comment_id}" class="comments__item ${response.latest_comment_id}">
-              <div style="min-width: 50px; min-height: 50px; background-image: url('{{get_profile_db(profile_id=session['PROFILE']['idProfile']).imageAvatar}}'); background-size: cover; background-position: center; border-radius: 50%; margin-right: 20px; float: left;"></div>
+              <div style="min-width: 50px; min-height: 50px; background-image: url('{{get_profile_db(profile_id=current_user.idProfile).imageAvatar}}'); background-size: cover; background-position: center; border-radius: 50%; margin-right: 20px; float: left;"></div>
               <div class="comments__autor">
-                <span class="comments__name">{{get_profile_db(profile_id=session['PROFILE']['idProfile']).username}}</span>
+                <span class="comments__name">{{get_profile_db(profile_id=current_user.idProfile).username}}</span>
                 <span class="comments__time">şimdi</span>
               </div>
               <p class="comments__text">${response.latest_comment_text}</p>

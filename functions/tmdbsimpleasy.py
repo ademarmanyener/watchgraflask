@@ -12,13 +12,12 @@ from includes import *
 @app.route('/tmdbsimple/movie/2/popular/<page_begin>/<page_end>')
 def tmdbsimple_movie2_popular(page_begin, page_end):
   get_profile = profile.query.filter(profile.permission != 'DOCKER').first()
-  session['ACCOUNT'] = {
-    "idAccount": get_profile.idAccount
-  }
-  session['PROFILE'] = {
-    "idProfile": get_profile.idProfile,
-    "permission": 'ADMIN'
-  }
+  if get_profile:
+    session['login_type'] = 'ACCOUNT'
+    login_user(get_profile.get_account())
+    session['login_type'] = 'PROFILE'
+    login_user(get_profile)
+
   for get_page in range(int(page_begin), int(page_end)):
     for get_popular in tmdb.Movies().popular(language=TMDB_LANGUAGE, page=get_page)['results']:
       TMDBSimpleasy.Movie.addContent(get_tmdb_id=get_popular['id'])
@@ -40,39 +39,36 @@ def tmdbsimple_movie2_popular(page_begin, page_end):
 @app.route('/tmdbsimple/cast/add/<tmdb_id>')
 def tmdbsimple_cast_add(tmdb_id):
     get_profile = profile.query.filter(profile.permission != 'DOCKER').first()
-    session['ACCOUNT'] = {
-      "idAccount": get_profile.idAccount 
-    }
-    session['PROFILE'] = {
-      "idProfile": get_profile.idProfile,
-      "permission": 'ADMIN'
-    }
+    if get_profile:
+      session['login_type'] = 'ACCOUNT'
+      login_user(get_profile.get_account())
+      session['login_type'] = 'PROFILE'
+      login_user(get_profile)
+
     TMDBSimpleasy.Cast.addCast(get_tmdb_id=tmdb_id)
     return redirect(url_for('destroy_account'))
 
 @app.route('/tmdbsimple/movie/add/<tmdb_id>')
 def tmdbsimple_movie_add(tmdb_id):
     get_profile = profile.query.filter(profile.permission != 'DOCKER').first()
-    session['ACCOUNT'] = {
-      "idAccount": get_profile.idAccount 
-    }
-    session['PROFILE'] = {
-      "idProfile": get_profile.idProfile,
-      "permission": 'ADMIN'
-    }
+    if get_profile:
+      session['login_type'] = 'ACCOUNT'
+      login_user(get_profile.get_account())
+      session['login_type'] = 'PROFILE'
+      login_user(get_profile)
+
     TMDBSimpleasy.Movie.addComprehensive(get_tmdb_id=tmdb_id)
     return redirect(url_for('destroy_account'))
 
 @app.route('/tmdbsimple/tv/add/<tmdb_id>')
 def tmdbsimple_tv_add(tmdb_id):
     get_profile = profile.query.filter(profile.permission != 'DOCKER').first()
-    session['ACCOUNT'] = {
-      "idAccount": get_profile.idAccount 
-    }
-    session['PROFILE'] = {
-      "idProfile": get_profile.idProfile,
-      "permission": 'ADMIN'
-    }
+    if get_profile:
+      session['login_type'] = 'ACCOUNT'
+      login_user(get_profile.get_account())
+      session['login_type'] = 'PROFILE'
+      login_user(get_profile)
+
     TMDBSimpleasy.TV.addComprehensive(get_tmdb_id=tmdb_id)
     return redirect(url_for('destroy_account'))
 
@@ -89,8 +85,8 @@ class TMDBSimpleasy:
     def addCast(get_tmdb_id):
       #if not check_admin(): return 1
 
-      SELECTED_ID_ADD_PROFILE = session['PROFILE']['idProfile']
-      SELECTED_ID_ADD_ACCOUNT = session['ACCOUNT']['idAccount']
+      SELECTED_ID_ADD_PROFILE = get_logged_profile().idProfile
+      SELECTED_ID_ADD_ACCOUNT = get_logged_account().idAccount
       SELECTED_GENDER = 0
       SELECTED_NAME = '#'
       SELECTED_NAME_URL = '#'
@@ -161,8 +157,8 @@ class TMDBSimpleasy:
     def addContent(get_tmdb_id):
       #if not check_admin(): return 1
 
-      SELECTED_ID_ADD_PROFILE = session['PROFILE']['idProfile']
-      SELECTED_ID_ADD_ACCOUNT = session['ACCOUNT']['idAccount']
+      SELECTED_ID_ADD_PROFILE = get_logged_profile().idProfile
+      SELECTED_ID_ADD_ACCOUNT = get_logged_account().idAccount
       SELECTED_TYPE = 'MOVIE'
       SELECTED_TITLE = '#'
       SELECTED_TITLE_ORIGINAL = '#'
@@ -308,8 +304,8 @@ class TMDBSimpleasy:
                 try:
                   db.session.add(moviePlayer(
                     idContent = content.query.filter(and_(content.idTmdb == str(get_tmdb_id), content.type == 'MOVIE')).first().idContent,
-                    idAddProfile = session['PROFILE']['idProfile'],
-                    idAddAccount = session['ACCOUNT']['idAccount'],
+                    idAddProfile = get_logged_profile().idProfile,
+                    idAddAccount = get_logged_account().idAccount,
                     language = 'DUBBED',
                     source = 'https://www.youtube.com/embed/' + str(local_trailer['key']),
                     title = str(local_trailer['name']),
@@ -333,8 +329,8 @@ class TMDBSimpleasy:
                   try:
                     db.session.add(moviePlayer(
                       idContent = content.query.filter(and_(content.idTmdb == str(get_tmdb_id), content.type == 'MOVIE')).first().idContent,
-                      idAddProfile = session['PROFILE']['idProfile'],
-                      idAddAccount = session['ACCOUNT']['idAccount'],
+                      idAddProfile = get_logged_profile().idProfile,
+                      idAddAccount = get_logged_account().idAccount,
                       language = 'ORIGINAL',
                       source = 'https://www.youtube.com/embed/' + str(global_trailer['key']),
                       title = str(global_trailer['name']),
@@ -358,8 +354,8 @@ class TMDBSimpleasy:
           try:
               db.session.add(moviePlayer(
                 idContent = content.query.filter(and_(content.idTmdb == str(get_tmdb_id), content.type == 'MOVIE')).first().idContent,
-                idAddProfile = session['PROFILE']['idProfile'],
-                idAddAccount = session['ACCOUNT']['idAccount'],
+                idAddProfile = get_logged_profile().idProfile,
+                idAddAccount = get_logged_account().idAccount,
                 language = 'ORIGINAL',
                 source = soup_global_beta.get_movie_player_src(get_tmdb_id),
                 title = '2emb.global',
@@ -382,8 +378,8 @@ class TMDBSimpleasy:
         else:
           db.session.add(moviePlayer(
             idContent = content.query.filter(and_(content.idTmdb == str(get_tmdb_id), content.type == 'MOVIE')).first().idContent,
-            idAddProfile = session['PROFILE']['idProfile'],
-            idAddAccount = session['ACCOUNT']['idAccount'],
+            idAddProfile = get_logged_profile().idProfile,
+            idAddAccount = get_logged_account().idAccount,
             language = 'DUBBED',
             source = get_local_player.get_movie_player_src(get_url=get_local_player.get_first_item_href(get_query=get_local_player.query)),
             title = 'WG.Local',
@@ -465,8 +461,8 @@ class TMDBSimpleasy:
     def addContent(get_tmdb_id):
       #if not check_admin(): return 1
 
-      SELECTED_ID_ADD_PROFILE = session['PROFILE']['idProfile']
-      SELECTED_ID_ADD_ACCOUNT = session['ACCOUNT']['idAccount']
+      SELECTED_ID_ADD_PROFILE = get_logged_profile().idProfile
+      SELECTED_ID_ADD_ACCOUNT = get_logged_account().idAccount
       SELECTED_TYPE = 'TV'
       SELECTED_TITLE = '#'
       SELECTED_TITLE_ORIGINAL = '#'
@@ -596,8 +592,8 @@ class TMDBSimpleasy:
       #if not check_admin(): return 1
 
       SELECTED_ID_CONTENT = content.query.filter(and_(content.idTmdb == str(get_tmdb_id), content.type == 'TV')).first().idContent
-      SELECTED_ID_ADD_PROFILE = session['PROFILE']['idProfile']
-      SELECTED_ID_ADD_ACCOUNT = session['ACCOUNT']['idAccount']
+      SELECTED_ID_ADD_PROFILE = get_logged_profile().idProfile
+      SELECTED_ID_ADD_ACCOUNT = get_logged_account().idAccount
       SELECTED_TITLE = '#'
       SELECTED_OVERVIEW = '#'
       SELECTED_ID_TMDB = get_tmdb_id
@@ -639,8 +635,8 @@ class TMDBSimpleasy:
 
       SELECTED_ID_TV_SEASON = tvSeasonContent.query.filter(and_(tvSeasonContent.idTmdb == str(get_tmdb_id), tvSeasonContent.seasonNumber == get_season_number)).first().idTvSeason
       SELECTED_ID_CONTENT = content.query.filter(and_(content.idTmdb == str(get_tmdb_id), content.type == 'TV')).first().idContent
-      SELECTED_ID_ADD_PROFILE = session['PROFILE']['idProfile']
-      SELECTED_ID_ADD_ACCOUNT = session['ACCOUNT']['idAccount']
+      SELECTED_ID_ADD_PROFILE = get_logged_profile().idProfile
+      SELECTED_ID_ADD_ACCOUNT = get_logged_account().idAccount
       SELECTED_TITLE = '#'
       SELECTED_OVERVIEW = '#'
       SELECTED_ID_TMDB = get_tmdb_id
@@ -701,8 +697,8 @@ class TMDBSimpleasy:
                 idTvSeason = tvSeasonContent.query.filter(and_(tvSeasonContent.idTmdb == str(get_tmdb_id), tvSeasonContent.seasonNumber == get_season_number)).first().idTvSeason,
                 idTvEpisode = tvEpisodeContent.query.filter(and_(tvEpisodeContent.idTmdb == str(get_tmdb_id), tvEpisodeContent.seasonNumber == get_season_number, tvEpisodeContent.episodeNumber == get_episode_number)).first().idTvEpisode,
                 idContent = content.query.filter(and_(content.idTmdb == str(get_tmdb_id), content.type == 'TV')).first().idContent,
-                idAddProfile = session['PROFILE']['idProfile'],
-                idAddAccount = session['ACCOUNT']['idAccount'],
+                idAddProfile = get_logged_profile().idProfile,
+                idAddAccount = get_logged_account().idAccount,
                 language = 'ORIGINAL',
                 source = soup_global_beta.get_tv_player_src(get_tmdb_id, get_season_number, get_episode_number),
                 title = '2emb.global',

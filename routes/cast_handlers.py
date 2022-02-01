@@ -15,8 +15,8 @@ def cast_title_func_proc(function):
     if get_text:
       db.session.add(castComment(
         idCast = get_cast_id,
-        idAddProfile = session['PROFILE']['idProfile'],
-        idAddAccount = session['ACCOUNT']['idAccount'],
+        idAddProfile = get_logged_profile().idProfile,
+        idAddAccount = get_logged_account().idAccount,
         text = get_text,
         replyTo = '',
         visibility = 1,
@@ -24,7 +24,7 @@ def cast_title_func_proc(function):
       ))
       db.session.commit()
 
-      latest_comment =  castComment.query.filter(and_(castComment.idCast == get_cast_id, castComment.replyTo == '', castComment.idAddProfile == session['PROFILE']['idProfile'], castComment.idAddAccount == session['ACCOUNT']['idAccount'])).order_by(castComment.addDate.desc()).first()
+      latest_comment =  castComment.query.filter(and_(castComment.idCast == get_cast_id, castComment.replyTo == '', castComment.idAddProfile == get_logged_profile().idProfile, castComment.idAddAccount == get_logged_account().idAccount)).order_by(castComment.addDate.desc()).first()
       if latest_comment == None: return make_response(jsonify({'err_msg': 'Böyle bir yorum bulunamadı.'}))
 
       return make_response(jsonify({'succ_msg': 'Yorumunuz başarıyla gönderildi!', \
@@ -46,8 +46,8 @@ def cast_title_func_proc(function):
 
       db.session.add(castComment(
         idCast = get_cast_id,
-        idAddProfile = session['PROFILE']['idProfile'],
-        idAddAccount = session['ACCOUNT']['idAccount'],
+        idAddProfile = get_logged_profile().idProfile,
+        idAddAccount = get_logged_account().idAccount,
         text = get_reply,
         replyTo = get_reply_to,
         visibility = 1,
@@ -55,7 +55,7 @@ def cast_title_func_proc(function):
       ))
       db.session.commit()
 
-      latest_reply =  castComment.query.filter(and_(castComment.idCast == get_cast_id, castComment.replyTo != '', castComment.idAddProfile == session['PROFILE']['idProfile'], castComment.idAddAccount == session['ACCOUNT']['idAccount'])).order_by(castComment.addDate.desc()).first()
+      latest_reply =  castComment.query.filter(and_(castComment.idCast == get_cast_id, castComment.replyTo != '', castComment.idAddProfile == get_logged_profile().idProfile, castComment.idAddAccount == get_logged_account().idAccount)).order_by(castComment.addDate.desc()).first()
       if latest_reply == None: return make_response(jsonify({'err_msg': 'Böyle bir yorum bulunamadı.'}))
 
       return make_response(jsonify({'succ_msg': 'Yanıtınız başarıyla gönderildi!', \
@@ -88,7 +88,7 @@ def cast_title_func_proc(function):
 
     get_comment = castComment.query.filter(and_(castComment.idCast == get_cast_id, castComment.idComment == get_comment_id)).first()
     if get_comment == None: return make_response(jsonify({'err_msg': 'Böyle bir yorum bulunamadı.'}))
-    if get_comment.idAddProfile == session['PROFILE']['idProfile'] and get_comment.idAddAccount == session['ACCOUNT']['idAccount']: pass
+    if get_comment.idAddProfile == get_logged_profile().idProfile and get_comment.idAddAccount == get_logged_account().idAccount: pass
     else: return make_response(jsonify({'err_msg': 'Bu yorumun sizin profilinize ait olduğuna emin misiniz?'}))
 
     get_comment.drop()
@@ -105,22 +105,22 @@ def cast_title_func_proc(function):
     get_comment = castComment.query.filter(and_(castComment.idCast == get_cast_id, castComment.idComment == get_comment_id)).first()
     if get_comment == None: return make_response(jsonify({'err_msg': 'Böyle bir yorum bulunamadı.'}))
 
-    get_comment_rate = castCommentRate.query.filter(and_(castCommentRate.idCast == get_cast_id, castCommentRate.idComment == get_comment_id, castCommentRate.idRateProfile == session['PROFILE']['idProfile'], castCommentRate.idRateAccount == session['ACCOUNT']['idAccount'], castCommentRate.rateType == 'LIKE')).first()
+    get_comment_rate = castCommentRate.query.filter(and_(castCommentRate.idCast == get_cast_id, castCommentRate.idComment == get_comment_id, castCommentRate.idRateProfile == get_logged_profile().idProfile, castCommentRate.idRateAccount == get_logged_account().idAccount, castCommentRate.rateType == 'LIKE')).first()
     if get_comment_rate == None:
-      if get_comment.idAddAccount == session['ACCOUNT']['idAccount'] and get_comment.idAddProfile == session['PROFILE']['idProfile']:
+      if get_comment.idAddAccount == get_logged_account().idAccount and get_comment.idAddProfile == get_logged_profile().idProfile:
         return make_response(jsonify({'err_msg': 'Kendi profiliniz tarafından yapılan yorumları beğenemezsiniz.'}))
       else:
         db.session.add(castCommentRate(
           idCast = get_cast_id,
           idComment = get_comment_id,
-          idRateProfile = session['PROFILE']['idProfile'],
-          idRateAccount = session['ACCOUNT']['idAccount'],
+          idRateProfile = get_logged_profile().idProfile,
+          idRateAccount = get_logged_account().idAccount,
           rateType = 'LIKE',
         ))
         db.session.commit()
 
         # if the profile has disliked the comment, then drop it first
-        select_dislike = castCommentRate.query.filter(and_(castCommentRate.idCast == get_cast_id, castCommentRate.idComment == get_comment_id, castCommentRate.idRateProfile == session['PROFILE']['idProfile'], castCommentRate.idRateAccount == session['ACCOUNT']['idAccount'], castCommentRate.rateType == 'DISLIKE')).first()
+        select_dislike = castCommentRate.query.filter(and_(castCommentRate.idCast == get_cast_id, castCommentRate.idComment == get_comment_id, castCommentRate.idRateProfile == get_logged_profile().idProfile, castCommentRate.idRateAccount == get_logged_account().idAccount, castCommentRate.rateType == 'DISLIKE')).first()
         if select_dislike:
           select_dislike.drop()
           return make_response(jsonify({'gave_like': 'Yorumu başarıyla beğendiniz!', 'took_dislike': 'OK'}))
@@ -140,22 +140,22 @@ def cast_title_func_proc(function):
     get_comment = castComment.query.filter(and_(castComment.idCast == get_cast_id, castComment.idComment == get_comment_id)).first()
     if get_comment == None: return make_response(jsonify({'err_msg': 'Böyle bir yorum bulunamadı.'}))
 
-    get_comment_rate = castCommentRate.query.filter(and_(castCommentRate.idCast == get_cast_id, castCommentRate.idComment == get_comment_id, castCommentRate.idRateProfile == session['PROFILE']['idProfile'], castCommentRate.idRateAccount == session['ACCOUNT']['idAccount'], castCommentRate.rateType == 'DISLIKE')).first()
+    get_comment_rate = castCommentRate.query.filter(and_(castCommentRate.idCast == get_cast_id, castCommentRate.idComment == get_comment_id, castCommentRate.idRateProfile == get_logged_profile().idProfile, castCommentRate.idRateAccount == get_logged_account().idAccount, castCommentRate.rateType == 'DISLIKE')).first()
     if get_comment_rate == None:
-      if get_comment.idAddAccount == session['ACCOUNT']['idAccount'] and get_comment.idAddProfile == session['PROFILE']['idProfile']:
+      if get_comment.idAddAccount == get_logged_account().idAccount and get_comment.idAddProfile == get_logged_profile().idProfile:
         return make_response(jsonify({'err_msg': 'Kendi profiliniz tarafından yapılan yorumlara dislike atamazsın.'}))
       else:
         db.session.add(castCommentRate(
           idCast = get_cast_id,
           idComment = get_comment_id,
-          idRateProfile = session['PROFILE']['idProfile'],
-          idRateAccount = session['ACCOUNT']['idAccount'],
+          idRateProfile = get_logged_profile().idProfile,
+          idRateAccount = get_logged_account().idAccount,
           rateType = 'DISLIKE',
         ))
         db.session.commit()
 
         # if the profile has liked the comment, then drop it first
-        select_like = castCommentRate.query.filter(and_(castCommentRate.idCast == get_cast_id, castCommentRate.idComment == get_comment_id, castCommentRate.idRateProfile == session['PROFILE']['idProfile'], castCommentRate.idRateAccount == session['ACCOUNT']['idAccount'], castCommentRate.rateType == 'LIKE')).first()
+        select_like = castCommentRate.query.filter(and_(castCommentRate.idCast == get_cast_id, castCommentRate.idComment == get_comment_id, castCommentRate.idRateProfile == get_logged_profile().idProfile, castCommentRate.idRateAccount == get_logged_account().idAccount, castCommentRate.rateType == 'LIKE')).first()
         if select_like:
           select_like.drop()
           return make_response(jsonify({'gave_dislike': 'Başarıyla dislikledınız!', 'took_like': 'OK'}))
